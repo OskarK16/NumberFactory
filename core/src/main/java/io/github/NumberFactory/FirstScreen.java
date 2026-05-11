@@ -1,45 +1,68 @@
 package io.github.NumberFactory;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.NumberFactory.model.board.Board;
 
-/** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
+    //for now
+    private static final int CELL_SIZE = 64;
+
+    private ShapeRenderer shapeRenderer;
+    private OrthographicCamera camera;
+    private Board board;
+
     @Override
     public void show() {
-        // Prepare your screen here.
+        board = new Board(20, 20);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
+        shapeRenderer = new ShapeRenderer();
+        camera.position.set(board.width * CELL_SIZE / 2f,
+            board.height * CELL_SIZE / 2f,
+            0
+        );
+        camera.update();
     }
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
+        ScreenUtils.clear(0.15f, 0.15f, 0.15f, 1f);
+
+        camera.update();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
+                shapeRenderer.rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+        }
+        shapeRenderer.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        // If the window is minimized on a desktop (LWJGL3) platform, width and height are 0, which causes problems.
-        // In that case, we don't resize anything, and wait for the window to be a normal size before updating.
-        if(width <= 0 || height <= 0) return;
-
-        // Resize your screen here. The parameters represent the new window size.
+        if (width <= 0 || height <= 0) return;
+        camera.viewportWidth = width;
+        camera.viewportHeight = height;
+        camera.update();
     }
 
     @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-        // This method is called when another screen replaces this one.
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
+        shapeRenderer.dispose();
     }
 }
