@@ -7,8 +7,7 @@ public class ModuloComponent extends ArithmeticComponent {
 
     @Override
     protected Integer compute(Integer a, Integer b) {
-        //placeholder
-        if (b == 0) return 4566769;
+        if (b == 0) return null;
         return a % b;
     }
 }
