@@ -1,4 +1,4 @@
-package io.github.NumberFactory.model.components;
+package io.github.NumberFactory.utils;
 
 public enum ComponentType {
     GENERATOR,

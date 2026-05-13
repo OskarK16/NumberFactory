@@ -1,41 +1,35 @@
 package io.github.NumberFactory.model.components;
 
 import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.utils.PortType;
+import io.github.NumberFactory.utils.Directions;
+
+import java.util.ArrayList;
 
 public abstract class Component {
     public final int inputSize;
     public final int outputSize;
-    protected InputType[] input;
-    protected Item[] output;
+    protected PortType[] ports;
+    public Component[] components;
+    public Item[] outStorage;
 
     public Component(int inputSize, int outputSize) {
         this.inputSize = inputSize;
         this.outputSize = outputSize;
-        this.input = new InputType[inputSize];
-        this.output = new Item[outputSize];
+        this.ports = new PortType[4];
+        this.components = new Component[4];
+        this.outStorage = new Item[outputSize];
     }
 
-    public void connectInput(int inputIndex, int index, Component c) {
-        if (inputIndex >= inputSize) throw new RuntimeException();
-        input[inputIndex] = new InputType(index, c);
+    public void setPort(Directions direction, PortType port) {
+        ports[direction.ordinal()] = port;
     }
 
-    public void disconnectInput(int inputIndex) {
-        if (inputIndex >= inputSize) throw new RuntimeException();
-        input[inputIndex] = null;
+    public void updateComponent(Directions direction, Component component) {
+        components[direction.ordinal()] = component;
     }
 
-    public Item passOutput(int outputIndex) {
-        if (outputIndex >= outputSize) throw new RuntimeException();
-        return output[outputIndex];
-    }
-
-    public void generateOutput() {
-
-    }
-
-    public Item runMachine() {
-        //TODO
-        return null;
-    }
+    public abstract Item passOutput(Directions requestedFrom);
+    public abstract void process();
+    public abstract boolean checkValidity();
 }

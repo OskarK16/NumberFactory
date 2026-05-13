@@ -1,5 +1,8 @@
 package io.github.NumberFactory.model.components.arithmetic;
 
+import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.utils.Directions;
+
 public class DivideComponent extends ArithmeticComponent {
     public DivideComponent() {
         super();

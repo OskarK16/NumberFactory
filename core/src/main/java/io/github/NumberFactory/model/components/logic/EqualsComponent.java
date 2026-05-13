@@ -1,4 +1,4 @@
 package io.github.NumberFactory.model.components.logic;
 
-public class EqualsComponent extends LogicComponent {
+public class EqualsComponent {
 }

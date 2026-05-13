@@ -1,4 +1,4 @@
 package io.github.NumberFactory.model.components.logic;
 
-public class LessThanComponent extends LogicComponent {
+public class LessThanComponent {
 }
