@@ -4,6 +4,8 @@ import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
+import java.util.Map;
+
 public class TransportComponent extends Component {
     private Item item;
 
@@ -42,12 +44,10 @@ public class TransportComponent extends Component {
 
     @Override
     public boolean checkValidity() {
-        int inputs = 0, outputs = 0;
-        for (Directions dir : Directions.values()) {
-            PortType port = getPort(dir);
-            if (port == PortType.INPUT_A)  inputs++;
-            else if (port == PortType.OUTPUT_A) outputs++;
-        }
-        return inputs == 1 && outputs == 1;
+        return PortType.check(getPorts(), Map.of(
+            PortType.INPUT_A, 1,
+            PortType.OUTPUT_A, 1,
+            PortType.CLOSED, 2
+        ));
     }
 }

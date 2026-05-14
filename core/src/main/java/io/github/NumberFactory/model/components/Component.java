@@ -4,6 +4,7 @@ import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class Component {
@@ -26,6 +27,14 @@ public abstract class Component {
 
     public PortType getPort(Directions direction) {
         return ports[direction.ordinal()];
+    }
+
+    public ArrayList<PortType> getPorts() {
+        ArrayList<PortType> ports = new ArrayList<>();
+        for (Directions d : Directions.values()) {
+            ports.add(getPort(d));
+        }
+        return ports;
     }
 
     public void connect(Directions direction, Component component) {

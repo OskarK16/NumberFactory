@@ -5,6 +5,9 @@ import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
+import java.util.List;
+import java.util.Map;
+
 public abstract class ArithmeticComponent extends Component {
     private Item slotA;
     private Item slotB;
@@ -50,15 +53,12 @@ public abstract class ArithmeticComponent extends Component {
 
     @Override
     public boolean checkValidity() {
-        int inputA = 0, inputB = 0, outputs = 0,closed=0;
-        for (Directions dir : Directions.values()) {
-            PortType port = getPort(dir);
-            if (port == PortType.INPUT_A)       inputA++;
-            else if (port == PortType.INPUT_B)  inputB++;
-            else if (port == PortType.OUTPUT_A) outputs++;
-            else if (port == PortType.CLOSED)    closed++;
-        }
-        return inputA == 1 && inputB == 1 && outputs == 1 && closed == 1;
+        return PortType.check(getPorts(), Map.of(
+            PortType.INPUT_A, 1,
+            PortType.INPUT_B, 1,
+            PortType.OUTPUT_A, 1,
+            PortType.CLOSED, 1
+        ));
     }
 
     protected abstract Integer compute(Integer a, Integer b);
