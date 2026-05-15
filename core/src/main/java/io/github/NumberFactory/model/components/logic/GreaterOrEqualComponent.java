@@ -1,8 +1,8 @@
 package io.github.NumberFactory.model.components.logic;
 
-public class EqualsComponent extends LogicComponent {
+public class GreaterOrEqualComponent extends LogicComponent {
     @Override
     public boolean evaluate(Integer a, Integer b) {
-        return a.equals(b);
+        return a >= b;
     }
 }

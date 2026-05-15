@@ -238,6 +238,8 @@ public class MachineTest {
         System.out.println("testDivisionByZero: OK");
     }
 
+
+
     private static void runUntil(Machine machine, OutputComponent out, int maxTicks) {
         for (int i = 0; i < maxTicks && out.getCollected().isEmpty(); i++) {
             machine.tick();
