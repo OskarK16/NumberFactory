@@ -1,19 +1,30 @@
 package io.github.NumberFactory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.NumberFactory.model.board.Board;
 
 public class FirstScreen implements Screen {
-    //for now
     private static final int CELL_SIZE = 64;
 
+    private final Main game;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
     private Board board;
+    private SpriteBatch batch;
+    private BitmapFont font;
+
+    public FirstScreen(Main game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -21,11 +32,23 @@ public class FirstScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         shapeRenderer = new ShapeRenderer();
-        camera.position.set(board.width * CELL_SIZE / 2f,
-            board.height * CELL_SIZE / 2f,
-            0
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        font.setColor(Color.LIGHT_GRAY);
+        camera.position.set(board.width * CELL_SIZE / 2f,board.height * CELL_SIZE / 2f,0
         );
         camera.update();
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    game.setScreen(new MainMenuScreen(game));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -42,6 +65,10 @@ public class FirstScreen implements Screen {
             }
         }
         shapeRenderer.end();
+
+        batch.begin();
+        font.draw(batch, "ESC - menu", 10, Gdx.graphics.getHeight() - 10);
+        batch.end();
     }
 
     @Override
@@ -64,5 +91,7 @@ public class FirstScreen implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        batch.dispose();
+        font.dispose();
     }
 }
