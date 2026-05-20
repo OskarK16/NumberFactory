@@ -1,4 +1,4 @@
-package io.github.NumberFactory;
+package io.github.NumberFactory.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -17,15 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.NumberFactory.Main;
 
-public class CampaignScreen implements Screen {
-    private static final int LEVEL_COUNT = 5;
-
+public class MainMenuScreen implements Screen {
     private final Main game;
     private Stage stage;
     private Skin skin;
 
-    public CampaignScreen(Main game) {
+    public MainMenuScreen(Main game) {
         this.game = game;
     }
 
@@ -66,28 +65,25 @@ public class CampaignScreen implements Screen {
         table.setFillParent(true);
         table.center();
 
-        table.add(new Label("Campaign", skin)).padBottom(40).row();
+        //titles
+        Label title = new Label("NUMBER FACTORY", skin);
+        TextButton sandbox = new TextButton("Sandbox", skin);
+        TextButton campaign = new TextButton("Campaign", skin);
 
-        for (int i = 1; i <= LEVEL_COUNT; i++) {
-            final int levelNumber = i;
-            TextButton level = new TextButton("Level " + i, skin);
-            level.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new LevelScreen(game, levelNumber));
-                }
-            });
-            table.add(level).width(200).height(50).padBottom(15).row();
-        }
+        table.add(title).padBottom(60).row();
+        table.add(sandbox).width(200).height(50).padBottom(20).row();
+        table.add(campaign).width(200).height(50).row();
 
-        TextButton back = new TextButton("Back", skin);
-        back.addListener(new ChangeListener() {
+        //sandbox screen
+        sandbox.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new MainMenuScreen(game));
-            }
+            public void changed(ChangeEvent event, Actor actor) {game.setScreen(new FirstScreen(game));}
         });
-        table.add(back).width(200).height(50).padTop(20).row();
+        //campaigne screen
+        campaign.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {game.setScreen(new CampaignScreen(game));}
+        });
 
         stage.addActor(table);
     }

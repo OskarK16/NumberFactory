@@ -2,9 +2,9 @@ package io.github.NumberFactory;
 
 import io.github.NumberFactory.model.Machine;
 import io.github.NumberFactory.model.board.Board;
-import io.github.NumberFactory.model.components.GeneratorComponent;
-import io.github.NumberFactory.model.components.OutputComponent;
-import io.github.NumberFactory.model.components.TransportComponent;
+import io.github.NumberFactory.model.components.utility.GeneratorComponent;
+import io.github.NumberFactory.model.components.utility.OutputComponent;
+import io.github.NumberFactory.model.components.utility.TransportComponent;
 import io.github.NumberFactory.model.components.arithmetic.AddComponent;
 import io.github.NumberFactory.model.components.arithmetic.DivideComponent;
 import io.github.NumberFactory.model.components.arithmetic.MultiplyComponent;

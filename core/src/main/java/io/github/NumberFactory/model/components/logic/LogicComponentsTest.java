@@ -8,12 +8,11 @@ package io.github.NumberFactory.model.components.logic;
 
 import io.github.NumberFactory.model.Machine;
 import io.github.NumberFactory.model.board.Board;
-import io.github.NumberFactory.model.components.GeneratorComponent;
-import io.github.NumberFactory.model.components.OutputComponent;
-import io.github.NumberFactory.model.components.logic.*;
+import io.github.NumberFactory.model.components.utility.GeneratorComponent;
+import io.github.NumberFactory.model.components.utility.OutputComponent;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
-import io.github.NumberFactory.model.components.TransportComponent;
+import io.github.NumberFactory.model.components.utility.TransportComponent;
 
 public class LogicComponentsTest {
 

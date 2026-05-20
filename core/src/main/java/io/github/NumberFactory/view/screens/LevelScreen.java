@@ -1,4 +1,4 @@
-package io.github.NumberFactory;
+package io.github.NumberFactory.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.NumberFactory.Main;
 
 public class LevelScreen implements Screen {
     private final Main game;

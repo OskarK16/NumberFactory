@@ -1,6 +1,7 @@
-package io.github.NumberFactory.model.components;
+package io.github.NumberFactory.model.components.utility;
 
 import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
@@ -49,5 +50,15 @@ public class TransportComponent extends Component {
             PortType.OUTPUT_A, 1,
             PortType.CLOSED, 2
         ));
+    }
+
+    @Override
+    public void reset() {
+        this.item = null;
+    }
+
+    @Override
+    public java.util.List<Item> getHeldItems() {
+        return item == null ? java.util.Collections.emptyList() : java.util.List.of(item);
     }
 }

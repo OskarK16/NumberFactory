@@ -11,6 +11,18 @@ public enum PortType {
     OUTPUT_A,
     OUTPUT_B;
 
+    public boolean isInput()  { return this == INPUT_A  || this == INPUT_B; }
+    public boolean isOutput() { return this == OUTPUT_A || this == OUTPUT_B; }
+    public boolean isClosed() { return this == CLOSED; }
+
+    public static boolean areCompatible(PortType mine, PortType neighbor) {
+        if (mine == null || neighbor == null) return false;
+        if (mine.isClosed() && neighbor.isClosed()) return true;
+        if (mine.isOutput() && neighbor.isInput())  return true;
+        if (mine.isInput()  && neighbor.isOutput()) return true;
+        return false;
+    }
+
     public static boolean check(List<PortType> ports, Map<PortType, Integer> expected) {
         Map<PortType, Integer> counts = new EnumMap<>(PortType.class);
         for (PortType port : ports) {

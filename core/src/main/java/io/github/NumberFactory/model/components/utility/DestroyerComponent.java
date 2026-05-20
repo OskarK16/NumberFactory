@@ -1,11 +1,10 @@
-package io.github.NumberFactory.model.components;
+package io.github.NumberFactory.model.components.utility;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.model.Item;
 //import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
-import javax.sound.sampled.Port;
 import java.util.*;
 
 
@@ -43,5 +42,15 @@ public class DestroyerComponent extends Component {
             PortType.INPUT_A, 1,
             PortType.CLOSED, 3
         ));
+    }
+
+    @Override
+    public void reset() {
+        slotA = null;
+    }
+
+    @Override
+    public java.util.List<Item> getHeldItems() {
+        return slotA == null ? Collections.emptyList() : List.of(slotA);
     }
 }

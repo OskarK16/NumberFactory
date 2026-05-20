@@ -1,6 +1,7 @@
-package io.github.NumberFactory.model.components;
+package io.github.NumberFactory.model.components.utility;
 
 import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
@@ -12,6 +13,8 @@ public class GeneratorComponent extends Component {
         super(0, 1);
         this.seedValue = seedValue;
     }
+
+    public int getSeedValue() { return seedValue; }
 
     @Override
     public void tick() {
@@ -37,5 +40,10 @@ public class GeneratorComponent extends Component {
             else if (port == PortType.CLOSED) closed++;
         }
         return outputs == 1 && closed == 3;
+    }
+
+    @Override
+    public void reset() {
+        this.emitted = false;
     }
 }

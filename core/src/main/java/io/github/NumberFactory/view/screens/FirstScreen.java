@@ -1,4 +1,4 @@
-package io.github.NumberFactory;
+package io.github.NumberFactory.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.NumberFactory.Main;
 import io.github.NumberFactory.model.board.Board;
 
 public class FirstScreen implements Screen {

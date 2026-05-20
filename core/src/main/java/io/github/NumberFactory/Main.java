@@ -1,6 +1,7 @@
 package io.github.NumberFactory;
 
 import com.badlogic.gdx.Game;
+import io.github.NumberFactory.view.screens.MainMenuScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {

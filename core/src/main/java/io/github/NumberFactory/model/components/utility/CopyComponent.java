@@ -1,5 +1,6 @@
-package io.github.NumberFactory.model.components;
+package io.github.NumberFactory.model.components.utility;
 import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
@@ -66,5 +67,15 @@ public class CopyComponent extends Component {
             PortType.OUTPUT_B, 1,
             PortType.CLOSED, 1
         ));
+    }
+
+    @Override
+    public void reset() {
+        this.slotA = null;
+    }
+
+    @Override
+    public java.util.List<Item> getHeldItems() {
+        return slotA == null ? java.util.Collections.emptyList() : java.util.List.of(slotA);
     }
 }

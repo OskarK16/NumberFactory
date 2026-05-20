@@ -61,5 +61,19 @@ public abstract class ArithmeticComponent extends Component {
         ));
     }
 
+    @Override
+    public void reset() {
+        this.slotA = null;
+        this.slotB = null;
+    }
+
+    @Override
+    public java.util.List<Item> getHeldItems() {
+        java.util.List<Item> items = new java.util.ArrayList<>(2);
+        if (slotA != null) items.add(slotA);
+        if (slotB != null) items.add(slotB);
+        return items;
+    }
+
     protected abstract Integer compute(Integer a, Integer b);
 }
