@@ -29,13 +29,8 @@ public class OutputComponent extends Component {
         return true;
     }
 
-    @Override
-    public void tick() {}
-
     public List<Item> getCollected() { return collected; }
 
-    // Returns items received since the last call to takeFresh() and resets the fresh buffer.
-    // Machine calls this once per tick to feed the Goal aggregator.
     public List<Item> takeFresh() {
         List<Item> out = freshlyReceived;
         freshlyReceived = new ArrayList<>();

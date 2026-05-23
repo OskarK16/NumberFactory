@@ -60,7 +60,11 @@ public abstract class Component {
 
     public List<Item> getHeldItems() { return Collections.emptyList(); }
 
-    public abstract void tick();
+    public void computeTick() {}
+    public void applyTick() {}
+
+    public boolean isExhausted() { return true; }
+
     public abstract boolean checkValidity();
     public abstract void reset();
 

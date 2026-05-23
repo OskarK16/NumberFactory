@@ -5,12 +5,12 @@ import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class ArithmeticComponent extends Component {
     private Item slotA;
     private Item slotB;
+    private Directions pendingDir;
 
     protected ArithmeticComponent() {
         super(2, 1);
@@ -33,22 +33,29 @@ public abstract class ArithmeticComponent extends Component {
     }
 
     @Override
-    public void tick() {
+    public void computeTick() {
+        pendingDir = null;
         if (slotA == null || slotB == null) return;
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == PortType.OUTPUT_A) {
-                Component neighbor = getAdjacent(dir);
-                if (neighbor != null && neighbor.canReceive(dir.opposite())) {
-                    Integer result = compute(slotA.getValue(), slotB.getValue());
-                    if (result != null) {
-                        neighbor.receive(dir.opposite(), new Item(result));
-                        slotA = null;
-                        slotB = null;
-                    }
-                    return;
-                }
+                pendingDir = dir;
+                return;
             }
         }
+    }
+
+    @Override
+    public void applyTick() {
+        if (pendingDir == null || slotA == null || slotB == null) return;
+        Component neighbor = getAdjacent(pendingDir);
+        if (neighbor != null) {
+            Integer result = compute(slotA.getValue(), slotB.getValue());
+            if (result != null && neighbor.receive(pendingDir.opposite(), new Item(result))) {
+                slotA = null;
+                slotB = null;
+            }
+        }
+        pendingDir = null;
     }
 
     @Override
@@ -65,6 +72,7 @@ public abstract class ArithmeticComponent extends Component {
     public void reset() {
         this.slotA = null;
         this.slotB = null;
+        this.pendingDir = null;
     }
 
     @Override

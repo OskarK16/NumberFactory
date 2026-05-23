@@ -40,12 +40,6 @@ public class Cell {
         this.inEdit = true;
     }
 
-    public boolean tick() {
-        if (isEmpty()) return false;
-        this.component.tick();
-        return true;
-    }
-
     public void reset() {
         if (isEmpty()) return;
         this.component.reset();

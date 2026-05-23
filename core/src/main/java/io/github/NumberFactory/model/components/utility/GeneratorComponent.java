@@ -8,6 +8,7 @@ import io.github.NumberFactory.utils.PortType;
 public class GeneratorComponent extends Component {
     private final int seedValue;
     private boolean emitted = false;
+    private Directions pendingDir;
 
     public GeneratorComponent(int seedValue) {
         super(0, 1);
@@ -17,18 +18,28 @@ public class GeneratorComponent extends Component {
     public int getSeedValue() { return seedValue; }
 
     @Override
-    public void tick() {
+    public void computeTick() {
+        pendingDir = null;
         if (emitted) return;
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == PortType.OUTPUT_A) {
-                Component neighbor = getAdjacent(dir);
-                if (neighbor != null && neighbor.canReceive(dir.opposite())) {
-                    neighbor.receive(dir.opposite(), new Item(seedValue));
-                    emitted = true;
-                    return;
-                }
+                pendingDir = dir;
+                return;
             }
         }
+    }
+
+    @Override
+    public void applyTick() {
+        if (pendingDir == null) return;
+        Component neighbor = getAdjacent(pendingDir);
+        if (neighbor != null && neighbor.receive(pendingDir.opposite(), new Item(seedValue))) {emitted = true;}
+        pendingDir = null;
+    }
+
+    @Override
+    public boolean isExhausted() {
+        return emitted;
     }
 
     @Override
@@ -45,5 +56,6 @@ public class GeneratorComponent extends Component {
     @Override
     public void reset() {
         this.emitted = false;
+        this.pendingDir = null;
     }
 }

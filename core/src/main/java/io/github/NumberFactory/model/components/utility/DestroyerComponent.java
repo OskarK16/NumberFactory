@@ -1,12 +1,10 @@
 package io.github.NumberFactory.model.components.utility;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.model.Item;
-//import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
 import java.util.*;
-
 
 public class DestroyerComponent extends Component {
     private Item slotA;
@@ -30,11 +28,7 @@ public class DestroyerComponent extends Component {
     }
 
     @Override
-    public void tick() {
-        if (slotA != null) {
-            slotA= null;
-        }
-    }
+    public void computeTick() {slotA = null;}
 
     @Override
     public boolean checkValidity() {

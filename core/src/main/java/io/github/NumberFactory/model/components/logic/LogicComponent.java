@@ -1,16 +1,17 @@
 package io.github.NumberFactory.model.components.logic;
 
-import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.model.Item;
-//import io.github.NumberFactory.model.components.Component;
+import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
-//import javax.sound.sampled.Port;
 import java.util.Map;
 
 public abstract class LogicComponent extends Component {
     private Item slotA, slotB;
+    private Directions pendingDir;
+    private Item pendingItem;
+
     LogicComponent() {
         super(2, 2);
     }
@@ -46,36 +47,36 @@ public abstract class LogicComponent extends Component {
     public abstract boolean evaluate(Integer a, Integer b);
     // to be implemented..
 
-
     @Override
-    public void tick() {
+    public void computeTick() {
+        pendingDir = null;
+        pendingItem = null;
         if (slotA == null || slotB == null) {
             return;
         }
 
         boolean isTrue = evaluate(slotA.getValue(), slotB.getValue());
-        PortType outPort;
-
-        if (isTrue) {
-            outPort = PortType.OUTPUT_A;
-        }
-        else {
-            outPort = PortType.OUTPUT_B;
-        }
+        PortType outPort = isTrue ? PortType.OUTPUT_A : PortType.OUTPUT_B;
 
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == outPort) {
-                Component adjacent = getAdjacent(dir);
-
-                if (adjacent != null && adjacent.canReceive(dir.opposite())) {
-                    adjacent.receive(dir.opposite(), new Item(slotA.getValue()));
-
-                    slotA = null;
-                    slotB = null;
-                    return;
-                }
+                pendingDir = dir;
+                pendingItem = new Item(slotA.getValue());
+                return;
             }
         }
+    }
+
+    @Override
+    public void applyTick() {
+        if (pendingDir == null) return;
+        Component adjacent = getAdjacent(pendingDir);
+        if (adjacent != null && adjacent.receive(pendingDir.opposite(), pendingItem)) {
+            slotA = null;
+            slotB = null;
+        }
+        pendingDir = null;
+        pendingItem = null;
     }
 
     @Override
@@ -92,6 +93,8 @@ public abstract class LogicComponent extends Component {
     public void reset() {
         this.slotA = null;
         this.slotB = null;
+        this.pendingDir = null;
+        this.pendingItem = null;
     }
 
     @Override

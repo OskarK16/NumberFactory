@@ -40,6 +40,18 @@ public class Machine {
         return false;
     }
 
+    public boolean isRunComplete() {
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
+                Component c = board.getCell(x, y).getComponent();
+                if (c == null) continue;
+                if (!c.isExhausted()) return false;
+                if (!c.getHeldItems().isEmpty()) return false;
+            }
+        }
+        return true;
+    }
+
     public Goal getGoal() { return goal; }
     public void setGoal(Goal goal) { this.goal = goal; }
     public List<Integer> getAggregated() { return Collections.unmodifiableList(aggregated); }
@@ -99,10 +111,20 @@ public class Machine {
         if (state != SimulationState.RUNNING) return;
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
-                board.getCell(x, y).tick();
+                Component c = board.getCell(x, y).getComponent();
+                if (c != null) c.computeTick();
+            }
+        }
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
+                Component c = board.getCell(x, y).getComponent();
+                if (c != null) c.applyTick();
             }
         }
         if (goal != null) processGoalTick();
+        if (state == SimulationState.RUNNING && isRunComplete()) {
+            state = SimulationState.IDLE;
+        }
     }
 
     private void processGoalTick() {

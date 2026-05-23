@@ -8,57 +8,101 @@ import io.github.NumberFactory.utils.PortType;
 import java.util.Map;
 
 public class TransportComponent extends Component {
-    private Item item;
+    private Item slotA;
+    private Item slotB;
+    private Directions pendingDirA;
+    private Directions pendingDirB;
 
     public TransportComponent() {
-        super(1, 1);
+        super(2, 2);
     }
 
-    public boolean hasItem() { return item != null; }
+    public boolean hasItem()  { return slotA != null || slotB != null; }
+    public Item    getSlotA() { return slotA; }
+    public Item    getSlotB() { return slotB; }
 
     @Override
     public boolean canReceive(Directions fromDir) {
-        return item == null;
+        PortType port = getPort(fromDir);
+        if (port == PortType.INPUT_A) return slotA == null;
+        if (port == PortType.INPUT_B) return slotB == null;
+        return false;
     }
 
     @Override
     public boolean receive(Directions fromDir, Item item) {
-        if (this.item != null) return false;
-        this.item = item;
-        return true;
+        PortType port = getPort(fromDir);
+        if (port == PortType.INPUT_A && slotA == null) { slotA = item; return true; }
+        if (port == PortType.INPUT_B && slotB == null) { slotB = item; return true; }
+        return false;
     }
 
     @Override
-    public void tick() {
-        if (item == null) return;
-        for (Directions dir : Directions.values()) {
-            if (getPort(dir) == PortType.OUTPUT_A) {
-                Component neighbor = getAdjacent(dir);
-                if (neighbor != null && neighbor.canReceive(dir.opposite())) {
-                    neighbor.receive(dir.opposite(), item);
-                    item = null;
-                    return;
-                }
-            }
+    public void computeTick() {
+        pendingDirA = null;
+        pendingDirB = null;
+        Directions outA = findPort(PortType.OUTPUT_A);
+        Directions outB = findPort(PortType.OUTPUT_B);
+        if (slotA != null) pendingDirA = outA;
+        if (slotB != null) pendingDirB = (outB != null) ? outB : outA;
+    }
+
+    @Override
+    public void applyTick() {
+        if (pendingDirA != null && slotA != null) {
+            Component neighbor = getAdjacent(pendingDirA);
+            if (neighbor != null && neighbor.receive(pendingDirA.opposite(), slotA)) {slotA = null;}
         }
+        if (pendingDirB != null && slotB != null) {
+            Component neighbor = getAdjacent(pendingDirB);
+            if (neighbor != null && neighbor.receive(pendingDirB.opposite(), slotB)) {slotB = null;}
+        }
+        pendingDirA = null;
+        pendingDirB = null;
     }
 
     @Override
     public boolean checkValidity() {
         return PortType.check(getPorts(), Map.of(
             PortType.INPUT_A, 1,
+            PortType.INPUT_B, 0,
             PortType.OUTPUT_A, 1,
+            PortType.OUTPUT_B, 0,
             PortType.CLOSED, 2
+        )) || PortType.check(getPorts(), Map.of(
+            PortType.INPUT_A, 1,
+            PortType.INPUT_B, 1,
+            PortType.OUTPUT_A, 1,
+            PortType.OUTPUT_B, 1,
+            PortType.CLOSED, 0
+        )) || PortType.check(getPorts(), Map.of(
+            PortType.INPUT_A, 1,
+            PortType.INPUT_B, 1,
+            PortType.OUTPUT_A, 1,
+            PortType.CLOSED, 1
         ));
     }
 
     @Override
     public void reset() {
-        this.item = null;
+        slotA = null;
+        slotB = null;
+        pendingDirA = null;
+        pendingDirB = null;
     }
 
     @Override
     public java.util.List<Item> getHeldItems() {
-        return item == null ? java.util.Collections.emptyList() : java.util.List.of(item);
+        java.util.List<Item> items = new java.util.ArrayList<>(2);
+        if (slotA != null) items.add(slotA);
+        if (slotB != null) items.add(slotB);
+        return items;
+    }
+
+    private Directions findPort(PortType type) {
+        for (Directions dir : Directions.values()) {
+            if (getPort(dir) == type) return dir;
+        }
+        return null;
     }
 }
