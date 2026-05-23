@@ -28,6 +28,17 @@ public class Machine {
     public boolean isRunning()   { return state == SimulationState.RUNNING; }
     public boolean isCompleted() { return state == SimulationState.COMPLETED; }
     public boolean isIdle()      { return state == SimulationState.IDLE; }
+    public boolean isPaused()    { return state == SimulationState.PAUSED; }
+
+    public boolean hasItemsInFlight() {
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
+                Component c = board.getCell(x, y).getComponent();
+                if (c != null && !c.getHeldItems().isEmpty()) return true;
+            }
+        }
+        return false;
+    }
 
     public Goal getGoal() { return goal; }
     public void setGoal(Goal goal) { this.goal = goal; }
@@ -50,6 +61,18 @@ public class Machine {
             }
         }
         if (!allStrict) return false;
+        state = SimulationState.RUNNING;
+        return true;
+    }
+
+    public boolean pause() {
+        if (state != SimulationState.RUNNING) return false;
+        state = SimulationState.PAUSED;
+        return true;
+    }
+
+    public boolean resume() {
+        if (state != SimulationState.PAUSED) return false;
         state = SimulationState.RUNNING;
         return true;
     }

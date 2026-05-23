@@ -2,6 +2,8 @@ package io.github.NumberFactory.model.board;
 
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.CellType;
+import io.github.NumberFactory.utils.Directions;
+import io.github.NumberFactory.utils.PortType;
 
 public class Cell {
     public final CellType type;
@@ -53,5 +55,20 @@ public class Cell {
         this.component = null;
         this.inEdit = false;
         this.valid = false;
+    }
+
+    // IN_A → IN_B → OUT_A → OUT_B → CLOSED → IN_A …
+    boolean cyclePort(Directions dir) {
+        if (component == null) return false;
+        PortType current = component.getPort(dir);
+        PortType next = switch (current) {
+            case CLOSED   -> PortType.INPUT_A;
+            case INPUT_A  -> PortType.INPUT_B;
+            case INPUT_B  -> PortType.OUTPUT_A;
+            case OUTPUT_A -> PortType.OUTPUT_B;
+            case OUTPUT_B -> PortType.CLOSED;
+        };
+        component.setPort(dir, next);
+        return true;
     }
 }
