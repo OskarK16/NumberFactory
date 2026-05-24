@@ -65,25 +65,20 @@ public class MainMenuScreen implements Screen {
         table.setFillParent(true);
         table.center();
 
-        //titles
+
         Label title = new Label("NUMBER FACTORY", skin);
         TextButton sandbox = new TextButton("Sandbox", skin);
-        TextButton campaign = new TextButton("Campaign", skin);
+        TextButton campaign = new TextButton("Campaign (soon)", skin);
 
         table.add(title).padBottom(60).row();
         table.add(sandbox).width(200).height(50).padBottom(20).row();
         table.add(campaign).width(200).height(50).row();
 
-        //sandbox screen
         sandbox.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {game.setScreen(new FirstScreen(game));}
+            public void changed(ChangeEvent event, Actor actor) { game.setScreen(new LevelScreen(game, 0)); }
         });
-        //campaigne screen
-        campaign.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {game.setScreen(new CampaignScreen(game));}
-        });
+        campaign.setDisabled(true);
 
         stage.addActor(table);
     }
