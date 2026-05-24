@@ -93,6 +93,14 @@ public class Board {
         return true;
     }
 
+    public boolean cyclePortPrev(int x, int y, Directions dir) {
+        if (!inBounds(x, y)) return false;
+        if (editingX != x || editingY != y) return false;
+        if (!cells[x][y].cyclePortPrev(dir)) return false;
+        recalculateValid(x, y);
+        return true;
+    }
+
     public boolean tryCommitEdit(int x, int y) {
         if (!inBounds(x, y)) return false;
         if (editingX != x || editingY != y) return false;

@@ -26,6 +26,11 @@ public class EditController {
         return board.cyclePort(board.getEditingX(), board.getEditingY(), dir);
     }
 
+    public boolean cyclePortPrev(Directions dir) {
+        if (!board.hasEditingCell()) return false;
+        return board.cyclePortPrev(board.getEditingX(), board.getEditingY(), dir);
+    }
+
     public boolean commit() {
         if (!board.hasEditingCell()) return false;
         return board.tryCommitEdit(board.getEditingX(), board.getEditingY());

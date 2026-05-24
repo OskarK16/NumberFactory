@@ -65,4 +65,19 @@ public class Cell {
         component.setPort(dir, next);
         return true;
     }
+
+    // IN_A → CLOSED → OUT_B → OUT_A → IN_B → IN_A …
+    boolean cyclePortPrev(Directions dir) {
+        if (component == null) return false;
+        PortType current = component.getPort(dir);
+        PortType next = switch (current) {
+            case CLOSED   -> PortType.OUTPUT_B;
+            case INPUT_A  -> PortType.CLOSED;
+            case INPUT_B  -> PortType.INPUT_A;
+            case OUTPUT_A -> PortType.INPUT_B;
+            case OUTPUT_B -> PortType.OUTPUT_A;
+        };
+        component.setPort(dir, next);
+        return true;
+    }
 }

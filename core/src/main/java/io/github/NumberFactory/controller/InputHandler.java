@@ -114,7 +114,11 @@ public class InputHandler implements InputProcessor {
             int[] cell = mapper.toCell(mx, my);
             if (cell != null && cell[0] == edit.getEditingX() && cell[1] == edit.getEditingY()) {
                 Directions dir = mapper.toPortDirection(mx, my);
-                if (dir != null) return edit.cyclePort(dir);
+                if (dir != null) {
+                    if (amountY > 0)      return edit.cyclePort(dir);
+                    else if (amountY < 0) return edit.cyclePortPrev(dir);
+                    else return false;
+                }
             }
             return false;
         }
