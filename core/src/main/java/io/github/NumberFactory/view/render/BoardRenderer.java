@@ -23,11 +23,14 @@ import java.util.List;
 
 public class BoardRenderer implements Disposable {
 
-    private static final int   CELL          = Constants.TILE_SIZE;
+    private static final int CELL = Constants.TILE_SIZE;
+    private static final float ITEM_RADIUS = 7f;
     private static final float ITEM_OFFSET_X = 8f;
-    private static final float GHOST_ALPHA   = 0.6f;
+    private static final float GHOST_ALPHA = 0.4f;
 
-    public record Ghost(int cellX, int cellY, Class<? extends Component> type) {}
+    public record Ghost(int cellX, int cellY, Class<? extends Component> type) {
+
+    }
 
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
@@ -43,7 +46,7 @@ public class BoardRenderer implements Disposable {
         this.batch = new SpriteBatch();
         this.shapes = new ShapeRenderer();
         this.font = new BitmapFont();
-        this.font.setColor(Color.WHITE);
+        this.font.setColor(Color.BLACK);
         this.floorTile = makeFloorTile();
     }
 
@@ -67,6 +70,7 @@ public class BoardRenderer implements Disposable {
         shapes.setProjectionMatrix(camera.combined);
 
         drawCells(board, ghost);
+        drawItemDisks(board, tickProgress);
         drawItemValues(board, tickProgress);
     }
 
@@ -75,14 +79,17 @@ public class BoardRenderer implements Disposable {
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Cell cell = board.getCell(x, y);
-                if (cell == null) continue;
+
+                if (cell == null) {
+                    continue;
+                }
+
                 float bx = worldX(x);
                 float by = worldY(y, board);
 
                 if (cell.isEmpty()) {
                     batch.draw(floorTile, bx, by, CELL, CELL);
-                    if (ghost != null && ghost.type() != null
-                            && ghost.cellX() == x && ghost.cellY() == y) {
+                    if (ghost != null && ghost.type() != null && ghost.cellX() == x && ghost.cellY() == y) {
                         drawGhost(ghost.type(), bx, by);
                     }
                     continue;
@@ -90,19 +97,27 @@ public class BoardRenderer implements Disposable {
 
                 Component c = cell.getComponent();
                 Texture block = textures.getBlock(c);
-                if (block != null) batch.draw(block, bx, by, CELL, CELL);
+                if (block != null) {
+                    batch.draw(block, bx, by, CELL, CELL);
+                }
 
                 Texture label = textures.getLabel(c);
-                if (label != null) batch.draw(label, bx, by, CELL, CELL);
+                if (label != null) {
+                    batch.draw(label, bx, by, CELL, CELL);
+                }
 
                 for (Directions dir : Directions.values()) {
                     PortType port = c.getPort(dir);
                     Texture portTex = textures.getPort(port, dir);
-                    if (portTex != null) batch.draw(portTex, bx, by, CELL, CELL);
+                    if (portTex != null) {
+                        batch.draw(portTex, bx, by, CELL, CELL);
+                    }
                 }
 
                 Texture state = stateOverlayFor(cell);
-                if (state != null) batch.draw(state, bx, by, CELL, CELL);
+                if (state != null) {
+                    batch.draw(state, bx, by, CELL, CELL);
+                }
             }
         }
         batch.end();
@@ -112,19 +127,61 @@ public class BoardRenderer implements Disposable {
         Texture block = textures.getBlock(type);
         Texture label = textures.getLabel(type);
         batch.setColor(1f, 1f, 1f, GHOST_ALPHA);
-        if (block != null) batch.draw(block, bx, by, CELL, CELL);
-        if (label != null) batch.draw(label, bx, by, CELL, CELL);
+
+        if (block != null) {
+            batch.draw(block, bx, by, CELL, CELL);
+        }
+        if (label != null) {
+            batch.draw(label, bx, by, CELL, CELL);
+        }
         batch.setColor(Color.WHITE);
+    }
+
+    private void drawItemDisks(Board board, float tickProgress) {
+        shapes.begin(ShapeRenderer.ShapeType.Filled);
+
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
+
+                Cell cell = board.getCell(x, y);
+
+                if (cell == null || cell.isEmpty()) {
+                    continue;
+                }
+
+                List<Item> items = cell.getComponent().getHeldItems();
+
+                if (items.isEmpty()) {
+                    continue;
+                }
+                float[][] positions = itemPositions(cell.getComponent(), items.size(), x, y, board, tickProgress);
+                for (float[] p : positions) {
+                    shapes.setColor(Color.BLACK);
+                    shapes.circle(p[0], p[1], ITEM_RADIUS + 1.5f);
+                    shapes.setColor(Color.WHITE);
+                    shapes.circle(p[0], p[1], ITEM_RADIUS);
+                }
+            }
+        }
+        shapes.end();
     }
 
     private void drawItemValues(Board board, float tickProgress) {
         batch.begin();
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
+
                 Cell cell = board.getCell(x, y);
-                if (cell == null || cell.isEmpty()) continue;
+
+                if (cell == null || cell.isEmpty()) {
+                    continue;
+                }
+
                 List<Item> items = cell.getComponent().getHeldItems();
-                if (items.isEmpty()) continue;
+                if (items.isEmpty()) {
+                    continue;
+                }
+
                 float[][] positions = itemPositions(cell.getComponent(), items.size(), x, y, board, tickProgress);
                 for (int i = 0; i < positions.length; i++) {
                     String text = String.valueOf(items.get(i).getValue());
@@ -138,6 +195,7 @@ public class BoardRenderer implements Disposable {
         batch.end();
     }
 
+
     private float[][] itemPositions(Component c, int count, int x, int y, Board board, float t) {
         float cx = worldX(x) + CELL * 0.5f;
         float cy = worldY(y, board) + CELL * 0.5f;
@@ -148,67 +206,88 @@ public class BoardRenderer implements Disposable {
             Directions inB  = findPort(c, PortType.INPUT_B);
             Directions outB = findPort(c, PortType.OUTPUT_B);
 
-            List<float[]> result = new java.util.ArrayList<>(2);
+            java.util.List<float[]> result = new java.util.ArrayList<>(2);
             if (tc.getSlotA() != null) {
                 boolean willMove = canMoveTo(board, x, y, outA);
-                result.add(willMove ? interpolatedPosition(cx, cy, inA, outA, t)
-                                    : staticPosition(cx, cy, inA));
+                result.add(willMove ? interpolatedPosition(cx, cy, inA, outA, t) : staticPosition(cx, cy, inA));
             }
             if (tc.getSlotB() != null) {
                 Directions dst = (outB != null) ? outB : outA;
                 boolean willMove;
+
                 if (outB != null) {
                     willMove = canMoveTo(board, x, y, dst);
                 } else {
                     willMove = tc.getSlotA() == null && canMoveTo(board, x, y, dst);
                 }
-                result.add(willMove ? interpolatedPosition(cx, cy, inB, dst, t)
-                                    : staticPosition(cx, cy, inB));
+
+                result.add(willMove ? interpolatedPosition(cx, cy, inB, dst, t) : staticPosition(cx, cy, inB));
             }
-            if (!result.isEmpty()) return result.toArray(new float[0][]);
+            if (!result.isEmpty()) {
+                return result.toArray(new float[0][]);
+            }
         }
 
         float[][] result = new float[count][];
         for (int i = 0; i < count; i++) {
-            result[i] = new float[]{ cx + (i - (count - 1) * 0.5f) * ITEM_OFFSET_X, cy };
+            result[i] = new float[]{ itemX(cx, i, count), cy };
         }
+
         return result;
     }
 
     private static Directions findPort(Component c, PortType type) {
         for (Directions dir : Directions.values()) {
-            if (c.getPort(dir) == type) return dir;
+            if (c.getPort(dir) == type) {
+                return dir;
+            }
         }
         return null;
     }
 
     private static boolean canMoveTo(Board board, int x, int y, Directions outDir) {
-        if (outDir == null) return false;
+        if (outDir == null) {
+            return false;
+        }
+
         int nx = x + outDir.dx;
         int ny = y + outDir.dy;
-        if (!board.inBounds(nx, ny)) return false;
+        if (!board.inBounds(nx, ny)) {
+            return false;
+        }
+
         Cell ncell = board.getCell(nx, ny);
-        if (ncell == null || ncell.isEmpty()) return false;
+        if (ncell == null || ncell.isEmpty()) {
+            return false;
+        }
+
         return ncell.getComponent().canReceive(outDir.opposite());
     }
 
     private static float[] staticPosition(float cx, float cy, Directions edgeDir) {
-        if (edgeDir == null) return new float[]{cx, cy};
+        if (edgeDir == null) {
+            return new float[]{cx, cy};
+        }
+
         float[] s = edgeOffset(edgeDir);
         return new float[]{ cx + s[0], cy + s[1] };
     }
 
-    private static float[] interpolatedPosition(float cx, float cy,
-                                                Directions in, Directions out, float t) {
-        if (in == null || out == null) return new float[]{cx, cy};
+    private static float[] interpolatedPosition(float cx, float cy, Directions in, Directions out, float t) {
+        if (in == null || out == null) {
+            return new float[]{cx, cy};
+        }
+
         float[] s = edgeOffset(in);
         float[] e = edgeOffset(out);
+
         float dx, dy;
         if (t < 0.5f) {
             float u = t * 2f;
             dx = s[0] * (1f - u);
             dy = s[1] * (1f - u);
-        } else {
+        }
+        else {
             float u = (t - 0.5f) * 2f;
             dx = e[0] * u;
             dy = e[1] * u;
@@ -226,14 +305,30 @@ public class BoardRenderer implements Disposable {
         };
     }
 
+    private static float itemX(float centerX, int index, int total) {
+        if (total <= 1) {
+            return centerX;
+        }
+        return centerX + (index - (total - 1) * 0.5f) * ITEM_OFFSET_X;
+    }
+
     private Texture stateOverlayFor(Cell cell) {
-        if (cell.isInEdit())  return textures.getStateEdit();
-        if (!cell.isValid())  return textures.getStateInvalid();
+        if (cell.isInEdit()) {
+            return textures.getStateEdit();
+        }
+        if (!cell.isValid()) {
+            return textures.getStateInvalid();
+        }
         return textures.getStateValid();
     }
 
-    private static float worldX(int x)              { return x * CELL; }
-    private static float worldY(int y, Board board) { return (board.height - 1 - y) * CELL; }
+    private static float worldX(int x) {
+        return x * CELL;
+    }
+
+    private static float worldY(int y, Board board) {
+        return (board.height - 1 - y) * CELL;
+    }
 
     @Override
     public void dispose() {

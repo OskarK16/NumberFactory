@@ -21,7 +21,10 @@ public class GameController {
     }
 
     public void update(float dt) {
-        if (!level.getMachine().isRunning()) return;
+        if (!level.getMachine().isRunning()) {
+            return;
+        }
+
         tickAccumulator += dt;
         while (tickAccumulator >= Constants.SIM_TICK_DURATION) {
             tickAccumulator -= Constants.SIM_TICK_DURATION;
@@ -31,21 +34,50 @@ public class GameController {
 
     public float getTickProgress() {
         SimulationState s = level.getMachine().getState();
-        if (s == SimulationState.IDLE)      return 0f;
-        if (s == SimulationState.COMPLETED) return 1f;
+        if (s == SimulationState.IDLE) {
+            return 0f;
+        }
+        if (s == SimulationState.COMPLETED) {
+            return 1f;
+        }
+
         float p = tickAccumulator / Constants.SIM_TICK_DURATION;
-        if (p < 0f) return 0f;
-        if (p > 1f) return 1f;
+        if (p < 0f) {
+            return 0f;
+        }
+        if (p > 1f) {
+            return 1f;
+        }
         return p;
     }
 
-    public Level getLevel()                     { return level; }
-    public Machine getMachine()                 { return level.getMachine(); }
-    public Board getBoard()                     { return level.getMachine().getBoard(); }
-    public SimulationState getSimulationState() { return level.getMachine().getState(); }
-    public Inventory getInventory()             { return level.getInventory(); }
-    public Goal getGoal()                       { return level.getGoal(); }
-    public List<Integer> getAggregated()        { return level.getMachine().getAggregated(); }
+    public Level getLevel() {
+        return level;
+    }
+
+    public Machine getMachine() {
+        return level.getMachine();
+    }
+
+    public Board getBoard() {
+        return level.getMachine().getBoard();
+    }
+
+    public SimulationState getSimulationState() {
+        return level.getMachine().getState();
+    }
+
+    public Inventory getInventory() {
+        return level.getInventory();
+    }
+
+    public Goal getGoal() {
+        return level.getGoal();
+    }
+
+    public List<Integer> getAggregated() {
+        return level.getMachine().getAggregated();
+    }
 
     public boolean placeComponent(int x, int y, Component c) {
         return level.placeComponent(x, y, c);
@@ -57,7 +89,10 @@ public class GameController {
 
     public boolean start() {
         Machine machine = level.getMachine();
-        if (machine.hasItemsInFlight()) return false;
+        if (machine.hasItemsInFlight()) {
+            return false;
+        }
+
         machine.reset();
         resetTickAccumulator();
         return machine.start();
@@ -81,5 +116,7 @@ public class GameController {
         return level.getMachine().restart();
     }
 
-    private void resetTickAccumulator() { tickAccumulator = 0f; }
+    private void resetTickAccumulator() {
+        tickAccumulator = 0f;
+    }
 }

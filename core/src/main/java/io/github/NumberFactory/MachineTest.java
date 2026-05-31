@@ -21,11 +21,6 @@ public class MachineTest {
         System.out.println("All tests passed.");
     }
 
-    // (0,0)gen5 -> (1,0)t1 -> (2,0)adder -> (3,0)t3 -> (4,0)out
-    //                           ^
-    //                         (2,1)t2
-    //                           ^
-    //                         (2,2)gen7
     private static void testAddition() {
         GeneratorComponent gen5  = new GeneratorComponent(5);
         TransportComponent t1    = new TransportComponent();
@@ -75,11 +70,6 @@ public class MachineTest {
         check("testAddition", 12, out.getCollected().get(0).getValue());
     }
 
-    // gen3 -> t_a -> adder -> t_sum -> multiplier -> t_out -> out
-    //                 ^                    ^
-    //               t_b                  t_c
-    //                ^                    ^
-    //               gen4                gen2
     private static void testChainedOperations() {
         GeneratorComponent gen3  = new GeneratorComponent(3);
         GeneratorComponent gen4  = new GeneratorComponent(4);
@@ -153,7 +143,6 @@ public class MachineTest {
         check("testChainedOperations", 14, out.getCollected().get(0).getValue());
     }
 
-    // (0,0)gen -> (1,0)t1 -> (2,0)t2 -> (3,0)out
     private static void testTransport() {
         GeneratorComponent gen = new GeneratorComponent(9);
         TransportComponent t1  = new TransportComponent();
@@ -185,7 +174,6 @@ public class MachineTest {
         check("testTransport", 9, out.getCollected().get(0).getValue());
     }
 
-    // 5 / 0 — output should stay empty, no crash
     private static void testDivisionByZero() {
         GeneratorComponent gen5    = new GeneratorComponent(5);
         GeneratorComponent gen0    = new GeneratorComponent(0);

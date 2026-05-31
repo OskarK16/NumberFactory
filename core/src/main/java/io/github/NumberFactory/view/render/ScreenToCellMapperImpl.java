@@ -28,7 +28,10 @@ public class ScreenToCellMapperImpl implements ScreenToCellMapper {
         int cx = (int) Math.floor(scratch.x / Constants.TILE_SIZE);
         int visualRow = (int) Math.floor(scratch.y / Constants.TILE_SIZE);
         int cy = board.height - 1 - visualRow;
-        if (cx < 0 || cy < 0 || cx >= board.width || cy >= board.height) return null;
+
+        if (cx < 0 || cy < 0 || cx >= board.width || cy >= board.height) {
+            return null;
+        }
         return new int[]{cx, cy};
     }
 
@@ -47,11 +50,21 @@ public class ScreenToCellMapperImpl implements ScreenToCellMapper {
         float dW = lx;
 
         float min = Math.min(Math.min(dN, dS), Math.min(dE, dW));
-        if (min > PORT_BAND) return null;
 
-        if (min == dN) return Directions.NORTH;
-        if (min == dS) return Directions.SOUTH;
-        if (min == dE) return Directions.EAST;
+        if (min > PORT_BAND) {
+            return null;
+        }
+
+        if (min == dN) {
+            return Directions.NORTH;
+        }
+        if (min == dS) {
+            return Directions.SOUTH;
+        }
+        if (min == dE) {
+            return Directions.EAST;
+        }
+
         return Directions.WEST;
     }
 }

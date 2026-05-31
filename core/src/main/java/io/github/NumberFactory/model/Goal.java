@@ -14,7 +14,9 @@ public record Goal(List<Integer> expected) {
 
     public boolean isPrefix(List<Integer> aggregated) {
         for (int i = 0; i < aggregated.size(); i++) {
-            if (!aggregated.get(i).equals(expected.get(i))) return false;
+            if (!aggregated.get(i).equals(expected.get(i))) {
+                return false;
+            }
         }
         return true;
     }

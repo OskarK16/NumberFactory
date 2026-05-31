@@ -51,7 +51,6 @@ public class Cell {
         this.valid = false;
     }
 
-    // IN_A → IN_B → OUT_A → OUT_B → CLOSED → IN_A …
     boolean cyclePort(Directions dir) {
         if (component == null) return false;
         PortType current = component.getPort(dir);
@@ -66,7 +65,6 @@ public class Cell {
         return true;
     }
 
-    // IN_A → CLOSED → OUT_B → OUT_A → IN_B → IN_A …
     boolean cyclePortPrev(Directions dir) {
         if (component == null) return false;
         PortType current = component.getPort(dir);

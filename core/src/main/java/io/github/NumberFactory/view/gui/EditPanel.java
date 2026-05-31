@@ -40,12 +40,14 @@ public class EditPanel extends Table {
             add(portLabel).left().row();
         }
 
-        TextButton okBtn = new TextButton("OK", skin);
+        TextButton okBtn = new TextButton("OK",     skin);
         TextButton noBtn = new TextButton("CANCEL", skin);
         okBtn.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { edit.commit(); }});
+            @Override public void changed(ChangeEvent event, Actor actor) { edit.commit(); }
+        });
         noBtn.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { edit.cancel(); }});
+            @Override public void changed(ChangeEvent event, Actor actor) { edit.cancel(); }
+        });
         add(okBtn).padTop(8).width(80).height(28).padRight(6);
         add(noBtn).padTop(8).width(80).height(28);
     }

@@ -42,7 +42,6 @@ public class MainMenuScreen implements Screen {
         titleStyle.fontColor = Color.WHITE;
         skin.add("default", titleStyle);
 
-        // buttons styles
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(0.25f, 0.25f, 0.25f, 1f); pixmap.fill();
         skin.add("up", new Texture(pixmap));
@@ -56,7 +55,7 @@ public class MainMenuScreen implements Screen {
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
         buttonStyle.overFontColor = Color.RED;
-        buttonStyle.up   = new TextureRegionDrawable(new TextureRegion(skin.get("up",   Texture.class)));
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(skin.get("up",   Texture.class)));
         buttonStyle.over = new TextureRegionDrawable(new TextureRegion(skin.get("over", Texture.class)));
         buttonStyle.down = new TextureRegionDrawable(new TextureRegion(skin.get("down", Texture.class)));
         skin.add("default", buttonStyle);
@@ -64,7 +63,6 @@ public class MainMenuScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-
 
         Label title = new Label("NUMBER FACTORY", skin);
         TextButton sandbox = new TextButton("Sandbox", skin);
@@ -76,7 +74,9 @@ public class MainMenuScreen implements Screen {
 
         sandbox.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) { game.setScreen(new LevelScreen(game, 0)); }
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new LevelScreen(game, 0));
+            }
         });
         campaign.setDisabled(true);
 

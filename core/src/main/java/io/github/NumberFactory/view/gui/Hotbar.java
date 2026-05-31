@@ -49,7 +49,9 @@ public class Hotbar extends Table {
             add(slot).size(SLOT_SIZE).padRight(4);
         }
 
-        arithmeticSlot = new CategorySlot(textures.getTemplateArithmetic(),textures.getLabelAbArithmetic(),textures);
+        arithmeticSlot = new CategorySlot(textures.getTemplateArithmetic(),
+            textures.getLabelAbArithmetic(),
+            textures);
         arithmeticSlot.addListener(new ClickListener() {
             @Override public void clicked(InputEvent event, float x, float y) {
                 if (hotbar.getOpenSub() == HotbarController.SubCategory.ARITHMETIC) hotbar.closeSub();
@@ -126,7 +128,7 @@ public class Hotbar extends Table {
         CategorySlot(Texture background, Texture label, TextureRegistry textures) {
             Stack stack = new Stack();
             if (background != null) stack.add(new Image(new TextureRegionDrawable(background)));
-            if (label != null) stack.add(new Image(new TextureRegionDrawable(label)));
+            if (label != null)      stack.add(new Image(new TextureRegionDrawable(label)));
             selectedOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
             selectedOverlay.setVisible(false);
             stack.add(selectedOverlay);

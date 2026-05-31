@@ -23,18 +23,32 @@ public class Machine {
         this.board = new Board(x, y);
     }
 
-    public Board getBoard() { return board; }
-    public SimulationState getState() { return state; }
-    public boolean isRunning()   { return state == SimulationState.RUNNING; }
-    public boolean isCompleted() { return state == SimulationState.COMPLETED; }
-    public boolean isIdle()      { return state == SimulationState.IDLE; }
-    public boolean isPaused()    { return state == SimulationState.PAUSED; }
+    public Board getBoard() {
+        return board;
+    }
+    public SimulationState getState() {
+        return state;
+    }
+    public boolean isRunning() {
+        return state == SimulationState.RUNNING;
+    }
+    public boolean isCompleted() {
+        return state == SimulationState.COMPLETED;
+    }
+    public boolean isIdle() {
+        return state == SimulationState.IDLE;
+    }
+    public boolean isPaused() {
+        return state == SimulationState.PAUSED;
+    }
 
     public boolean hasItemsInFlight() {
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
-                if (c != null && !c.getHeldItems().isEmpty()) return true;
+                if (c != null && !c.getHeldItems().isEmpty()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -44,63 +58,102 @@ public class Machine {
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
-                if (c == null) continue;
-                if (!c.isExhausted()) return false;
-                if (!c.getHeldItems().isEmpty()) return false;
+                if (c == null) {
+                    continue;
+                }
+                if (!c.isExhausted()) {
+                    return false;
+                }
+                if (!c.getHeldItems().isEmpty()) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    public Goal getGoal() { return goal; }
-    public void setGoal(Goal goal) { this.goal = goal; }
-    public List<Integer> getAggregated() { return Collections.unmodifiableList(aggregated); }
+    public Goal getGoal() {
+        return goal;
+    }
+    public void setGoal(Goal goal) {
+        this.goal = goal;
+    }
+    public List<Integer> getAggregated() {
+        return Collections.unmodifiableList(aggregated);
+    }
 
     public boolean start() {
-        if (state == SimulationState.RUNNING) return false;
-        if (board.hasEditingCell()) return false;
+        if (state == SimulationState.RUNNING) {
+            return false;
+        }
+        if (board.hasEditingCell()) {
+            return false;
+        }
 
         boolean allStrict = true;
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Cell cell = board.getCell(x, y);
-                if (cell.isEmpty()) continue;
-                if (cell.isInEdit()) return false;
+                if (cell.isEmpty()) {
+                    continue;
+                }
+                if (cell.isInEdit()) {
+                    return false;
+                }
                 if (!cell.getComponent().isStrictlyValid()) {
                     board.markInvalid(x, y);
                     allStrict = false;
                 }
             }
         }
-        if (!allStrict) return false;
+        if (!allStrict) {
+            return false;
+        }
         state = SimulationState.RUNNING;
         return true;
     }
 
     public boolean pause() {
-        if (state != SimulationState.RUNNING) return false;
+        if (state != SimulationState.RUNNING) {
+            return false;
+        }
+
         state = SimulationState.PAUSED;
         return true;
     }
 
     public boolean resume() {
-        if (state != SimulationState.PAUSED) return false;
+        if (state != SimulationState.PAUSED) {
+            return false;
+        }
+
         state = SimulationState.RUNNING;
         return true;
     }
 
     public boolean reset() {
-        if (board.hasEditingCell()) return false;
+        if (board.hasEditingCell()) {
+            return false;
+        }
+
         for (int x = 0; x < board.width; x++)
+        {
             for (int y = 0; y < board.height; y++)
+            {
                 board.getCell(x, y).reset();
+            }
+        }
+
         aggregated.clear();
         state = SimulationState.IDLE;
         return true;
     }
 
     public boolean restart() {
-        if (board.hasEditingCell()) return false;
+        if (board.hasEditingCell()) {
+            return false;
+        }
+
         board.clear();
         aggregated.clear();
         state = SimulationState.IDLE;
@@ -108,44 +161,61 @@ public class Machine {
     }
 
     public void tick() {
-        if (state != SimulationState.RUNNING) return;
+        if (state != SimulationState.RUNNING) {
+            return;
+        }
+
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
-                if (c != null) c.computeTick();
+                if (c != null) {
+                    c.computeTick();
+                }
             }
         }
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
-                if (c != null) c.applyTick();
+                if (c != null) {
+                    c.applyTick();
+                }
             }
         }
-        if (goal != null) processGoalTick();
+
+        processOutputs();
+
         if (state == SimulationState.RUNNING && isRunComplete()) {
             state = SimulationState.IDLE;
         }
     }
 
-    private void processGoalTick() {
+    private void processOutputs() {
         List<Integer> fresh = new ArrayList<>();
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
                 if (c instanceof OutputComponent oc) {
-                    for (var item : oc.takeFresh()) fresh.add(item.getValue());
+                    for (var item : oc.takeFresh()) {
+                        fresh.add(item.getValue());
+                    }
                 }
             }
         }
-        if (fresh.isEmpty()) return;
-        Collections.sort(fresh);
-        aggregated.addAll(fresh);
-        if (!goal.isPrefix(aggregated)) {
-            aggregated.clear();
+        if (fresh.isEmpty()) {
             return;
         }
-        if (goal.isMet(aggregated)) {
-            state = SimulationState.COMPLETED;
+
+        Collections.sort(fresh);
+        aggregated.addAll(fresh);
+
+        if (goal != null) {
+            if (!goal.isPrefix(aggregated)) {
+                aggregated.clear();
+                return;
+            }
+            if (goal.isMet(aggregated)) {
+                state = SimulationState.COMPLETED;
+            }
         }
     }
 }

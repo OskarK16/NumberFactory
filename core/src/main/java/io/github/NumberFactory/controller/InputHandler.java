@@ -17,14 +17,7 @@ public class InputHandler implements InputProcessor {
     private final HotbarController hotbar;
     private final ScreenToCellMapper mapper;
 
-    private static final int DRAG_THRESHOLD = 6;
-    private int rightStartX = -1;
-    private int rightStartY = -1;
-
-    public InputHandler(GameController game,
-                        EditController edit,
-                        HotbarController hotbar,
-                        ScreenToCellMapper mapper) {
+    public InputHandler(GameController game, EditController edit, HotbarController hotbar, ScreenToCellMapper mapper) {
         this.game = game;
         this.edit = edit;
         this.hotbar = hotbar;
@@ -33,80 +26,153 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (button == Input.Buttons.LEFT)  return handleLeftClick(screenX, screenY);
-        if (button == Input.Buttons.RIGHT) {
-            rightStartX = screenX;
-            rightStartY = screenY;
+        if (button == Input.Buttons.LEFT) {
             return false;
         }
+
+        if (button == Input.Buttons.RIGHT) {
+            return handleInteract(screenX, screenY);
+        }
+
+        if (button == Input.Buttons.MIDDLE) {
+            return handleRemove(screenX, screenY);
+        }
+
         return false;
     }
 
-    private boolean handleLeftClick(int screenX, int screenY) {
+    private boolean handleInteract(int screenX, int screenY) {
         int[] cell = mapper.toCell(screenX, screenY);
         Board board = game.getBoard();
-
 
         if (edit.hasActiveEdit()) {
             int ex = edit.getEditingX();
             int ey = edit.getEditingY();
             if (cell != null && cell[0] == ex && cell[1] == ey) {
                 Directions dir = mapper.toPortDirection(screenX, screenY);
-                if (dir != null) return edit.cyclePort(dir);
+                if (dir != null) {
+                    return edit.cyclePort(dir);
+                }
                 return false;
             }
             return edit.commit();
         }
 
-        if (cell == null) return false;
+        if (cell == null) {
+            return false;
+        }
         int x = cell[0], y = cell[1];
-        if (!board.inBounds(x, y)) return false;
+        if (!board.inBounds(x, y)) {
+            return false;
+        }
         Cell c = board.getCell(x, y);
 
         if (c.isEmpty()) {
             Component fresh = hotbar.createSelected();
-            if (fresh == null) return false;
+            if (fresh == null) {
+                return false;
+            }
             return game.placeComponent(x, y, fresh);
         }
+
         return edit.reopen(x, y);
     }
 
-    private boolean handleRightClick(int screenX, int screenY) {
+    private boolean handleRemove(int screenX, int screenY) {
         int[] cell = mapper.toCell(screenX, screenY);
-        if (cell == null) return false;
+        if (cell == null) {
+            return false;
+        }
         int x = cell[0], y = cell[1];
         Board board = game.getBoard();
-        if (!board.inBounds(x, y)) return false;
-        if (board.getCell(x, y).isEmpty()) return false;
+        if (!board.inBounds(x, y)) {
+            return false;
+        }
+        if (board.getCell(x, y).isEmpty()) {
+            return false;
+        }
         return game.removeComponent(x, y);
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
-            int index = keycode - Input.Keys.NUM_0;
-            if (index == 0) return false;
-            return hotbar.selectFromUtility(index-1);
+        if (keycode == Input.Keys.TAB) {
+            return handleTab();
         }
-        if (keycode == Input.Keys.ENTER)  return edit.commit();
-        if (keycode == Input.Keys.ESCAPE) return edit.cancel();
-        if (keycode == Input.Keys.SPACE)  return handleSpace();
+        if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
+            int num = keycode - Input.Keys.NUM_0;
+            if (num == 0) return false;
+
+            int index = num - 1;
+
+            HotbarController.SubCategory openSub = hotbar.getOpenSub();
+            int utilitySize = hotbar.getUtility().getEntries().size();
+
+            if (openSub == null) {
+                if (index < utilitySize) {
+                    return hotbar.selectFromUtility(index);
+                }
+                else if (index == utilitySize) {
+                    hotbar.openSub(HotbarController.SubCategory.ARITHMETIC);
+                    return true;
+                }
+                else if (index == utilitySize + 1) {
+                    hotbar.openSub(HotbarController.SubCategory.LOGIC);
+                    return true;
+                }
+            }
+            else if (openSub == HotbarController.SubCategory.ARITHMETIC) {
+                if (index < hotbar.getArithmetic().getEntries().size()) {
+                    return hotbar.selectFromArithmetic(index);
+                }
+            }
+            else if (openSub == HotbarController.SubCategory.LOGIC) {
+                if (index < hotbar.getLogic().getEntries().size()) {
+                    return hotbar.selectFromLogic(index);
+                }
+            }
+            return false;
+        }
+
+        if (keycode == Input.Keys.ENTER) {
+            return edit.commit();
+        }
+        if (keycode == Input.Keys.ESCAPE) {
+            if (edit.hasActiveEdit()) {
+                return edit.cancel();
+            }
+            else if (hotbar.isSubOpen()) {
+                hotbar.closeSub();
+                hotbar.selectFromUtility(0);
+                return true;
+            }
+            return false;
+        }
+        if (keycode == Input.Keys.SPACE) {
+            return handleSpace();
+        }
         return false;
     }
 
     private boolean handleSpace() {
         SimulationState s = game.getSimulationState();
         return switch (s) {
-            case IDLE      -> game.start();
-            case RUNNING   -> game.pause();
-            case PAUSED    -> game.resume();
+            case IDLE -> game.start();
+            case RUNNING -> game.pause();
+            case PAUSED -> game.resume();
             case COMPLETED -> game.reset();
         };
     }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        if (isCtrlDown()) return false;
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            return false;
+        }
+
+        if (isCtrlDown()) {
+            return false;
+        }
 
         if (edit.hasActiveEdit()) {
             int mx = Gdx.input.getX();
@@ -115,42 +181,59 @@ public class InputHandler implements InputProcessor {
             if (cell != null && cell[0] == edit.getEditingX() && cell[1] == edit.getEditingY()) {
                 Directions dir = mapper.toPortDirection(mx, my);
                 if (dir != null) {
-                    if (amountY > 0)      return edit.cyclePort(dir);
-                    else if (amountY < 0) return edit.cyclePortPrev(dir);
-                    else return false;
+                    return edit.cyclePort(dir);
                 }
             }
             return false;
         }
 
-        if (amountY > 0)      hotbar.selectNext();
-        else if (amountY < 0) hotbar.selectPrev();
-        else return false;
+        if (amountY > 0) {
+            hotbar.selectNext();
+        }
+        else if (amountY < 0) {
+            hotbar.selectPrev();
+        }
+        else {
+            return false;
+        }
         return true;
     }
 
     private boolean isCtrlDown() {
-        return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
-            || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
+        return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
     }
 
-    @Override
-    public boolean touchUp(int sx, int sy, int p, int b) {
-        if (b == Input.Buttons.RIGHT && rightStartX >= 0) {
-            int dx = sx - rightStartX;
-            int dy = sy - rightStartY;
-            rightStartX = -1;
-            rightStartY = -1;
-            if (Math.abs(dx) + Math.abs(dy) < DRAG_THRESHOLD) {
-                handleRightClick(sx, sy);
+    private boolean handleTab() {
+        int utilitySize = hotbar.getUtility().getEntries().size();
+        HotbarController.SubCategory openSub = hotbar.getOpenSub();
+
+        if (openSub == null) {
+            int currentIndex = hotbar.getUtility().getSelectedIndex();
+
+            if (currentIndex < utilitySize - 1) {
+                return hotbar.selectFromUtility(currentIndex + 1);
+            }
+            else {
+                hotbar.openSub(HotbarController.SubCategory.ARITHMETIC);
+                return true;
             }
         }
+        else if (openSub == HotbarController.SubCategory.ARITHMETIC) {
+            hotbar.openSub(HotbarController.SubCategory.LOGIC);
+            return true;
+        }
+        else if (openSub == HotbarController.SubCategory.LOGIC) {
+            hotbar.closeSub();
+            return hotbar.selectFromUtility(0);
+        }
+
         return false;
     }
 
-    @Override public boolean touchDragged(int sx, int sy, int p)          { return false; }
-    @Override public boolean mouseMoved(int sx, int sy)                   { return false; }
-    @Override public boolean keyUp(int kc)                                { return false; }
-    @Override public boolean keyTyped(char c)                             { return false; }
+    @Override public boolean touchUp(int sx, int sy, int p, int b) { return false; }
+    @Override public boolean touchDragged(int sx, int sy, int p) { return false; }
+    @Override public boolean mouseMoved(int sx, int sy) { return false; }
+    @Override public boolean keyUp(int kc) { return false; }
+    @Override public boolean keyTyped(char c) { return false; }
     @Override public boolean touchCancelled(int sx, int sy, int p, int b) { return false; }
 }

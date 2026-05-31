@@ -33,18 +33,25 @@ public class SubHotbar extends Table {
         setBackground(skin.getDrawable("panel"));
         pad(6);
 
+        center();
+
         arithmeticRow = buildRow(hotbar.getArithmetic(), textures, arithmeticSlots,
             hotbar::selectFromArithmetic);
         logicRow = buildRow(hotbar.getLogic(), textures, logicSlots,
             hotbar::selectFromLogic);
 
-        add(arithmeticRow);
-        add(logicRow);
+        Stack contentStack = new Stack();
+        contentStack.add(arithmeticRow);
+        contentStack.add(logicRow);
+
+        add(contentStack).center();
     }
 
-    private static Table buildRow(ComponentPaletteSelection palette, TextureRegistry textures,
-                                  List<Slot> slotsOut, IntConsumer onClick) {
+    private static Table buildRow(ComponentPaletteSelection palette, TextureRegistry textures, List<Slot> slotsOut, IntConsumer onClick) {
         Table row = new Table();
+
+        row.center();
+
         for (int i = 0; i < palette.getEntries().size(); i++) {
             final int index = i;
             ComponentPaletteSelection.Entry entry = palette.getEntries().get(i);
@@ -68,24 +75,37 @@ public class SubHotbar extends Table {
 
         boolean arithActive = hotbar.getActivePalette() == hotbar.getArithmetic();
         int arithIdx = hotbar.getArithmetic().getSelectedIndex();
+
         for (int i = 0; i < arithmeticSlots.size(); i++) {
             arithmeticSlots.get(i).setSelected(arithActive && i == arithIdx);
         }
+
         boolean logicActive = hotbar.getActivePalette() == hotbar.getLogic();
         int logicIdx = hotbar.getLogic().getSelectedIndex();
+
         for (int i = 0; i < logicSlots.size(); i++) {
             logicSlots.get(i).setSelected(logicActive && i == logicIdx);
         }
+
     }
 
     static class Slot extends Table {
         private final Image selectedOverlay;
+
         Slot(ComponentPaletteSelection.Entry entry, TextureRegistry textures) {
             Stack stack = new Stack();
             Texture block = textures.getBlock(entry.type());
-            if (block != null) stack.add(new Image(new TextureRegionDrawable(block)));
+
+            if (block != null) {
+                stack.add(new Image(new TextureRegionDrawable(block)));
+            }
+
             Texture label = textures.getLabel(entry.type());
-            if (label != null) stack.add(new Image(new TextureRegionDrawable(label)));
+
+            if (label != null) {
+                stack.add(new Image(new TextureRegionDrawable(label)));
+            }
+
             selectedOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
             selectedOverlay.setVisible(false);
             stack.add(selectedOverlay);

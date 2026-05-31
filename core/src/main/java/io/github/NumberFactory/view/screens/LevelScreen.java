@@ -79,13 +79,13 @@ public class LevelScreen implements Screen {
     private EditPanel editPanel;
     private Sidebar sidebar;
 
-    private int hoverCellX = -1;
-    private int hoverCellY = -1;
+    private int hoverCellX  = -1;
+    private int hoverCellY  = -1;
     private boolean hoverInBoard = false;
     private final Vector2 stageHitScratch = new Vector2();
 
     private static final float PANEL_MARGIN = 8f;
-    private static final float PANEL_GAP = 8f;
+    private static final float PANEL_GAP    = 8f;
 
     public LevelScreen(Main app, int levelNumber) {
         this.app = app;
@@ -101,8 +101,7 @@ public class LevelScreen implements Screen {
 
         gameCamera = new OrthographicCamera();
         gameCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        gameCamera.position.set(level.getMachine().getBoard().width * Constants.TILE_SIZE / 2f,
-            level.getMachine().getBoard().height * Constants.TILE_SIZE / 2f, 0);
+        gameCamera.position.set(level.getMachine().getBoard().width * Constants.TILE_SIZE / 2f, level.getMachine().getBoard().height * Constants.TILE_SIZE / 2f, 0);
         gameCamera.update();
 
         textures = new TextureRegistry();
@@ -116,10 +115,13 @@ public class LevelScreen implements Screen {
         buildUi();
 
         InputMultiplexer multiplexer = new InputMultiplexer();
-
         multiplexer.addProcessor(new InputAdapter() {
-            @Override public boolean mouseMoved(int sx, int sy){ updateHover(sx, sy); return false; }
-            @Override public boolean touchDragged(int sx, int sy, int p) { updateHover(sx, sy); return false; }
+            @Override public boolean mouseMoved(int sx, int sy) {
+                updateHover(sx, sy); return false;
+            }
+            @Override public boolean touchDragged(int sx, int sy, int p) {
+                updateHover(sx, sy); return false;
+            }
         });
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(input);
@@ -174,8 +176,9 @@ public class LevelScreen implements Screen {
         root.top();
 
         root.add(topBar).growX().colspan(2).row();
-        root.add().expand();
-        root.add(sidebar).top().right().width(180).padTop(8).padRight(8).row();
+        root.add(sidebar).top().left().width(180).padTop(8).padLeft(8);
+        root.add().expand().row();
+
         root.add(subHotbarView).colspan(2).padBottom(4).row();
         root.add(hotbarView).colspan(2).padBottom(8).row();
         stage.addActor(root);
@@ -205,7 +208,10 @@ public class LevelScreen implements Screen {
     }
 
     private void positionEditPanel() {
-        if (!editPanel.isVisible()) return;
+        if (!editPanel.isVisible()) {
+            return;
+        }
+
         root.validate();
         editPanel.pack();
         float x = stage.getWidth() - editPanel.getWidth() - PANEL_MARGIN;
@@ -214,7 +220,6 @@ public class LevelScreen implements Screen {
     }
 
     private void updateHover(int screenX, int screenY) {
-
         stageHitScratch.set(screenX, screenY);
         stage.screenToStageCoordinates(stageHitScratch);
         Actor hit = stage.hit(stageHitScratch.x, stageHitScratch.y, true);
@@ -222,6 +227,7 @@ public class LevelScreen implements Screen {
             hoverInBoard = false;
             return;
         }
+
         int[] cell = mapper.toCell(screenX, screenY);
         if (cell == null) {
             hoverInBoard = false;
@@ -233,35 +239,63 @@ public class LevelScreen implements Screen {
     }
 
     private BoardRenderer.Ghost computeGhost() {
-        if (!hoverInBoard) return null;
-        if (edit.hasActiveEdit()) return null;
+        if (!hoverInBoard) {
+            return null;
+        }
+        if (edit.hasActiveEdit()) {
+            return null;
+        }
+
         SimulationState s = game.getSimulationState();
-        if (s == SimulationState.RUNNING || s == SimulationState.PAUSED) return null;
+        if (s == SimulationState.RUNNING || s == SimulationState.PAUSED) {
+            return null;
+        }
         Cell cell = game.getBoard().getCell(hoverCellX, hoverCellY);
-        if (cell == null || !cell.isEmpty()) return null;
+
+        if (cell == null || !cell.isEmpty()) {
+            return null;
+        }
+
         Class<? extends Component> type = hotbar.getActivePalette().getSelectedType();
-        if (type == null) return null;
+        if (type == null) {
+            return null;
+        }
+
         return new BoardRenderer.Ghost(hoverCellX, hoverCellY, type);
     }
 
     @Override
     public void resize(int width, int height) {
-        if (width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
         gameCamera.viewportWidth = width;
         gameCamera.viewportHeight = height;
         gameCamera.update();
         stage.getViewport().update(width, height, true);
     }
 
-    @Override public void pause()  {}
-    @Override public void resume() {}
-    @Override public void hide()   {}
+    @Override public void pause()  {
+    }
+    @Override public void resume() {
+    }
+    @Override public void hide()   {
+    }
 
     @Override
     public void dispose() {
-        if (boardRenderer != null) boardRenderer.dispose();
-        if (textures != null) textures.dispose();
-        if (stage != null) stage.dispose();
-        if (skin != null) skin.dispose();
+        if (boardRenderer != null) {
+            boardRenderer.dispose();
+        }
+        if (textures != null) {
+            textures.dispose();
+        }
+        if (stage != null) {
+            stage.dispose();
+        }
+        if (skin != null) {
+            skin.dispose();
+        }
     }
 }

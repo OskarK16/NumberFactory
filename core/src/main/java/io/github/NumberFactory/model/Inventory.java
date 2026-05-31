@@ -23,28 +23,41 @@ public final class Inventory {
         return new Inventory(new HashMap<>(initial), false);
     }
 
-    public boolean isUnlimited() { return unlimited; }
+    public boolean isUnlimited() {
+        return unlimited;
+    }
 
     public int countOf(Class<? extends Component> type) {
-        if (unlimited) return Integer.MAX_VALUE;
+        if (unlimited) {
+            return Integer.MAX_VALUE;
+        }
         return stock.getOrDefault(type, 0);
     }
 
     public boolean has(Class<? extends Component> type) {
-        if (unlimited) return true;
+        if (unlimited) {
+            return true;
+        }
         return stock.getOrDefault(type, 0) > 0;
     }
 
     public boolean take(Class<? extends Component> type) {
-        if (unlimited) return true;
+        if (unlimited) {
+            return true;
+        }
+
         int n = stock.getOrDefault(type, 0);
-        if (n <= 0) return false;
+        if (n <= 0) {
+            return false;
+        }
         stock.put(type, n - 1);
         return true;
     }
 
     public void give(Class<? extends Component> type) {
-        if (unlimited) return;
+        if (unlimited) {
+            return;
+        }
         stock.merge(type, 1, Integer::sum);
     }
 }

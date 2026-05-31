@@ -9,23 +9,34 @@ import java.util.function.Supplier;
 
 public class ComponentPaletteSelection {
 
-    public record Entry(Class<? extends Component> type,
-                        Supplier<? extends Component> factory) {}
+    public record Entry(Class<? extends Component> type, Supplier<? extends Component> factory) {}
 
     private final List<Entry> entries = new ArrayList<>();
     private int selectedIndex = -1;
 
     public void add(Class<? extends Component> type, Supplier<? extends Component> factory) {
         entries.add(new Entry(type, factory));
-        if (selectedIndex < 0) selectedIndex = 0;
+        if (selectedIndex < 0) {
+            selectedIndex = 0;
+        }
     }
 
-    public List<Entry> getEntries() { return Collections.unmodifiableList(entries); }
-    public boolean isEmpty()        { return entries.isEmpty(); }
-    public int size()               { return entries.size(); }
+    public List<Entry> getEntries() {
+        return Collections.unmodifiableList(entries);
+    }
+
+    public boolean isEmpty() {
+        return entries.isEmpty();
+    }
+
+    public int size() {
+        return entries.size();
+    }
 
     public Entry getSelected() {
-        if (selectedIndex < 0) return null;
+        if (selectedIndex < 0) {
+            return null;
+        }
         return entries.get(selectedIndex);
     }
 
@@ -34,7 +45,9 @@ public class ComponentPaletteSelection {
         return e == null ? null : e.type();
     }
 
-    public int getSelectedIndex() { return selectedIndex; }
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
 
     public boolean selectByType(Class<? extends Component> type) {
         for (int i = 0; i < entries.size(); i++) {
@@ -47,18 +60,24 @@ public class ComponentPaletteSelection {
     }
 
     public boolean selectByIndex(int index) {
-        if (index < 0 || index >= entries.size()) return false;
+        if (index < 0 || index >= entries.size()) {
+            return false;
+        }
         selectedIndex = index;
         return true;
     }
 
     public void selectNext() {
-        if (entries.isEmpty()) return;
+        if (entries.isEmpty()) {
+            return;
+        }
         selectedIndex = (selectedIndex + 1) % entries.size();
     }
 
     public void selectPrev() {
-        if (entries.isEmpty()) return;
+        if (entries.isEmpty()) {
+            return;
+        }
         selectedIndex = (selectedIndex - 1 + entries.size()) % entries.size();
     }
 

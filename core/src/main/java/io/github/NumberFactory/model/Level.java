@@ -15,7 +15,9 @@ public final class Level {
         this.inventory = inventory;
         this.goal = goal;
         this.mode = mode;
-        if (goal != null) machine.setGoal(goal);
+        if (goal != null) {
+            machine.setGoal(goal);
+        }
     }
 
     public static Level sandbox(Machine machine) {
@@ -27,31 +29,52 @@ public final class Level {
     }
 
     public static Level campaign(Machine machine, Inventory inventory, Goal goal) {
-        if (inventory == null) throw new IllegalArgumentException("campaign requires inventory");
-        if (goal == null)      throw new IllegalArgumentException("campaign requires goal");
+        if (inventory == null) {
+            throw new IllegalArgumentException("campaign requires inventory");
+        }
+        if (goal == null) {
+            throw new IllegalArgumentException("campaign requires goal");
+        }
         return new Level(machine, inventory, goal, GameMode.CAMPAIGN);
     }
 
-    public Machine getMachine()     { return machine; }
-    public Inventory getInventory() { return inventory; }
-    public Goal getGoal()           { return goal; }
-    public GameMode getMode()       { return mode; }
+    public Machine getMachine() {
+        return machine;
+    }
+    public Inventory getInventory() {
+        return inventory;
+    }
+    public Goal getGoal() {
+        return goal;
+    }
+    public GameMode getMode() {
+        return mode;
+    }
 
     public boolean placeComponent(int x, int y, Component c) {
-        if (c == null) return false;
-        if (!inventory.take(c.getClass())) return false;
+        if (c == null) {
+            return false;
+        }
+        if (!inventory.take(c.getClass())) {
+            return false;
+        }
         if (!machine.getBoard().placeIntoCell(x, y, c)) {
             inventory.give(c.getClass());
             return false;
         }
+
         return true;
     }
 
     public boolean removeComponent(int x, int y) {
         Component c = machine.getBoard().getCell(x, y).getComponent();
-        if (c == null) return false;
+        if (c == null) {
+            return false;
+        }
         Class<? extends Component> type = c.getClass();
-        if (!machine.getBoard().clearCell(x, y)) return false;
+        if (!machine.getBoard().clearCell(x, y)) {
+            return false;
+        }
         inventory.give(type);
         return true;
     }

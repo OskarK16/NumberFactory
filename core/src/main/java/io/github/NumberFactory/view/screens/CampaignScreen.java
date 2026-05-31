@@ -44,7 +44,6 @@ public class CampaignScreen implements Screen {
         titleStyle.fontColor = Color.WHITE;
         skin.add("default", titleStyle);
 
-        // buttons styles
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(0.25f, 0.25f, 0.25f, 1f); pixmap.fill();
         skin.add("up", new Texture(pixmap));

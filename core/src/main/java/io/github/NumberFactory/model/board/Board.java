@@ -17,19 +17,28 @@ public class Board {
         this.height = height;
         this.cells = new Cell[width][height];
         for (int x = 0; x < width; x++)
-            for (int y = 0; y < height; y++)
+        {
+            for (int y = 0; y < height; y++) {
                 cells[x][y] = new Cell(CellType.FLOOR);
+            }
+        }
     }
 
     public void clear() {
         for (int x = 0; x < width; x++)
+        {
             for (int y = 0; y < height; y++) {
                 cells[x][y].clear();
                 rewireNeighbors(x, y);
             }
+        }
         for (int x = 0; x < width; x++)
+        {
             for (int y = 0; y < height; y++)
+            {
                 recalculateValid(x, y);
+            }
+        }
         editingX = -1;
         editingY = -1;
     }
@@ -37,18 +46,32 @@ public class Board {
     public boolean inBounds(int x, int y) {
         return (x >= 0 && x < width && y >= 0 && y < height);
     }
+
     public Cell getCell(int x, int y) {
-        if (!inBounds(x, y)) return null;
+        if (!inBounds(x, y)) {
+            return null;
+        }
         return cells[x][y];
     }
 
-    public boolean hasEditingCell() { return editingX >= 0; }
-    public int getEditingX() { return editingX; }
-    public int getEditingY() { return editingY; }
+    public boolean hasEditingCell() {
+        return editingX >= 0;
+    }
+    public int getEditingX() {
+        return editingX;
+    }
+    public int getEditingY() {
+        return editingY;
+    }
 
     public boolean placeIntoCell(int x, int y, Component c) {
-        if (!inBounds(x, y)) return false;
-        if (hasEditingCell() && (editingX != x || editingY != y)) return false;
+        if (!inBounds(x, y)) {
+            return false;
+        }
+        if (hasEditingCell() && (editingX != x || editingY != y)) {
+            return false;
+        }
+
         Cell cell = cells[x][y];
         if (c == null) {
             cell.clear();
@@ -60,8 +83,13 @@ public class Board {
             }
             return true;
         }
-        if (!CellType.canPlaceComponent(cell.type)) return false;
-        if (!cell.isEmpty()) return false;
+        if (!CellType.canPlaceComponent(cell.type)) {
+            return false;
+        }
+        if (!cell.isEmpty()) {
+            return false;
+        }
+
         cell.setComponent(c);
         cell.enterEdit();
         rewireNeighbors(x, y);
@@ -76,45 +104,66 @@ public class Board {
     }
 
     public boolean setPort(int x, int y, Directions dir, PortType port) {
-        if (!inBounds(x, y)) return false;
-        if (editingX != x || editingY != y) return false;
+        if (!inBounds(x, y)) {
+            return false;
+        }
+        if (editingX != x || editingY != y) {
+            return false;
+        }
+
         Cell cell = cells[x][y];
-        if (cell.isEmpty()) return false;
+        if (cell.isEmpty()) {
+            return false;
+        }
         cell.getComponent().setPort(dir, port);
         recalculateValid(x, y);
         return true;
     }
 
     public boolean cyclePort(int x, int y, Directions dir) {
-        if (!inBounds(x, y)) return false;
-        if (editingX != x || editingY != y) return false;
-        if (!cells[x][y].cyclePort(dir)) return false;
-        recalculateValid(x, y);
-        return true;
-    }
+        if (!inBounds(x, y)) {
+            return false;
+        }
+        if (editingX != x || editingY != y) {
+            return false;
+        }
+        if (!cells[x][y].cyclePort(dir)) {
+            return false;
+        }
 
-    public boolean cyclePortPrev(int x, int y, Directions dir) {
-        if (!inBounds(x, y)) return false;
-        if (editingX != x || editingY != y) return false;
-        if (!cells[x][y].cyclePortPrev(dir)) return false;
         recalculateValid(x, y);
         return true;
     }
 
     public boolean tryCommitEdit(int x, int y) {
-        if (!inBounds(x, y)) return false;
-        if (editingX != x || editingY != y) return false;
-        if (!cells[x][y].tryCommitEdit()) return false;
+        if (!inBounds(x, y)) {
+            return false;
+        }
+        if (editingX != x || editingY != y) {
+            return false;
+        }
+        if (!cells[x][y].tryCommitEdit()) {
+            return false;
+        }
+
         editingX = -1;
         editingY = -1;
         return true;
     }
 
     public boolean enterEdit(int x, int y) {
-        if (!inBounds(x, y)) return false;
-        if (hasEditingCell() && (editingX != x || editingY != y)) return false;
+        if (!inBounds(x, y)) {
+            return false;
+        }
+        if (hasEditingCell() && (editingX != x || editingY != y)) {
+            return false;
+        }
+
         Cell cell = cells[x][y];
-        if (cell.isEmpty()) return false;
+        if (cell.isEmpty()) {
+            return false;
+        }
+
         cell.enterEdit();
         editingX = x;
         editingY = y;
@@ -122,17 +171,27 @@ public class Board {
     }
 
     public void markInvalid(int x, int y) {
-        if (!inBounds(x, y)) return;
+        if (!inBounds(x, y)) {
+            return;
+        }
         cells[x][y].setValid(false);
     }
 
     public void rewireAll() {
         for (int x = 0; x < width; x++)
+        {
             for (int y = 0; y < height; y++)
+            {
                 rewireNeighbors(x, y);
+            }
+        }
         for (int x = 0; x < width; x++)
+        {
             for (int y = 0; y < height; y++)
+            {
                 recalculateValid(x, y);
+            }
+        }
     }
 
     private void rewireNeighbors(int x, int y) {
@@ -151,7 +210,9 @@ public class Board {
     }
 
     private void recalculateValid(int x, int y) {
-        if (!inBounds(x, y)) return;
+        if (!inBounds(x, y)) {
+            return;
+        }
         Cell cell = cells[x][y];
         if (cell.isEmpty()) {
             cell.setValid(false);

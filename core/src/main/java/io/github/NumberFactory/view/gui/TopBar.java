@@ -12,47 +12,61 @@ import io.github.NumberFactory.model.SimulationState;
 public class TopBar extends Table {
 
     private final GameController game;
-    private final TextButton start;
-    private final TextButton pause;
-    private final TextButton reset;
-    private final TextButton restart;
+    private final TextButton startBtn;
+    private final TextButton pauseBtn;
+    private final TextButton resetBtn;
+    private final TextButton restartBtn;
 
     public TopBar(GameController game, Skin skin) {
         this.game = game;
 
-        start = new TextButton("START",skin);
-        pause = new TextButton("PAUSE",skin);
-        reset = new TextButton("RESET",skin);
-        restart = new TextButton("RESTART",skin);
+        startBtn = new TextButton("START", skin);
+        pauseBtn = new TextButton("PAUSE", skin);
+        resetBtn = new TextButton("RESET", skin);
+        restartBtn = new TextButton("RESTART", skin);
 
-        start.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { game.start();}});
-
-        pause.addListener(new ChangeListener() {
+        startBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
-                if (game.getSimulationState() == SimulationState.PAUSED) game.resume();
-                else game.pause();
+                game.start();
             }
         });
-        reset.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { game.reset(); }
+
+        pauseBtn.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) {
+                if (game.getSimulationState() == SimulationState.PAUSED) {
+                    game.resume();
+                }
+                else {
+                    game.pause();
+                }
+            }
         });
-        restart.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { game.restart(); }
+
+        resetBtn.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) {
+                game.reset();
+            }
+        });
+
+        restartBtn.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) {
+                game.restart();
+            }
         });
 
         setBackground(skin.getDrawable("panel"));
         pad(6);
-        add(start).width(110).height(36).padRight(8);
-        add(pause).width(110).height(36).padRight(8);
-        add(reset).width(110).height(36).padRight(8);
-        add(restart).width(110).height(36);
+        add(startBtn).width(110).height(36).padRight(8);
+        add(pauseBtn).width(110).height(36).padRight(8);
+        add(resetBtn).width(110).height(36).padRight(8);
+        add(restartBtn).width(110).height(36);
     }
 
     public void update() {
         SimulationState s = game.getSimulationState();
-        pause.setDisabled(s != SimulationState.RUNNING && s != SimulationState.PAUSED);
-        pause.setText(s == SimulationState.PAUSED ? "RESUME" : "PAUSE");
-        reset.setDisabled(s == SimulationState.IDLE);
+
+        pauseBtn.setDisabled(s != SimulationState.RUNNING && s != SimulationState.PAUSED);
+        pauseBtn.setText(s == SimulationState.PAUSED ? "RESUME" : "PAUSE");
+        resetBtn.setDisabled(s == SimulationState.IDLE);
     }
 }

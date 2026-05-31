@@ -106,6 +106,7 @@ public class TextureRegistry implements Disposable {
     private void loadPorts() {
         for (PortType type : List.of(PortType.INPUT_A, PortType.INPUT_B, PortType.OUTPUT_A, PortType.OUTPUT_B)) {
             Map<Directions, Texture> byDir = new EnumMap<>(Directions.class);
+
             for (Directions dir : Directions.values()) {
                 byDir.put(dir, load("ports/port_" + type.name() + "_" + letter(dir) + ".png"));
             }
@@ -120,54 +121,47 @@ public class TextureRegistry implements Disposable {
     private static String letter(Directions dir) {
         return switch (dir) {
             case NORTH -> "N";
-            case EAST  -> "E";
+            case EAST -> "E";
             case SOUTH -> "S";
-            case WEST  -> "W";
+            case WEST -> "W";
         };
     }
 
-    public Texture getBlock(Class<? extends Component> type) {
-        return blocksByComponent.get(type);
-    }
-    public Texture getBlock(Component c) {
-        return c == null ? null : blocksByComponent.get(c.getClass());
-    }
-    public Texture getLabel(Class<? extends Component> type) {
-        return labelsByComponent.get(type);
-    }
-    public Texture getLabel(Component c) {
-        return c == null ? null : labelsByComponent.get(c.getClass());
-    }
+    public Texture getBlock(Class<? extends Component> type) { return blocksByComponent.get(type); }
+    public Texture getBlock(Component c)                     { return c == null ? null : blocksByComponent.get(c.getClass()); }
+    public Texture getLabel(Class<? extends Component> type) { return labelsByComponent.get(type); }
+    public Texture getLabel(Component c)                     { return c == null ? null : labelsByComponent.get(c.getClass()); }
 
     public Texture getPort(PortType type, Directions dir) {
-        if (type == null || type == PortType.CLOSED) return null;
+        if (type == null || type == PortType.CLOSED) {
+            return null;
+        }
         Map<Directions, Texture> byDir = portTextures.get(type);
         return byDir == null ? null : byDir.get(dir);
     }
 
-    public Texture getEmptyBlock()         {
+    public Texture getEmptyBlock() {
         return blockEmpty;
     }
     public Texture getTemplateArithmetic() {
         return templateArithmetic;
     }
-    public Texture getTemplateLogic()      {
-        return templateLogic;
+    public Texture getTemplateLogic() { return templateLogic;
     }
-    public Texture getLabelAbArithmetic()  {
+    public Texture getLabelAbArithmetic() {
         return labelAbArithmetic;
     }
-    public Texture getLabelAbLogic()       {
+    public Texture getLabelAbLogic() {
         return labelAbLogic;
     }
 
-    public Texture getStateEdit()     {
+    public Texture getStateEdit() {
         return stateEdit;
     }
-    public Texture getStateValid()    {
+    public Texture getStateValid() {
         return stateValid;
     }
-    public Texture getStateInvalid()  {
+    public Texture getStateInvalid() {
         return stateInvalid;
     }
     public Texture getStateSelected() {
@@ -179,9 +173,11 @@ public class TextureRegistry implements Disposable {
         java.util.Set<Texture> unique = new java.util.HashSet<>();
         unique.addAll(blocksByComponent.values());
         unique.addAll(labelsByComponent.values());
+
         for (Map<Directions, Texture> m : portTextures.values()) {
             unique.addAll(m.values());
         }
+
         unique.add(blockEmpty);
         unique.add(templateArithmetic);
         unique.add(templateLogic);
