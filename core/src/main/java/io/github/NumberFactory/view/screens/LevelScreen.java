@@ -39,6 +39,7 @@ import io.github.NumberFactory.model.components.logic.NotEqualsComponent;
 import io.github.NumberFactory.model.components.utility.CopyComponent;
 import io.github.NumberFactory.model.components.utility.DestroyerComponent;
 import io.github.NumberFactory.model.components.utility.GeneratorComponent;
+import io.github.NumberFactory.model.components.utility.NeutralComponent;
 import io.github.NumberFactory.model.components.utility.OutputComponent;
 import io.github.NumberFactory.model.components.utility.TransportComponent;
 import io.github.NumberFactory.utils.Constants;
@@ -145,6 +146,7 @@ public class LevelScreen implements Screen {
         utility.add(DestroyerComponent.class, DestroyerComponent::new);
         utility.add(OutputComponent.class, OutputComponent::new);
         utility.add(CopyComponent.class, CopyComponent::new);
+        utility.add(NeutralComponent.class, NeutralComponent::new);
 
         ComponentPaletteSelection arithmetic = new ComponentPaletteSelection();
         arithmetic.add(AddComponent.class, AddComponent::new);

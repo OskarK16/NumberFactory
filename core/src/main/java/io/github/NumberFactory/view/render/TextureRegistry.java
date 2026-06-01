@@ -19,6 +19,7 @@ import io.github.NumberFactory.model.components.logic.NotEqualsComponent;
 import io.github.NumberFactory.model.components.utility.CopyComponent;
 import io.github.NumberFactory.model.components.utility.DestroyerComponent;
 import io.github.NumberFactory.model.components.utility.GeneratorComponent;
+import io.github.NumberFactory.model.components.utility.NeutralComponent;
 import io.github.NumberFactory.model.components.utility.OutputComponent;
 import io.github.NumberFactory.model.components.utility.TransportComponent;
 import io.github.NumberFactory.utils.Directions;
@@ -74,6 +75,7 @@ public class TextureRegistry implements Disposable {
         blocksByComponent.put(OutputComponent.class, load("block_output.png"));
         blocksByComponent.put(DestroyerComponent.class, load("block_destroyer.png"));
         blocksByComponent.put(CopyComponent.class, load("block_copy.png"));
+        blocksByComponent.put(NeutralComponent.class, load("block_template_neutral.png"));
 
         blocksByComponent.put(AddComponent.class, templateArithmetic);
         blocksByComponent.put(SubtractComponent.class, templateArithmetic);

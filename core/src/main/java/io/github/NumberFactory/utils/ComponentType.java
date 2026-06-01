@@ -4,6 +4,7 @@ public enum ComponentType {
     GENERATOR,
     DESTROYER,
     TRANSPORT,
+    NEUTRAL,
     ADD,
     SUBTRACT,
     MULTIPLY,
