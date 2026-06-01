@@ -39,12 +39,17 @@ Każdy komponent składa się z pewnego spójnego podzbioru kafelków planszy. (
 Przykładowo komponent dodawania może być wielkości 1x1 i jego dwie krawędzie posłużą za input dwóch argumentów a jedna z dwóch pozostałych może być outputem który zwróci sumę argumentów
 
 Wstępna lista komponentów:
-1. Komponent generujący - bezargumentowy komponent który wysyła na output stałą liczbę (np co sekundę wyrzuca liczbę 3).
+1. Komponent generujący - bezargumentowy komponent który wysyła na output swoją stałą liczbę (jednorazowo w trakcie symulacji).
 2. Komponent niszczący - przyjmuje input i nie ma żadnych outputów
 3. Komponent transportowy - jeden agrument który przekazuje na output bez zmian 
 4. Komponenty arytmetyczne - będą realizowały podstawowe operacje arytmetyczne (dodawanie, odejmowanie, mnożenie, dzielenie całkowite, modulo)
 5. Komponenty logiczne - będą realizowały operacje logiczne (==, !=, <, <=, >, >=), mają dwa inputy (a, b) i dwa outputy (x, y) dla operacji logicznej 'p' komponent działa tak że jeżeli apb jest prawdą to przekierowuje a na x w przeciwnym przypadku przekierowuje a na y. (dokładne działanie komponentów logicznych jest jeszcze omawiana, to jest wstępny pomysł)
 6. Komponent "output" - przyjmuje jeden input i przekazujemy go do celu zadania.
+7. Komponent neutralny - pasywna przeszkoda bez portów, nie przyjmuje ani nie wysyła wartości, służy do blokowania ścieżek na planszy.
+8. Komponent kopiujący - jeden input i dwa outputy, duplikuje przyjętą wartość na oba wyjścia.
+
+Pomoc w grze:
+Z poziomu ekranu gry dostępny jest panel "GUIDE" (uchwyt na środku prawej krawędzi), który dokuje się po prawej stronie - dzięki temu można czytać opisy i jednocześnie testować maszynę. Panel pokazuje kategorie komponentów (Utility / Arithmetic / Logic) z ogólnymi opisami, a po wejściu w kategorię - listę komponentów z grafikami i szczegółowym opisem. Osobna zakładka "Ports" tłumaczy działanie portów wraz z legendą kolorów (niebieskie porty A mają priorytet, czerwone B - drugorzędne).
 
 ## Technologie
 Java 

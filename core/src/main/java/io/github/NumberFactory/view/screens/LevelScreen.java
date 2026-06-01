@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -43,6 +45,7 @@ import io.github.NumberFactory.model.components.utility.NeutralComponent;
 import io.github.NumberFactory.model.components.utility.OutputComponent;
 import io.github.NumberFactory.model.components.utility.TransportComponent;
 import io.github.NumberFactory.utils.Constants;
+import io.github.NumberFactory.view.gui.ComponentGuidePanel;
 import io.github.NumberFactory.view.gui.EditPanel;
 import io.github.NumberFactory.view.gui.Hotbar;
 import io.github.NumberFactory.view.gui.Sidebar;
@@ -79,6 +82,8 @@ public class LevelScreen implements Screen {
     private SubHotbar subHotbarView;
     private EditPanel editPanel;
     private Sidebar sidebar;
+    private ComponentGuidePanel guidePanel;
+    private TextButton guideHandle;
 
     private int hoverCellX  = -1;
     private int hoverCellY  = -1;
@@ -167,6 +172,7 @@ public class LevelScreen implements Screen {
     }
 
     private void buildUi() {
+        guidePanel = new ComponentGuidePanel(textures, skin);
         topBar = new TopBar(game, skin);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
         subHotbarView = new SubHotbar(hotbar, textures, skin);
@@ -188,6 +194,17 @@ public class LevelScreen implements Screen {
         editPanel.setVisible(false);
         editPanel.pack();
         stage.addActor(editPanel);
+
+        guidePanel.setVisible(false);
+        guidePanel.pack();
+        stage.addActor(guidePanel);
+
+        guideHandle = new TextButton("GUIDE", skin);
+        guideHandle.setSize(90, 40);
+        guideHandle.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) { guidePanel.toggle(); }
+        });
+        stage.addActor(guideHandle);
     }
 
     @Override
@@ -206,7 +223,23 @@ public class LevelScreen implements Screen {
 
         stage.act(dt);
         positionEditPanel();
+        positionGuideUi();
         stage.draw();
+    }
+
+    private void positionGuideUi() {
+        float handleX = stage.getWidth() - guideHandle.getWidth();
+        float handleY = (stage.getHeight() - guideHandle.getHeight()) / 2f;
+        guideHandle.setPosition(handleX, handleY);
+
+        if (!guidePanel.isVisible()) {
+            return;
+        }
+
+        guidePanel.layoutFor(stage.getWidth(), stage.getHeight());
+        float x = stage.getWidth() - guidePanel.getWidth() - guideHandle.getWidth() - PANEL_MARGIN;
+        float y = (stage.getHeight() - guidePanel.getHeight()) / 2f;
+        guidePanel.setPosition(x, y);
     }
 
     private void positionEditPanel() {
