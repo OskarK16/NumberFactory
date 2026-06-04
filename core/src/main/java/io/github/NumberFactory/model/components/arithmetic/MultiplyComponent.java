@@ -9,4 +9,14 @@ public class MultiplyComponent extends ArithmeticComponent {
     protected Integer compute(Integer a, Integer b) {
         return a * b;
     }
+
+    @Override
+    protected String getOperationName() {
+        return "Multiplied";
+    }
+
+    @Override
+    protected String getOperationSymbol() {
+        return "x";
+    }
 }

@@ -3,6 +3,7 @@ package io.github.NumberFactory.model.components.utility;
 import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
+import io.github.NumberFactory.model.SimulationLogger;
 import io.github.NumberFactory.utils.PortType;
 
 import java.util.Map;
@@ -38,7 +39,7 @@ public class TransportComponent extends Component {
     }
 
     @Override
-    public void computeTick() {
+    public void computeTick(SimulationLogger logger) {
         pendingDirA = null;
         pendingDirB = null;
         Directions outA = findPort(PortType.OUTPUT_A);
@@ -48,7 +49,7 @@ public class TransportComponent extends Component {
     }
 
     @Override
-    public void applyTick() {
+    public void applyTick(SimulationLogger logger) {
         if (pendingDirA != null && slotA != null) {
             Component neighbor = getAdjacent(pendingDirA);
             if (neighbor != null && neighbor.receive(pendingDirA.opposite(), slotA)) {slotA = null;}

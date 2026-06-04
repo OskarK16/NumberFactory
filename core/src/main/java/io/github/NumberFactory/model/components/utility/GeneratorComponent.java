@@ -1,5 +1,6 @@
 package io.github.NumberFactory.model.components.utility;
 
+import io.github.NumberFactory.model.SimulationLogger;
 import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
@@ -18,9 +19,11 @@ public class GeneratorComponent extends Component {
     public int getSeedValue() { return seedValue; }
 
     @Override
-    public void computeTick() {
+    public void computeTick(SimulationLogger logger) {
         pendingDir = null;
-        if (emitted) return;
+        if (emitted) {
+            return;
+        }
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == PortType.OUTPUT_A) {
                 pendingDir = dir;
@@ -30,10 +33,18 @@ public class GeneratorComponent extends Component {
     }
 
     @Override
-    public void applyTick() {
-        if (pendingDir == null) return;
+    public void applyTick(SimulationLogger logger) {
+        if (pendingDir == null) {
+            return;
+        }
         Component neighbor = getAdjacent(pendingDir);
-        if (neighbor != null && neighbor.receive(pendingDir.opposite(), new Item(seedValue))) {emitted = true;}
+        if (neighbor != null && neighbor.receive(pendingDir.opposite(), new Item(seedValue))) {
+            emitted = true;
+
+            if (logger != null) {
+                logger.log("Generated " + seedValue);
+            }
+        }
         pendingDir = null;
     }
 

@@ -1,10 +1,6 @@
 package io.github.NumberFactory.controller;
 
-import io.github.NumberFactory.model.Goal;
-import io.github.NumberFactory.model.Inventory;
-import io.github.NumberFactory.model.Level;
-import io.github.NumberFactory.model.Machine;
-import io.github.NumberFactory.model.SimulationState;
+import io.github.NumberFactory.model.*;
 import io.github.NumberFactory.model.board.Board;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Constants;
@@ -118,5 +114,9 @@ public class GameController {
 
     private void resetTickAccumulator() {
         tickAccumulator = 0f;
+    }
+
+    public SimulationLogger getActionLogger() {
+        return level.getMachine().getActionLogger();
     }
 }

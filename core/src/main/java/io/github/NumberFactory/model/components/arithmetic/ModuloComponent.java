@@ -10,4 +10,14 @@ public class ModuloComponent extends ArithmeticComponent {
         if (b == 0) return null;
         return a % b;
     }
+
+    @Override
+    protected String getOperationName() {
+        return "Modulo";
+    }
+
+    @Override
+    protected String getOperationSymbol() {
+        return "mod";
+    }
 }

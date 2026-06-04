@@ -5,4 +5,9 @@ public class EqualsComponent extends LogicComponent {
     public boolean evaluate(Integer a, Integer b) {
         return a.equals(b);
     }
+
+    @Override
+    protected String getConditionSymbol() {
+        return "=";
+    }
 }

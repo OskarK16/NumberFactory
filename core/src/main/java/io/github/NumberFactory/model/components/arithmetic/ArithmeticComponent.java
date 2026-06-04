@@ -4,6 +4,7 @@ import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
+import io.github.NumberFactory.model.SimulationLogger;
 
 import java.util.Map;
 
@@ -19,23 +20,33 @@ public abstract class ArithmeticComponent extends Component {
     @Override
     public boolean canReceive(Directions fromDir) {
         PortType port = getPort(fromDir);
-        if (port == PortType.INPUT_A) return slotA == null;
-        if (port == PortType.INPUT_B) return slotB == null;
+        if (port == PortType.INPUT_A) {
+            return slotA == null;
+        }
+        if (port == PortType.INPUT_B) {
+            return slotB == null;
+        }
         return false;
     }
 
     @Override
     public boolean receive(Directions fromDir, Item item) {
         PortType port = getPort(fromDir);
-        if (port == PortType.INPUT_A && slotA == null) { slotA = item; return true; }
-        if (port == PortType.INPUT_B && slotB == null) { slotB = item; return true; }
+        if (port == PortType.INPUT_A && slotA == null) {
+            slotA = item; return true;
+        }
+        if (port == PortType.INPUT_B && slotB == null) {
+            slotB = item; return true;
+        }
         return false;
     }
 
     @Override
-    public void computeTick() {
+    public void computeTick(SimulationLogger logger) {
         pendingDir = null;
-        if (slotA == null || slotB == null) return;
+        if (slotA == null || slotB == null) {
+            return;
+        }
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == PortType.OUTPUT_A) {
                 pendingDir = dir;
@@ -45,12 +56,23 @@ public abstract class ArithmeticComponent extends Component {
     }
 
     @Override
-    public void applyTick() {
-        if (pendingDir == null || slotA == null || slotB == null) return;
+    public void applyTick(SimulationLogger logger) {
+        if (pendingDir == null || slotA == null || slotB == null) {
+            return;
+        }
         Component neighbor = getAdjacent(pendingDir);
         if (neighbor != null) {
-            Integer result = compute(slotA.getValue(), slotB.getValue());
+
+            int valA = slotA.getValue();
+            int valB = slotB.getValue();
+
+            Integer result = compute(valA, valB);
             if (result != null && neighbor.receive(pendingDir.opposite(), new Item(result))) {
+
+                if (logger != null) {
+                    logger.log(getOperationName() + " " + valA + " " + getOperationSymbol() + " " + valB + " = " + result);
+                }
+
                 slotA = null;
                 slotB = null;
             }
@@ -78,10 +100,16 @@ public abstract class ArithmeticComponent extends Component {
     @Override
     public java.util.List<Item> getHeldItems() {
         java.util.List<Item> items = new java.util.ArrayList<>(2);
-        if (slotA != null) items.add(slotA);
-        if (slotB != null) items.add(slotB);
+        if (slotA != null) {
+            items.add(slotA);
+        }
+        if (slotB != null) {
+            items.add(slotB);
+        }
         return items;
     }
 
     protected abstract Integer compute(Integer a, Integer b);
+    protected abstract String getOperationName();
+    protected abstract String getOperationSymbol();
 }

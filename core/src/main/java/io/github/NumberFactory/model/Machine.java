@@ -15,12 +15,18 @@ public class Machine {
     private Goal goal;
     private final List<Integer> aggregated = new ArrayList<>();
 
+    private final SimulationLogger actionLogger = new SimulationLogger();
+
     public Machine(Board board) {
         this.board = board;
     }
 
     public Machine(int x, int y) {
         this.board = new Board(x, y);
+    }
+
+    public SimulationLogger getActionLogger() {
+        return actionLogger;
     }
 
     public Board getBoard() {
@@ -145,6 +151,7 @@ public class Machine {
         }
 
         aggregated.clear();
+        actionLogger.clear();
         state = SimulationState.IDLE;
         return true;
     }
@@ -156,6 +163,7 @@ public class Machine {
 
         board.clear();
         aggregated.clear();
+        actionLogger.clear();
         state = SimulationState.IDLE;
         return true;
     }
@@ -169,7 +177,7 @@ public class Machine {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
                 if (c != null) {
-                    c.computeTick();
+                    c.computeTick(actionLogger);
                 }
             }
         }
@@ -177,7 +185,7 @@ public class Machine {
             for (int y = 0; y < board.height; y++) {
                 Component c = board.getCell(x, y).getComponent();
                 if (c != null) {
-                    c.applyTick();
+                    c.applyTick(actionLogger);
                 }
             }
         }
