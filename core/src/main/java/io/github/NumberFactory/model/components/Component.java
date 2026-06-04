@@ -42,6 +42,38 @@ public abstract class Component {
         return ports;
     }
 
+
+    public List<PortType> allowedPorts() {
+        List<PortType> allowed = new ArrayList<>(5);
+        allowed.add(PortType.CLOSED);
+        if (inputSize  >= 1) allowed.add(PortType.INPUT_A);
+        if (inputSize  >= 2) allowed.add(PortType.INPUT_B);
+        if (outputSize >= 1) allowed.add(PortType.OUTPUT_A);
+        if (outputSize >= 2) allowed.add(PortType.OUTPUT_B);
+        return allowed;
+    }
+
+    public List<PortType> availablePorts(Directions dir) {
+        Component neighbor = getAdjacent(dir);
+        PortType facing = PortType.CLOSED;
+        if (neighbor != null) facing = neighbor.getPort(dir.opposite());
+
+        List<PortType> available = new ArrayList<>(5);
+        for (PortType p : allowedPorts()) {
+            if (p != PortType.CLOSED && isUsed(p, dir)) continue;
+            if (!facing.isClosed() && !PortType.areCompatible(p, facing)) continue;
+            available.add(p);
+        }
+        return available;
+    }
+
+    private boolean isUsed(PortType port, Directions dir) {
+        for (Directions d : Directions.values()) {
+            if (d != dir && getPort(d) == port) return true;
+        }
+        return false;
+    }
+
     public void connect(Directions direction, Component component) {
         if (Debug.DEBUG) {
             String neighbor = component == null ? "null" : component.getClass().getSimpleName();
@@ -54,7 +86,6 @@ public abstract class Component {
         return adjacent[direction.ordinal()];
     }
 
-    // Called by a neighbor pushing an item — fromDir is the direction from MY perspective
     public boolean canReceive(Directions fromDir) { return false; }
     public boolean receive(Directions fromDir, Item item) { return false; }
 
