@@ -53,29 +53,13 @@ public class Cell {
 
     boolean cyclePort(Directions dir) {
         if (component == null) return false;
-        PortType current = component.getPort(dir);
-        PortType next = switch (current) {
-            case CLOSED   -> PortType.INPUT_A;
-            case INPUT_A  -> PortType.INPUT_B;
-            case INPUT_B  -> PortType.OUTPUT_A;
-            case OUTPUT_A -> PortType.OUTPUT_B;
-            case OUTPUT_B -> PortType.CLOSED;
-        };
-        component.setPort(dir, next);
-        return true;
-    }
+        java.util.List<PortType> available = component.availablePorts(dir);
+        if (available.isEmpty()) return false;
 
-    boolean cyclePortPrev(Directions dir) {
-        if (component == null) return false;
-        PortType current = component.getPort(dir);
-        PortType next = switch (current) {
-            case CLOSED   -> PortType.OUTPUT_B;
-            case INPUT_A  -> PortType.CLOSED;
-            case INPUT_B  -> PortType.INPUT_A;
-            case OUTPUT_A -> PortType.INPUT_B;
-            case OUTPUT_B -> PortType.OUTPUT_A;
-        };
-        component.setPort(dir, next);
+        int next = (available.indexOf(component.getPort(dir)) + 1) % available.size();
+        PortType target = available.get(next);
+        if (target == component.getPort(dir)) return false;
+        component.setPort(dir, target);
         return true;
     }
 }
