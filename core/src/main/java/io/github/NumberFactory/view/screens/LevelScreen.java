@@ -9,13 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.NumberFactory.Main;
-import io.github.NumberFactory.controller.EditController;
-import io.github.NumberFactory.controller.GameController;
-import io.github.NumberFactory.controller.HotbarController;
-import io.github.NumberFactory.controller.HotbarFactory;
-import io.github.NumberFactory.controller.InputHandler;
-import io.github.NumberFactory.controller.ScreenToCellMapper;
-import io.github.NumberFactory.model.Level;
+import io.github.NumberFactory.controller.*;
 import io.github.NumberFactory.utils.Constants;
 import io.github.NumberFactory.view.gui.LevelHud;
 import io.github.NumberFactory.view.render.BoardHoverTracker;
@@ -27,9 +21,8 @@ import io.github.NumberFactory.view.render.TextureRegistry;
 public class LevelScreen implements Screen {
 
     private final Main app;
-    private final int levelNumber;
+    private final LevelController levelController;
 
-    private Level level;
     private GameController game;
     private EditController edit;
     private HotbarController hotbar;
@@ -44,21 +37,25 @@ public class LevelScreen implements Screen {
     private LevelHud hud;
     private BoardHoverTracker hover;
 
-    public LevelScreen(Main app, int levelNumber) {
+    public LevelScreen(Main app, LevelController levelController) {
         this.app = app;
-        this.levelNumber = levelNumber;
+        this.levelController = levelController;
     }
 
     @Override
     public void show() {
-        level = Level.sandbox();
-        game = new GameController(level);
+        levelController.loadSave();
+        game = new GameController(levelController.getLevel());
         edit = new EditController(game.getBoard());
         hotbar = HotbarFactory.buildDefault();
 
         gameCamera = new OrthographicCamera();
         gameCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        gameCamera.position.set(level.getMachine().getBoard().width * Constants.TILE_SIZE / 2f, level.getMachine().getBoard().height * Constants.TILE_SIZE / 2f, 0);
+        gameCamera.position.set(
+            levelController.getLevel().getMachine().getBoard().width  * Constants.TILE_SIZE / 2f,
+            levelController.getLevel().getMachine().getBoard().height * Constants.TILE_SIZE / 2f,
+            0
+        );
         gameCamera.update();
 
         textures = new TextureRegistry();
@@ -67,7 +64,7 @@ public class LevelScreen implements Screen {
         input = new InputHandler(game, edit, hotbar, mapper);
         cameraController = new CameraController(gameCamera);
 
-        hud = new LevelHud(game, edit, hotbar, level, textures);
+        hud   = new LevelHud(game, edit, hotbar, levelController.getLevel(), textures, levelController::saveLevel);
         hover = new BoardHoverTracker(hud.getStage(), mapper, game, edit, hotbar);
 
         InputMultiplexer multiplexer = new InputMultiplexer();

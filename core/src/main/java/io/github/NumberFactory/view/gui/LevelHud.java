@@ -31,12 +31,12 @@ public class LevelHud {
     private final ComponentGuidePanel guidePanel;
     private final TextButton guideHandle;
 
-    public LevelHud(GameController game, EditController edit, HotbarController hotbar, Level level, TextureRegistry textures) {
+    public LevelHud(GameController game, EditController edit, HotbarController hotbar, Level level, TextureRegistry textures, Runnable onSave) {
         skin = UiSkin.build();
         stage = new Stage(new ScreenViewport());
 
         guidePanel = new ComponentGuidePanel(textures, skin);
-        topBar = new TopBar(game, skin);
+        topBar = new TopBar(game, skin, onSave);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
         subHotbarView = new SubHotbar(hotbar, textures, skin);
         editPanel = new EditPanel(edit, game, skin);

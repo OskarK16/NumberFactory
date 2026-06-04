@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.NumberFactory.Main;
+import io.github.NumberFactory.controller.LevelController;
 
 public class MainMenuScreen implements Screen {
 
@@ -95,7 +96,7 @@ public class MainMenuScreen implements Screen {
 
         sandbox.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelScreen(game, 0));
+                game.setScreen(new LevelScreen(game, new LevelController(true, 0, "", "player1", "default")));
             }
         });
         instructions.addListener(new ChangeListener() {

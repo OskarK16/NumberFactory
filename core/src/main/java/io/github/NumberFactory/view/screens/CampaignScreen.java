@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.NumberFactory.Main;
+import io.github.NumberFactory.controller.LevelController;
 
 public class CampaignScreen implements Screen {
     private static final int LEVEL_COUNT = 5;
@@ -74,7 +75,7 @@ public class CampaignScreen implements Screen {
             level.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new LevelScreen(game, levelNumber));
+                    game.setScreen(new LevelScreen(game, new LevelController(false, levelNumber, "level_" + levelNumber, "player", null)));
                 }
             });
             table.add(level).width(200).height(50).padBottom(15).row();

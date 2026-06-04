@@ -117,8 +117,7 @@ public class Hotbar extends Table {
         }
 
         void refreshCount(Inventory inventory) {
-            if (inventory.isUnlimited()) countLabel.setText("");
-            else countLabel.setText(Integer.toString(inventory.countOf(entry.type())));
+            countLabel.setText(Integer.toString(inventory.usedOf(entry.type())));
         }
     }
 
