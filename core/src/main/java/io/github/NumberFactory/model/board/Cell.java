@@ -1,28 +1,61 @@
 package io.github.NumberFactory.model.board;
 
 import io.github.NumberFactory.model.components.Component;
-import io.github.NumberFactory.utils.CellType;
+import io.github.NumberFactory.utils.ComponentType;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
-public class Cell {
-    public final CellType type;
-    private Component component;
-    private boolean inEdit = false;
-    private boolean valid = false;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
-    public Cell(CellType type) {
-        this.type = type;
-    }
+public class Cell {
+    private Component component;
+    private boolean inEdit   = false;
+    private boolean valid    = false;
+    private boolean readOnly = false;
+    private Set<ComponentType> componentFilter = EnumSet.noneOf(ComponentType.class);
+    private boolean blacklist = true;
+
+    public Cell() {}
 
     public Component getComponent() { return component; }
-    public void setComponent(Component component) {
+
+    public boolean setComponent(Component component) {
+        if (readOnly) return false;
+        if (component != null && this.component != null) return false;
+        if (component != null && !canAccept(ComponentType.of(component))) return false;
         this.component = component;
+        return true;
     }
 
-    public boolean isEmpty()  { return component == null; }
-    public boolean isInEdit() { return inEdit; }
-    public boolean isValid()  { return valid; }
+    public boolean isEmpty()    { return component == null; }
+    public boolean isInEdit()   { return inEdit; }
+    public boolean isValid()    { return valid; }
+    public boolean isReadOnly() { return readOnly; }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public void setFilter(Set<ComponentType> filter, boolean blacklist) {
+        this.componentFilter = filter.isEmpty()
+            ? EnumSet.noneOf(ComponentType.class)
+            : EnumSet.copyOf(filter);
+        this.blacklist = blacklist;
+    }
+
+    boolean canAccept(ComponentType type) {
+        if (componentFilter.isEmpty()) return true;
+        boolean inSet = componentFilter.contains(type);
+        return blacklist != inSet;
+    }
+
+    public Set<ComponentType> getComponentFilter() {
+        return Collections.unmodifiableSet(componentFilter);
+    }
+
+    public boolean isBlacklist() { return blacklist; }
 
     void setValid(boolean valid) {
         this.valid = valid;
@@ -45,10 +78,12 @@ public class Cell {
         this.component.reset();
     }
 
-    public void clear() {
+    public boolean clear() {
+        if (readOnly) return false;
         this.component = null;
         this.inEdit = false;
         this.valid = false;
+        return true;
     }
 
     boolean cyclePort(Directions dir) {

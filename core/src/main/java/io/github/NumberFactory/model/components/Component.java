@@ -15,19 +15,31 @@ public abstract class Component {
     public final int outputSize;
     private final PortType[]   ports;
     private final Component[]  adjacent;
+    private final boolean[]    portReadOnly;
 
     public Component(int inputSize, int outputSize) {
         Debug.msg("Component is created... " + this.getClass().getSimpleName());
-        this.inputSize  = inputSize;
-        this.outputSize = outputSize;
-        this.ports      = new PortType[4];
-        this.adjacent   = new Component[4];
+        this.inputSize    = inputSize;
+        this.outputSize   = outputSize;
+        this.ports        = new PortType[4];
+        this.adjacent     = new Component[4];
+        this.portReadOnly = new boolean[4];
         Arrays.fill(this.ports, PortType.CLOSED);
     }
 
-    public void setPort(Directions direction, PortType port) {
+    public boolean setPort(Directions direction, PortType port) {
+        if (isPortReadOnly(direction)) return false;
         Debug.msg(getClass().getSimpleName() + ": setting port " + direction + " -> " + port);
         ports[direction.ordinal()] = port;
+        return true;
+    }
+
+    public void setPortReadOnly(Directions direction, boolean readOnly) {
+        portReadOnly[direction.ordinal()] = readOnly;
+    }
+
+    public boolean isPortReadOnly(Directions direction) {
+        return portReadOnly[direction.ordinal()];
     }
 
     public PortType getPort(Directions direction) {
