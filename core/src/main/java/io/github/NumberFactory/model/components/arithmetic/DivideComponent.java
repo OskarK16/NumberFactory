@@ -13,4 +13,14 @@ public class DivideComponent extends ArithmeticComponent {
         if (b == 0) return null;
         return a / b;
     }
+
+    @Override
+    protected String getOperationName() {
+        return "Divided";
+    }
+
+    @Override
+    protected String getOperationSymbol() {
+        return ":";
+    }
 }

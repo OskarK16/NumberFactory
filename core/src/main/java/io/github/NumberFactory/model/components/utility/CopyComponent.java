@@ -3,6 +3,7 @@ import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
+import io.github.NumberFactory.model.SimulationLogger;
 
 import java.util.Map;
 
@@ -29,18 +30,25 @@ public class CopyComponent extends Component {
     }
 
     @Override
-    public void computeTick() {
+    public void computeTick(SimulationLogger logger) {
         pendingA = null;
         pendingB = null;
-        if (slotA == null) return;
+        if (slotA == null) {
+            return;
+        }
+
         for (Directions dir : Directions.values()) {
-            if (getPort(dir) == PortType.OUTPUT_A) pendingA = dir;
-            else if (getPort(dir) == PortType.OUTPUT_B) pendingB = dir;
+            if (getPort(dir) == PortType.OUTPUT_A) {
+                pendingA = dir;
+            }
+            else if (getPort(dir) == PortType.OUTPUT_B) {
+                pendingB = dir;
+            }
         }
     }
 
     @Override
-    public void applyTick() {
+    public void applyTick(SimulationLogger logger) {
         if (slotA != null && pendingA != null && pendingB != null) {
             Component adjacentA = getAdjacent(pendingA);
             Component adjacentB = getAdjacent(pendingB);
@@ -49,6 +57,11 @@ public class CopyComponent extends Component {
             if (canA && canB) {
                 adjacentA.receive(pendingA.opposite(), new Item(slotA.getValue()));
                 adjacentB.receive(pendingB.opposite(), new Item(slotA.getValue()));
+
+                if (logger != null) {
+                    logger.log("Copied " + slotA.getValue());
+                }
+
                 slotA = null;
             }
         }

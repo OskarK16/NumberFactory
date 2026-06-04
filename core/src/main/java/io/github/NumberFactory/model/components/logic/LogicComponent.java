@@ -4,6 +4,7 @@ import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
+import io.github.NumberFactory.model.SimulationLogger;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ public abstract class LogicComponent extends Component {
     private Item slotA, slotB;
     private Directions pendingDir;
     private Item pendingItem;
+    private Boolean evalResult;
 
     LogicComponent() {
         super(2, 2);
@@ -48,15 +50,18 @@ public abstract class LogicComponent extends Component {
     // to be implemented..
 
     @Override
-    public void computeTick() {
+    public void computeTick(SimulationLogger logger) {
         pendingDir = null;
         pendingItem = null;
+        evalResult = null;
+
         if (slotA == null || slotB == null) {
             return;
         }
 
-        boolean isTrue = evaluate(slotA.getValue(), slotB.getValue());
-        PortType outPort = isTrue ? PortType.OUTPUT_A : PortType.OUTPUT_B;
+        evalResult = evaluate(slotA.getValue(), slotB.getValue());
+//        boolean isTrue = evaluate(slotA.getValue(), slotB.getValue());
+        PortType outPort = evalResult ? PortType.OUTPUT_A : PortType.OUTPUT_B;
 
         for (Directions dir : Directions.values()) {
             if (getPort(dir) == outPort) {
@@ -68,12 +73,22 @@ public abstract class LogicComponent extends Component {
     }
 
     @Override
-    public void applyTick() {
-        if (pendingDir == null) return;
+    public void applyTick(SimulationLogger logger) {
+        if (pendingDir == null) {
+            return;
+        }
+
         Component adjacent = getAdjacent(pendingDir);
         if (adjacent != null && adjacent.receive(pendingDir.opposite(), pendingItem)) {
+
+            if (logger != null) {
+                logger.log("Evaluated " + slotA.getValue() + " " + getConditionSymbol() + " " + slotB.getValue() + " -> " + evalResult.toString().toUpperCase());
+            }
+
             slotA = null;
             slotB = null;
+            evalResult = null;
+
         }
         pendingDir = null;
         pendingItem = null;
@@ -95,13 +110,20 @@ public abstract class LogicComponent extends Component {
         this.slotB = null;
         this.pendingDir = null;
         this.pendingItem = null;
+        this.evalResult = null;
     }
 
     @Override
     public java.util.List<Item> getHeldItems() {
         java.util.List<Item> items = new java.util.ArrayList<>(2);
-        if (slotA != null) items.add(slotA);
-        if (slotB != null) items.add(slotB);
+        if (slotA != null) {
+            items.add(slotA);
+        }
+        if (slotB != null) {
+            items.add(slotB);
+        }
         return items;
     }
+
+    protected abstract String getConditionSymbol();
 }

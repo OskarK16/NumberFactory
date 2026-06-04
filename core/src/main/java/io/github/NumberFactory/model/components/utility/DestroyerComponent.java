@@ -1,4 +1,5 @@
 package io.github.NumberFactory.model.components.utility;
+import io.github.NumberFactory.model.SimulationLogger;
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.model.Item;
 import io.github.NumberFactory.utils.Directions;
@@ -28,7 +29,20 @@ public class DestroyerComponent extends Component {
     }
 
     @Override
-    public void computeTick() {slotA = null;}
+    public void computeTick(SimulationLogger logger) {
+        if (slotA != null) {
+            if (logger != null) {
+                logger.log("Destoryed " + slotA.getValue());
+            }
+
+            slotA = null;
+        }
+    }
+
+    @Override
+    public void applyTick(SimulationLogger logger) {
+
+    }
 
     @Override
     public boolean checkValidity() {

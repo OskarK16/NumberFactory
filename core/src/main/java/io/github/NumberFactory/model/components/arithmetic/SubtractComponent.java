@@ -8,4 +8,14 @@ public class SubtractComponent extends ArithmeticComponent {
     protected Integer compute(Integer a, Integer b) {
         return a - b;
     }
+
+    @Override
+    protected String getOperationName() {
+        return "Subtracted";
+    }
+
+    @Override
+    protected String getOperationSymbol() {
+        return "-";
+    }
 }

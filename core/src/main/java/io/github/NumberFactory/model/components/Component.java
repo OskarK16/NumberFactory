@@ -1,6 +1,7 @@
 package io.github.NumberFactory.model.components;
 
 import io.github.NumberFactory.model.Item;
+import io.github.NumberFactory.model.SimulationLogger;
 import io.github.NumberFactory.utils.Debug;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
@@ -103,8 +104,8 @@ public abstract class Component {
 
     public List<Item> getHeldItems() { return Collections.emptyList(); }
 
-    public void computeTick() {}
-    public void applyTick() {}
+    public void computeTick(SimulationLogger logger) {}
+    public void applyTick(SimulationLogger logger) {}
 
     public boolean isExhausted() { return true; }
 

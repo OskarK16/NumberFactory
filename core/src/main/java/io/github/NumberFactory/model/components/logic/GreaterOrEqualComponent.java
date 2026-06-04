@@ -5,4 +5,9 @@ public class GreaterOrEqualComponent extends LogicComponent {
     public boolean evaluate(Integer a, Integer b) {
         return a >= b;
     }
+
+    @Override
+    protected String getConditionSymbol() {
+        return "≥";
+    }
 }
