@@ -1,0 +1,14 @@
+{
+  "background":  "14171eff",
+  "bgBottom":    "090b0fff",
+  "surface":     "1b1e25eb",
+  "panelBorder": "393f4eff",
+  "btnUp":       "292e39ff",
+  "btnDown":     "1f222bff",
+  "accent":      "f2b938ff",
+  "gridLine":    "e2a33c0e",
+  "text":        "e6e9f0ff",
+  "textDim":     "737885ff",
+  "green":       "66bd75ff",
+  "purple":      "9e6bd1ff"
+}

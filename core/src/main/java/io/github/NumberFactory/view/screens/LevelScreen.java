@@ -20,8 +20,11 @@ import io.github.NumberFactory.view.render.TextureRegistry;
 
 public class LevelScreen implements Screen {
 
+    private static final float AUTOSAVE_INTERVAL = 60f;
+
     private final Main app;
     private final LevelController levelController;
+    private float autoSaveTimer = 0f;
 
     private GameController game;
     private EditController edit;
@@ -96,6 +99,13 @@ public class LevelScreen implements Screen {
     @Override
     public void render(float dt) {
         game.update(dt);
+
+        autoSaveTimer += dt;
+        if (autoSaveTimer >= AUTOSAVE_INTERVAL) {
+            autoSaveTimer = 0f;
+            levelController.saveLevel();
+        }
+
         ScreenUtils.clear(0.066f, 0.075f, 0.094f, 1f);
 
         boardRenderer.render(game.getBoard(), game.getTickProgress(), hover.computeGhost());
@@ -119,6 +129,7 @@ public class LevelScreen implements Screen {
     @Override public void resume() {
     }
     @Override public void hide()   {
+        levelController.saveLevel();
     }
 
     @Override

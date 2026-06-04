@@ -90,7 +90,18 @@ public class SaveManager {
         List<String> existing = listAliases();
         if (existing.contains(alias)) return;
         existing.add(alias);
-        Gdx.files.local(ALIASES).writeString(json.toJson(existing), false);
+        Gdx.files.local(ALIASES).writeString(json.toJson(existing, ArrayList.class, String.class), false);
+    }
+
+    public void deleteSave(String saveId) {
+        Gdx.files.local(SAVE_DIR + "/" + saveId + ".json").delete();
+    }
+
+    public void deleteAlias(String alias) {
+        List<String> aliases = listAliases();
+        if (aliases.remove(alias)) {
+            Gdx.files.local(ALIASES).writeString(json.toJson(aliases, ArrayList.class, String.class), false);
+        }
     }
 
     @SuppressWarnings("unchecked")
