@@ -16,14 +16,16 @@ public class TopBar extends Table {
     private final TextButton pauseBtn;
     private final TextButton resetBtn;
     private final TextButton restartBtn;
+    private final TextButton saveBtn;
 
-    public TopBar(GameController game, Skin skin) {
+    public TopBar(GameController game, Skin skin, Runnable onSave) {
         this.game = game;
 
         startBtn = new TextButton("START", skin);
         pauseBtn = new TextButton("PAUSE", skin);
         resetBtn = new TextButton("RESET", skin);
         restartBtn = new TextButton("RESTART", skin);
+        saveBtn   = new TextButton("SAVE", skin);
 
         startBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
@@ -54,19 +56,28 @@ public class TopBar extends Table {
             }
         });
 
+        saveBtn.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) {
+                onSave.run();
+            }
+        });
+
         setBackground(skin.getDrawable("panel"));
         pad(6);
         add(startBtn).width(110).height(36).padRight(8);
         add(pauseBtn).width(110).height(36).padRight(8);
         add(resetBtn).width(110).height(36).padRight(8);
-        add(restartBtn).width(110).height(36);
+        add(restartBtn).width(110).height(36).padRight(32);
+        add(saveBtn).width(110).height(36).padRight(8);
     }
 
     public void update() {
         SimulationState s = game.getSimulationState();
+        boolean running = s == SimulationState.RUNNING || s == SimulationState.PAUSED;
 
-        pauseBtn.setDisabled(s != SimulationState.RUNNING && s != SimulationState.PAUSED);
+        pauseBtn.setDisabled(!running);
         pauseBtn.setText(s == SimulationState.PAUSED ? "RESUME" : "PAUSE");
         resetBtn.setDisabled(s == SimulationState.IDLE);
+        saveBtn.setDisabled(running);
     }
 }
