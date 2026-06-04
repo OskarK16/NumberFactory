@@ -26,10 +26,11 @@ public class LevelHud {
     private final TopBar topBar;
     private final Hotbar hotbarView;
     private final SubHotbar subHotbarView;
-    private final EditPanel editPanel;
     private final Sidebar sidebar;
     private final ComponentGuidePanel guidePanel;
     private final TextButton guideHandle;
+    private final TextButton logHandle;
+
 
     public LevelHud(GameController game, EditController edit, HotbarController hotbar, Level level, TextureRegistry textures, Runnable onSave,
                     Runnable onReturnToMenu) {
@@ -40,7 +41,6 @@ public class LevelHud {
         topBar = new TopBar(game, skin, onSave, onReturnToMenu);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
         subHotbarView = new SubHotbar(hotbar, textures, skin);
-        editPanel = new EditPanel(edit, game, skin);
         sidebar = new Sidebar(game, skin);
 
         root = new Table();
@@ -48,16 +48,12 @@ public class LevelHud {
         root.top();
 
         root.add(topBar).growX().colspan(2).row();
-        root.add(sidebar).top().left().width(180).padTop(8).padLeft(8);
+//        root.add(sidebar).top().left().padTop(8).padLeft(8);
         root.add().expand().row();
 
         root.add(subHotbarView).colspan(2).padBottom(4).row();
         root.add(hotbarView).colspan(2).padBottom(8).row();
         stage.addActor(root);
-
-        editPanel.setVisible(false);
-        editPanel.pack();
-        stage.addActor(editPanel);
 
         guidePanel.setVisible(false);
         guidePanel.pack();
@@ -69,6 +65,20 @@ public class LevelHud {
             @Override public void changed(ChangeEvent event, Actor actor) { guidePanel.toggle(); }
         });
         stage.addActor(guideHandle);
+
+        sidebar.setVisible(false);
+        sidebar.pack();
+        stage.addActor(sidebar);
+
+        logHandle = new TextButton("LOGS", skin);
+        logHandle.setSize(90, 40);
+        logHandle.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                sidebar.toggle();
+            }
+        });
+        stage.addActor(logHandle);
     }
 
     public Stage getStage() {
@@ -79,14 +89,13 @@ public class LevelHud {
         topBar.update();
         hotbarView.update();
         subHotbarView.update();
-        editPanel.update();
         sidebar.update();
     }
 
     public void act(float dt) {
         stage.act(dt);
-        positionEditPanel();
         positionGuideUi();
+        positionLogUi();
     }
 
     public void draw() {
@@ -114,12 +123,18 @@ public class LevelHud {
         guidePanel.setPosition(x, y);
     }
 
-    private void positionEditPanel() {
-        if (!editPanel.isVisible()) return;
-        root.validate();
-        editPanel.pack();
-        float x = stage.getWidth() - editPanel.getWidth() - PANEL_MARGIN;
-        float y = sidebar.getY() - PANEL_GAP - editPanel.getHeight();
-        editPanel.setPosition(x, y);
+    private void positionLogUi() {
+        float handleX = 0;
+        float handleY = (stage.getHeight() - logHandle.getHeight()) / 2f;
+        logHandle.setPosition(handleX, handleY);
+
+        if (!sidebar.isVisible()) {
+            return;
+        }
+
+        float x = logHandle.getWidth() + PANEL_MARGIN;
+        float y = (stage.getHeight() - sidebar.getHeight()) / 2f;
+        sidebar.setPosition(x, y);
     }
+
 }

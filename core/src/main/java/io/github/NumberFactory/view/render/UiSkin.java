@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -33,11 +34,26 @@ public final class UiSkin {
         labelStyle.fontColor = TEXT;
         skin.add("default", labelStyle);
 
+        Label.LabelStyle dimStyle = new Label.LabelStyle();
+        dimStyle.font = font;
+        dimStyle.fontColor = TEXT_DIM;
+        skin.add("dim", dimStyle);
+
+        Label.LabelStyle titleStyle = new Label.LabelStyle();
+        titleStyle.font = font;
+        titleStyle.fontColor = ACCENT;
+        skin.add("title", titleStyle);
+
         skin.add("up", solidTexture(BTN_UP));
         skin.add("over", solidTexture(BTN_OVER));
         skin.add("down", solidTexture(BTN_DOWN));
         skin.add("selected", solidTexture(ACCENT));
         skin.add("panel", solidTexture(PANEL));
+
+        ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
+        scrollStyle.vScrollKnob = drawable(skin, "up");
+        scrollStyle.vScroll = drawable(skin, "down");
+        skin.add("default", scrollStyle);
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
