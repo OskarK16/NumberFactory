@@ -1,7 +1,6 @@
 package io.github.NumberFactory.model.board;
 
 import io.github.NumberFactory.model.components.Component;
-import io.github.NumberFactory.utils.CellType;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
@@ -19,7 +18,7 @@ public class Board {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++) {
-                cells[x][y] = new Cell(CellType.FLOOR);
+                cells[x][y] = new Cell();
             }
         }
     }
@@ -74,28 +73,21 @@ public class Board {
 
         Cell cell = cells[x][y];
         if (c == null) {
-            cell.clear();
+            if (!cell.clear()) return false;;
             rewireNeighbors(x, y);
             recalculateValid(x, y);
             if (editingX == x && editingY == y) {
                 editingX = -1;
                 editingY = -1;
             }
-            return true;
+        } else {
+            if (!cell.setComponent(c)) return false;
+            cell.enterEdit();
+            rewireNeighbors(x, y);
+            recalculateValid(x, y);
+            editingX = x;
+            editingY = y;
         }
-        if (!CellType.canPlaceComponent(cell.type)) {
-            return false;
-        }
-        if (!cell.isEmpty()) {
-            return false;
-        }
-
-        cell.setComponent(c);
-        cell.enterEdit();
-        rewireNeighbors(x, y);
-        recalculateValid(x, y);
-        editingX = x;
-        editingY = y;
         return true;
     }
 
@@ -112,10 +104,8 @@ public class Board {
         }
 
         Cell cell = cells[x][y];
-        if (cell.isEmpty()) {
-            return false;
-        }
-        cell.getComponent().setPort(dir, port);
+        if (cell.isEmpty()) return false;
+        if (!cell.getComponent().setPort(dir, port)) return false;
         recalculateValid(x, y);
         return true;
     }
