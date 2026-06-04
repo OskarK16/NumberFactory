@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import io.github.NumberFactory.Main;
 import io.github.NumberFactory.config.ConfigManager;
+import io.github.NumberFactory.controller.LevelController;
 
 public class MainMenuScreen extends MenuScreen {
 

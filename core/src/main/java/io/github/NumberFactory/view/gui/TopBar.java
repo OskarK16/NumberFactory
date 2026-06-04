@@ -17,8 +17,9 @@ public class TopBar extends Table {
     private final TextButton resetBtn;
     private final TextButton restartBtn;
     private final TextButton saveBtn;
+    private final TextButton menuBtn;
 
-    public TopBar(GameController game, Skin skin, Runnable onSave) {
+    public TopBar(GameController game, Skin skin, Runnable onSave, Runnable onReturnToMenu) {
         this.game = game;
 
         startBtn = new TextButton("START", skin);
@@ -26,6 +27,7 @@ public class TopBar extends Table {
         resetBtn = new TextButton("RESET", skin);
         restartBtn = new TextButton("RESTART", skin);
         saveBtn   = new TextButton("SAVE", skin);
+        menuBtn = new TextButton("MENU", skin);
 
         startBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
@@ -56,6 +58,15 @@ public class TopBar extends Table {
             }
         });
 
+        menuBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (onReturnToMenu != null) {
+                    onReturnToMenu.run();
+                }
+            }
+        });
+
         saveBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
                 onSave.run();
@@ -69,6 +80,7 @@ public class TopBar extends Table {
         add(resetBtn).width(110).height(36).padRight(8);
         add(restartBtn).width(110).height(36).padRight(32);
         add(saveBtn).width(110).height(36).padRight(8);
+        add(menuBtn).width(110).height(36);
     }
 
     public void update() {
