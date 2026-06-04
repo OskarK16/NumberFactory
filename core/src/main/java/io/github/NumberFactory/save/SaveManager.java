@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveManager {
-    private static final String ROOT_DIR   = "savesystem";
+    private static final String ROOT_DIR   = "data/savesystem";
     private static final String SAVE_DIR   = ROOT_DIR + "/saves";
     private static final String LEVELS_DIR = ROOT_DIR + "/levels";
     private static final String ALIASES    = ROOT_DIR + "/aliases.json";

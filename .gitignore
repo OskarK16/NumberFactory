@@ -1,3 +1,6 @@
+## Game data
+/data/*
+
 ## Gradle:
 .gradle/
 gradle-app.setting
