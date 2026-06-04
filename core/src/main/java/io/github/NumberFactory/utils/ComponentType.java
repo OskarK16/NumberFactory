@@ -12,6 +12,7 @@ public enum ComponentType {
     DESTROYER (DestroyerComponent.class, v -> new DestroyerComponent()),
     TRANSPORT (TransportComponent.class, v -> new TransportComponent()),
     NEUTRAL (NeutralComponent.class, v -> new NeutralComponent()),
+    COPY (CopyComponent.class, v -> new CopyComponent()),
     ADD (AddComponent.class, v -> new AddComponent()),
     SUBTRACT (SubtractComponent.class, v -> new SubtractComponent()),
     MULTIPLY (MultiplyComponent.class, v -> new MultiplyComponent()),
