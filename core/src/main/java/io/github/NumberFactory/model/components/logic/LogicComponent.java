@@ -82,7 +82,7 @@ public abstract class LogicComponent extends Component {
         if (adjacent != null && adjacent.receive(pendingDir.opposite(), pendingItem)) {
 
             if (logger != null) {
-                logger.log("Evaluated " + slotA.getValue() + " " + getConditionSymbol() + " " + slotB.getValue() + " -> " + evalResult.toString().toUpperCase());
+                logger.log("Compared " + slotA.getValue() + " " + getConditionSymbol() + " " + slotB.getValue() + " -> " + evalResult.toString().toUpperCase());
             }
 
             slotA = null;

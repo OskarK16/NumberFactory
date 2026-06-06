@@ -32,7 +32,7 @@ public class DestroyerComponent extends Component {
     public void computeTick(SimulationLogger logger) {
         if (slotA != null) {
             if (logger != null) {
-                logger.log("Destoryed " + slotA.getValue());
+                logger.log("Destroyed " + slotA.getValue());
             }
 
             slotA = null;

@@ -3,6 +3,7 @@ package io.github.NumberFactory.controller;
 import io.github.NumberFactory.model.*;
 import io.github.NumberFactory.model.board.Board;
 import io.github.NumberFactory.model.components.Component;
+import io.github.NumberFactory.model.components.utility.OutputComponent;
 import io.github.NumberFactory.utils.Constants;
 
 import java.util.List;
@@ -11,9 +12,11 @@ public class GameController {
 
     private final Level level;
     private float tickAccumulator = 0f;
+    private final SequenceGoal campaignGoal;
 
-    public GameController(Level level) {
+    public GameController(Level level, SequenceGoal campaignGoal) {
         this.level = level;
+        this.campaignGoal = campaignGoal;
     }
 
     public void update(float dt) {
@@ -25,6 +28,31 @@ public class GameController {
         while (tickAccumulator >= Constants.SIM_TICK_DURATION) {
             tickAccumulator -= Constants.SIM_TICK_DURATION;
             level.getMachine().tick();
+
+            SimulationLogger logger = level.getMachine().getActionLogger();
+            Board board = level.getMachine().getBoard();
+
+            for (int x = 0; x < board.width; x++) {
+                for (int y = 0; y < board.height; y++) {
+                    Component c = board.getCell(x, y).getComponent();
+                    if (c instanceof OutputComponent) {
+                        List<Item> logItems = ((OutputComponent) c).takeLogs();
+
+                        for (Item item : logItems) {
+                            if (logger != null) {
+                                logger.log("Returned " + item.getValue());
+                            }
+
+                            if (campaignGoal != null && !campaignGoal.isFailed() && !campaignGoal.isComplete()) {
+                                campaignGoal.submitValue(item.getValue());
+                                if (campaignGoal.isComplete()) {
+                                    pause();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -71,6 +99,10 @@ public class GameController {
         return level.getGoal();
     }
 
+    public SequenceGoal getCampaignGoal() {
+        return campaignGoal;
+    }
+
     public List<Integer> getAggregated() {
         return level.getMachine().getAggregated();
     }
@@ -91,6 +123,11 @@ public class GameController {
 
         machine.reset();
         resetTickAccumulator();
+
+        if (campaignGoal != null) {
+            campaignGoal.reset();
+        }
+
         return machine.start();
     }
 
@@ -104,11 +141,21 @@ public class GameController {
 
     public boolean reset() {
         resetTickAccumulator();
+
+        if (campaignGoal != null) {
+            campaignGoal.reset();
+        }
+
         return level.getMachine().reset();
     }
 
     public boolean restart() {
         resetTickAccumulator();
+
+        if (campaignGoal != null) {
+            campaignGoal.reset();
+        }
+
         return level.getMachine().restart();
     }
 

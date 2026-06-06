@@ -12,6 +12,8 @@ public class OutputComponent extends Component {
     private final List<Item> collected = new ArrayList<>();
     private List<Item> freshlyReceived = new ArrayList<>();
 
+    private List<Item> itemsToLog = new ArrayList<>();
+
     public OutputComponent() {
         super(1, 0);
     }
@@ -23,17 +25,29 @@ public class OutputComponent extends Component {
 
     @Override
     public boolean receive(Directions fromDir, Item item) {
-        if (getPort(fromDir) != PortType.INPUT_A) return false;
+        if (getPort(fromDir) != PortType.INPUT_A) {
+            return false;
+        }
+
         collected.add(item);
         freshlyReceived.add(item);
+        itemsToLog.add(item);
         return true;
     }
 
-    public List<Item> getCollected() { return collected; }
+    public List<Item> getCollected() {
+        return collected;
+    }
 
     public List<Item> takeFresh() {
         List<Item> out = freshlyReceived;
         freshlyReceived = new ArrayList<>();
+        return out;
+    }
+
+    public List<Item> takeLogs() {
+        List<Item> out = itemsToLog;
+        itemsToLog = new ArrayList<>();
         return out;
     }
 
@@ -52,5 +66,6 @@ public class OutputComponent extends Component {
     public void reset() {
         this.collected.clear();
         this.freshlyReceived = new ArrayList<>();
+        this.itemsToLog = new ArrayList<>();
     }
 }
