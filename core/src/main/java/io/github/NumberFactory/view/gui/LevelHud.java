@@ -30,6 +30,7 @@ public class LevelHud {
     private final ComponentGuidePanel guidePanel;
     private final TextButton guideHandle;
     private final TextButton logHandle;
+    private final Table activeSidePanel;
 
 
     public LevelHud(GameController game, EditController edit, HotbarController hotbar, Level level, TextureRegistry textures, Runnable onSave,
@@ -66,18 +67,38 @@ public class LevelHud {
         });
         stage.addActor(guideHandle);
 
-        sidebar.setVisible(false);
-        sidebar.pack();
-        stage.addActor(sidebar);
+        // TU TRYB KAMPANII
+        if (game.getCampaignGoal() != null) {
+            TaskPanel taskPanel = new TaskPanel(game.getCampaignGoal(), skin);
+            taskPanel.setVisible(false);
+            taskPanel.pack();
+            stage.addActor(taskPanel);
 
-        logHandle = new TextButton("LOGS", skin);
+            activeSidePanel = taskPanel;
+            logHandle = new TextButton("TASK", skin);
+            logHandle.addListener(new ChangeListener() {
+                @Override public void changed(ChangeEvent event, Actor actor) {
+                    taskPanel.toggle();
+                }
+            });
+        }
+        else {
+            // TU TRYB SANDBOX
+            Sidebar sidebar = new Sidebar(game, skin);
+            sidebar.setVisible(false);
+            sidebar.pack();
+            stage.addActor(sidebar);
+
+            activeSidePanel = sidebar;
+            logHandle = new TextButton("LOGS", skin);
+            logHandle.addListener(new ChangeListener() {
+                @Override public void changed(ChangeEvent event, Actor actor) {
+                    sidebar.toggle();
+                }
+            });
+        }
+
         logHandle.setSize(90, 40);
-        logHandle.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                sidebar.toggle();
-            }
-        });
         stage.addActor(logHandle);
     }
 
@@ -89,7 +110,27 @@ public class LevelHud {
         topBar.update();
         hotbarView.update();
         subHotbarView.update();
-        sidebar.update();
+
+        if (activeSidePanel instanceof Sidebar) {
+            ((Sidebar) activeSidePanel).update();
+        }
+        else if (activeSidePanel instanceof TaskPanel) {
+            ((TaskPanel) activeSidePanel).update();
+        }
+    }
+
+    private void positionLogUi() {
+        float handleX = 0;
+        float handleY = (stage.getHeight() - logHandle.getHeight()) / 2f;
+        logHandle.setPosition(handleX, handleY);
+
+        if (!activeSidePanel.isVisible()) {
+            return;
+        }
+
+        float x = logHandle.getWidth() + PANEL_MARGIN;
+        float y = (stage.getHeight() - activeSidePanel.getHeight()) / 2f;
+        activeSidePanel.setPosition(x, y);
     }
 
     public void act(float dt) {
@@ -121,20 +162,6 @@ public class LevelHud {
         float x = stage.getWidth() - guidePanel.getWidth() - guideHandle.getWidth() - PANEL_MARGIN;
         float y = (stage.getHeight() - guidePanel.getHeight()) / 2f;
         guidePanel.setPosition(x, y);
-    }
-
-    private void positionLogUi() {
-        float handleX = 0;
-        float handleY = (stage.getHeight() - logHandle.getHeight()) / 2f;
-        logHandle.setPosition(handleX, handleY);
-
-        if (!sidebar.isVisible()) {
-            return;
-        }
-
-        float x = logHandle.getWidth() + PANEL_MARGIN;
-        float y = (stage.getHeight() - sidebar.getHeight()) / 2f;
-        sidebar.setPosition(x, y);
     }
 
 }

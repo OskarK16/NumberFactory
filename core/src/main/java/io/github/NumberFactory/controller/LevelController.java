@@ -4,7 +4,10 @@ import io.github.NumberFactory.model.Level;
 import io.github.NumberFactory.save.LevelDefinitionMapper;
 import io.github.NumberFactory.save.LevelSaveMapper;
 import io.github.NumberFactory.save.SaveManager;
+import io.github.NumberFactory.model.SequenceGoal;
 import io.github.NumberFactory.save.data.LevelDefinitionData;
+
+import java.util.List;
 
 public class LevelController {
     private final boolean isSandbox;
@@ -22,6 +25,7 @@ public class LevelController {
     private final LevelSaveMapper saveMapper = new LevelSaveMapper();
 
     private Level level;
+    private SequenceGoal campaignGoal;
 
     public LevelController(boolean isSandbox, int levelNumber, String levelName, String playerAlias, String saveSlot) {
         this.isSandbox = isSandbox;
@@ -45,19 +49,44 @@ public class LevelController {
         saveMapper.applyTo(level, saveManager.loadData(saveName));
     }
 
+    public SequenceGoal getCampaignGoal() {
+        return campaignGoal;
+    }
+
     public void loadFreshLevel() {
         if (isSandbox) {
             this.level = Level.sandbox();
+            this.campaignGoal = null;
             return;
         }
+
+        if (!saveManager.hasDefinition(levelName)) {
+            // TODO - dodac wiecej, tu poki co jest tylko ten Fibonacci przykladowy
+
+            this.level = Level.sandbox();
+            this.campaignGoal = new SequenceGoal(
+                "FIBONACCI",
+                "Generate the classic Fibonacci sequence. Each number is the sum of the two preceding ones.",
+                List.of(1, 1, 2, 3, 5, 8, 13, 21, 34)
+            );
+            return;
+        }
+
+
         if (!saveManager.hasDefinition(levelName)) {
             this.level = Level.sandbox();
+            this.campaignGoal = null;
             return;
         }
+
         LevelDefinitionData data = saveManager.loadDefinition(levelName);
         this.description = data.metadata.description != null ? data.metadata.description : "";
         this.author = data.metadata.author != null ? data.metadata.author : "";
         this.level = defMapper.fromDefinition(data);
+
+        if (data.expectedSequence != null && !data.expectedSequence.isEmpty()) {
+            this.campaignGoal = new SequenceGoal(levelName.toUpperCase(), this.description, data.expectedSequence);
+        }
     }
 
     public void saveLevel() {

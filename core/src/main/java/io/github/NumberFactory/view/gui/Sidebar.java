@@ -29,7 +29,7 @@ public class Sidebar extends Table {
         Label title = new Label("ACTION LOG", skin, "title");
         add(title).padBottom(16).center().row();
 
-        progressLabel = new Label("Awaiting input...", skin, "dim");
+        progressLabel = new Label("Awaiting input...", skin, "default");
         progressLabel.setAlignment(Align.topLeft);
         progressLabel.setWrap(true);
         progressLabel.getStyle().font.getData().markupEnabled = true;
@@ -47,6 +47,7 @@ public class Sidebar extends Table {
                 toggle();
             }
         });
+
         add(closeBtn).width(120).height(40).center();
     }
 
@@ -79,7 +80,7 @@ public class Sidebar extends Table {
         }
 
         for (String logMsg : logs) {
-            sbuilder.append(">> ").append(colorizeLog(logMsg)).append("\n");
+            sbuilder.append("> ").append(colorizeLog(logMsg)).append("\n");
         }
 
         progressLabel.setText(sbuilder.toString());
@@ -89,19 +90,22 @@ public class Sidebar extends Table {
         String colorHex = "[#FFFFFF]";
 
         if (logMsg.startsWith("Added") || logMsg.startsWith("Subtracted") || logMsg.startsWith("Multiplied") || logMsg.startsWith("Divided") || logMsg.startsWith("Modulo")) {
-            colorHex = "[#9E6BE0]";
+            colorHex = "[#B300FF]";
         }
         else if (logMsg.startsWith("Copied")) {
-            colorHex = "[#66B275]";
+            colorHex = "[#00FF37]";
         }
         else if (logMsg.startsWith("Generated")) {
-            colorHex = "[#4A90E2]";
+            colorHex = "[#0044FF]";
         }
         else if (logMsg.startsWith("Destroyed")) {
-            colorHex = "[#E25A4A]";
+            colorHex = "[#FF0000]";
         }
-        else if (logMsg.startsWith("Evaluated")) {
-            colorHex = "[#F2B938]";
+        else if (logMsg.startsWith("Compared")) {
+            colorHex = "[#FF9900]";
+        }
+        else if (logMsg.startsWith("Returned")) {
+            colorHex = "[#FFD900]";
         }
 
         return colorHex + logMsg + "[]";
