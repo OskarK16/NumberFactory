@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "Fibonacci",
+    "description": "Generate the Fibonacci sequence: each number is the sum of the two preceding ones.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [1, 2, 3, 5, 8, 13, 21, 34]
+}

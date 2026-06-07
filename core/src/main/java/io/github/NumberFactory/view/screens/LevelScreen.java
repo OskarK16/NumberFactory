@@ -48,7 +48,7 @@ public class LevelScreen implements Screen {
     @Override
     public void show() {
         levelController.loadSave();
-        game = new GameController(levelController.getLevel(), levelController.getCampaignGoal());
+        game = new GameController(levelController.getLevel(), levelController.getGoal());
         edit = new EditController(game.getBoard());
         hotbar = HotbarFactory.buildDefault();
 
