@@ -8,5 +8,4 @@ public class LevelDefinitionData {
     public List<CellDefinitionData> boardLayout;
     public List<InventoryEntryData> inventory;
     public List<Integer> goal;
-    public List<Integer> expectedSequence;
 }

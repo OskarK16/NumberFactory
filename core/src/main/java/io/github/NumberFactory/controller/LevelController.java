@@ -25,7 +25,7 @@ public class LevelController {
     private final LevelSaveMapper saveMapper = new LevelSaveMapper();
 
     private Level level;
-    private SequenceGoal campaignGoal;
+    private SequenceGoal goal;
 
     public LevelController(boolean isSandbox, int levelNumber, String levelName, String playerAlias, String saveSlot) {
         this.isSandbox = isSandbox;
@@ -49,33 +49,20 @@ public class LevelController {
         saveMapper.applyTo(level, saveManager.loadData(saveName));
     }
 
-    public SequenceGoal getCampaignGoal() {
-        return campaignGoal;
+    public SequenceGoal getGoal() {
+        return goal;
     }
 
     public void loadFreshLevel() {
         if (isSandbox) {
             this.level = Level.sandbox();
-            this.campaignGoal = null;
+            this.goal = null;
             return;
         }
 
         if (!saveManager.hasDefinition(levelName)) {
-            // TODO - dodac wiecej, tu poki co jest tylko ten Fibonacci przykladowy
-
             this.level = Level.sandbox();
-            this.campaignGoal = new SequenceGoal(
-                "FIBONACCI",
-                "Generate the classic Fibonacci sequence. Each number is the sum of the two preceding ones.",
-                List.of(1, 1, 2, 3, 5, 8, 13, 21, 34)
-            );
-            return;
-        }
-
-
-        if (!saveManager.hasDefinition(levelName)) {
-            this.level = Level.sandbox();
-            this.campaignGoal = null;
+            this.goal = null;
             return;
         }
 
@@ -84,8 +71,8 @@ public class LevelController {
         this.author = data.metadata.author != null ? data.metadata.author : "";
         this.level = defMapper.fromDefinition(data);
 
-        if (data.expectedSequence != null && !data.expectedSequence.isEmpty()) {
-            this.campaignGoal = new SequenceGoal(levelName.toUpperCase(), this.description, data.expectedSequence);
+        if (data.goal != null && !data.goal.isEmpty()) {
+            this.goal = new SequenceGoal(levelName.toUpperCase(), this.description, data.goal);
         }
     }
 
