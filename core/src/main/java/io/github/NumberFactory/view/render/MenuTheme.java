@@ -71,6 +71,7 @@ public final class MenuTheme implements Disposable {
         skin.add("gradient", new TextureRegionDrawable(register(Pixmaps.gradient(background, bgBottom, 256))), Drawable.class);
         skin.add("grid", new TiledDrawable(new TextureRegion(register(Pixmaps.grid(gridLine, 44)))), TiledDrawable.class);
         skin.add("panel", new NinePatchDrawable(borderPatch(surface, panelBorder)), Drawable.class);
+        skin.add("key", new NinePatchDrawable(borderPatch(btnUp, panelBorder)), Drawable.class);
     }
 
     public Skin skin() { return skin; }
@@ -102,6 +103,19 @@ public final class MenuTheme implements Disposable {
 
     public Image divider() {
         return new Image(new TextureRegionDrawable(new TextureRegion(solidTexture(panelBorder))));
+    }
+
+    public Table key(String text) {
+        return key(text, 0);
+    }
+
+    public Table key(String text, float minWidth) {
+        Table wrapper = new Table();
+        wrapper.setBackground(skin.getDrawable("key"));
+        Label label = new Label(text, skin, "default");
+        label.setAlignment(Align.center);
+        wrapper.add(label).pad(4, 12, 4, 12).minWidth(minWidth);
+        return wrapper;
     }
 
     public TextButton menuButton(String label, Color accent, boolean disabled) {

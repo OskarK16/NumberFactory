@@ -41,9 +41,9 @@ public class MainMenuScreen extends MenuScreen {
 
         Table card = theme.card();
 
-        TextButton sandbox = menuButton("SANDBOX", C_GREEN, false);
-        TextButton campaign = menuButton("CAMPAIGN (soon)", ACCENT, true);
-        TextButton instructions = menuButton("INSTRUCTIONS", C_PURPLE, false);
+        TextButton sandbox = theme.menuButton("SANDBOX", theme.green, false);
+        TextButton campaign = theme.menuButton("CAMPAIGN", theme.accent, false);
+        TextButton instructions = theme.menuButton("INSTRUCTIONS", theme.purple, false);
 
         card.add(sandbox).width(300).height(62).padBottom(18).row();
         card.add(campaign).width(300).height(62).padBottom(18).row();
@@ -57,7 +57,7 @@ public class MainMenuScreen extends MenuScreen {
 
         campaign.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelScreen(game, new LevelController(false, 1, "level1", "player1", null)));
+                app.setScreen(new LevelScreen(app, new LevelController(false, 1, "level1", "player1", null)));
             }
         });
 
