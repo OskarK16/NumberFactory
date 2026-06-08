@@ -2,6 +2,8 @@ package io.github.NumberFactory.view.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -30,8 +32,6 @@ public class LevelSelectScreen extends MenuScreen {
         "ones", "powers", "countdown", "fibonacci", "collatz", "euclid", "catalan", "secret"
     );
 
-    private final SaveManager saveManager = new SaveManager();
-
     public LevelSelectScreen(Main app) {
         super(app);
     }
@@ -39,7 +39,7 @@ public class LevelSelectScreen extends MenuScreen {
     @Override
     protected void build() {
         String alias = new ConfigManager().load().currentPlayer;
-        List<String> levels = saveManager.listDefinitions();
+        List<String> levels = SaveManager.listDefinitions();
         levels.sort(Comparator.comparingInt(LevelSelectScreen::orderIndex)
             .thenComparing(Comparator.naturalOrder()));
 
@@ -57,6 +57,12 @@ public class LevelSelectScreen extends MenuScreen {
 
         ScrollPane pane = theme.scrollPane(grid);
         pane.setScrollingDisabled(true, false);
+        stage.setScrollFocus(pane);
+        pane.addListener(new InputListener() {
+            @Override public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1) stage.setScrollFocus(pane);
+            }
+        });
 
         TextButton back = theme.menuButton("BACK TO MENU", theme.accent, false);
         back.addListener(new ChangeListener() {
@@ -80,7 +86,7 @@ public class LevelSelectScreen extends MenuScreen {
     }
 
     private Table buildLevelCard(String levelName, int levelNumber, String alias) {
-        LevelDefinitionData definition = saveManager.loadDefinition(levelName);
+        LevelDefinitionData definition = SaveManager.loadDefinition(levelName);
         String displayTitle = levelName.toUpperCase();
         String description = "";
         if (definition != null && definition.metadata != null) {
@@ -91,10 +97,10 @@ public class LevelSelectScreen extends MenuScreen {
         }
 
         String saveId = "camp_" + alias + "_" + levelName;
-        boolean started = saveManager.hasSave(saveId);
+        boolean started = SaveManager.hasSave(saveId);
         boolean completed = false;
         if (started) {
-            LevelSaveData data = saveManager.loadData(saveId);
+            LevelSaveData data = SaveManager.loadData(saveId);
             completed = data != null && data.completed;
         }
 
