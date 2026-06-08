@@ -108,10 +108,16 @@ public class GameController {
     }
 
     public boolean placeComponent(int x, int y, Component c) {
+        if (getSimulationState() != SimulationState.IDLE) {
+            return false;
+        }
         return level.placeComponent(x, y, c);
     }
 
     public boolean removeComponent(int x, int y) {
+        if (getSimulationState() != SimulationState.IDLE) {
+            return false;
+        }
         return level.removeComponent(x, y);
     }
 
