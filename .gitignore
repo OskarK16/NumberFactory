@@ -1,5 +1,8 @@
-## Game data
+## Game data (ignore player data, but track campaign level definitions)
 /data/*
+!/data/savesystem
+/data/savesystem/*
+!/data/savesystem/levels
 
 ## Gradle:
 .gradle/

@@ -24,6 +24,7 @@ public class LevelScreen implements Screen {
 
     private final Main app;
     private final LevelController levelController;
+    private final boolean resume;
     private float autoSaveTimer = 0f;
 
     private GameController game;
@@ -41,13 +42,20 @@ public class LevelScreen implements Screen {
     private BoardHoverTracker hover;
 
     public LevelScreen(Main app, LevelController levelController) {
+        this(app, levelController, true);
+    }
+
+    public LevelScreen(Main app, LevelController levelController, boolean resume) {
         this.app = app;
         this.levelController = levelController;
+        this.resume = resume;
     }
 
     @Override
     public void show() {
-        levelController.loadSave();
+        if (resume) levelController.loadSave();
+        else levelController.loadFreshLevel();
+
         game = new GameController(levelController.getLevel(), levelController.getGoal());
         edit = new EditController(game.getBoard());
         hotbar = HotbarFactory.buildDefault();

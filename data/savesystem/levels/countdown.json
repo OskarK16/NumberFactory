@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "name": "Countdown",
+    "description": "Count down from nine to one.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "difficulty": 0,
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [9, 8, 7, 6, 5, 4, 3, 2, 1]
+}

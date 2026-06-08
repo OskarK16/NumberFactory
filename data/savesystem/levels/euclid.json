@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "name": "Fibonacci",
-    "description": "Generate the Fibonacci sequence: each number is the sum of the two preceding ones.",
+    "name": "Euclid",
+    "description": "Reproduce the steps of Euclid's GCD algorithm.",
     "author": "Dominik, Józef, Oskar",
     "mode": "CAMPAIGN",
     "difficulty": 1,
@@ -9,5 +9,5 @@
     "boardHeight": 50
   },
   "boardLayout": [],
-  "goal": [1, 1, 2, 3, 5, 8, 13, 21, 34]
+  "goal": [610, 144, 34, 8, 2, 0]
 }
