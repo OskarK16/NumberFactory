@@ -4,6 +4,7 @@
     "description": "Warm-up: deliver a steady stream of ones.",
     "author": "Dominik, Józef, Oskar",
     "mode": "CAMPAIGN",
+    "difficulty": 0,
     "boardWidth": 50,
     "boardHeight": 50
   },

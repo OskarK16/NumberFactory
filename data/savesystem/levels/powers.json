@@ -4,6 +4,7 @@
     "description": "Deliver the powers of two, from 1 up to 64.",
     "author": "Dominik, Józef, Oskar",
     "mode": "CAMPAIGN",
+    "difficulty": 0,
     "boardWidth": 50,
     "boardHeight": 50
   },

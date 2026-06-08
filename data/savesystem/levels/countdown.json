@@ -4,6 +4,7 @@
     "description": "Count down from nine to one.",
     "author": "Dominik, Józef, Oskar",
     "mode": "CAMPAIGN",
+    "difficulty": 0,
     "boardWidth": 50,
     "boardHeight": 50
   },

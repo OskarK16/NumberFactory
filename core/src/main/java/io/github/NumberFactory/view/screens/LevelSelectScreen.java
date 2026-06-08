@@ -80,6 +80,14 @@ public class LevelSelectScreen extends MenuScreen {
         stage.addActor(root);
     }
 
+    private Color difficultyColor(int difficulty) {
+        switch (difficulty) {
+            case 2:  return theme.red;
+            case 1:  return theme.yellow;
+            default: return theme.green;
+        }
+    }
+
     private static int orderIndex(String levelName) {
         int idx = LEVEL_ORDER.indexOf(levelName);
         return idx < 0 ? Integer.MAX_VALUE : idx;
@@ -89,11 +97,13 @@ public class LevelSelectScreen extends MenuScreen {
         LevelDefinitionData definition = SaveManager.loadDefinition(levelName);
         String displayTitle = levelName.toUpperCase();
         String description = "";
+        int difficulty = 0;
         if (definition != null && definition.metadata != null) {
             if (definition.metadata.name != null && !definition.metadata.name.isEmpty()) {
                 displayTitle = definition.metadata.name.toUpperCase();
             }
             description = definition.metadata.description == null ? "" : definition.metadata.description;
+            difficulty = definition.metadata.difficulty;
         }
 
         String saveId = "camp_" + alias + "_" + levelName;
@@ -132,7 +142,7 @@ public class LevelSelectScreen extends MenuScreen {
         }
 
         Table card = new Table();
-        card.setBackground(theme.skin().getDrawable("panel"));
+        card.setBackground(theme.panel(difficultyColor(difficulty)));
         card.pad(24, 30, 24, 30);
         card.top();
 

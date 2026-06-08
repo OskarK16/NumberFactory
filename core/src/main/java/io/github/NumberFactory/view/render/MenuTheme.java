@@ -39,8 +39,11 @@ public final class MenuTheme implements Disposable {
     public final Color green;
     public final Color purple;
     public final Color blue;
+    public final Color red;
+    public final Color yellow;
     public final Color text;
 
+    private final Color surface;
     private final Color panelBorder;
     private final Color btnUp;
     private final Color btnDown;
@@ -53,7 +56,7 @@ public final class MenuTheme implements Disposable {
     public MenuTheme() {
         JsonValue c = loadColors();
         Color background = color(c, "background");
-        Color surface = color(c, "surface");
+        surface = color(c, "surface");
         Color gridLine = color(c, "gridLine");
         bgBottom = color(c, "bgBottom");
         panelBorder = color(c, "panelBorder");
@@ -65,6 +68,8 @@ public final class MenuTheme implements Disposable {
         green = color(c, "green");
         purple = color(c, "purple");
         blue = color(c, "blue");
+        red = color(c, "red");
+        yellow = color(c, "yellow");
 
         uiFont = font(18);
         skin.add("default-font", uiFont, BitmapFont.class);
@@ -101,6 +106,10 @@ public final class MenuTheme implements Disposable {
         card.setBackground(skin.getDrawable("panel"));
         card.pad(36, 48, 36, 48);
         return card;
+    }
+
+    public Drawable panel(Color border) {
+        return new NinePatchDrawable(borderPatch(surface, border));
     }
 
     public Image divider() {

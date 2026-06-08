@@ -4,6 +4,7 @@
     "description": "Reproduce the steps of Euclid's GCD algorithm.",
     "author": "Dominik, Józef, Oskar",
     "mode": "CAMPAIGN",
+    "difficulty": 1,
     "boardWidth": 50,
     "boardHeight": 50
   },
