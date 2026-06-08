@@ -30,19 +30,27 @@ public class TaskPanel extends Table {
         setBackground(skin.getDrawable("panel"));
         pad(24);
 
+        BitmapFont taskFont = new BitmapFont();
+        skin.add("task-font", taskFont, BitmapFont.class);
+        skin.add("task", new Label.LabelStyle(taskFont, skin.get("default", Label.LabelStyle.class).fontColor));
+        skin.add("task-dim", new Label.LabelStyle(taskFont, skin.get("dim", Label.LabelStyle.class).fontColor));
+        TextButton.TextButtonStyle taskButton = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
+        taskButton.font = taskFont;
+        skin.add("task", taskButton);
+
         ChromaticText title = new ChromaticText(goal.getTitle(), skin, 1.5f, 1.15f);
         add(title).padBottom(6).center().row();
 
-        Label separator = new Label("--------------------------------", skin, "dim"); // TODO - do zastapoienia czyms ladniejszym
+        Label separator = new Label("--------------------------------", skin, "task-dim"); // TODO - do zastapoienia czyms ladniejszym
         separator.setAlignment(Align.center);
         add(separator).padBottom(16).center().row();
 
-        Label descLabel = new Label(goal.getDescription(), skin, "default");
+        Label descLabel = new Label(goal.getDescription(), skin, "task");
         descLabel.setWrap(true);
         descLabel.setAlignment(Align.topLeft);
         add(descLabel).width(360).padBottom(24).row();
 
-        sequenceLabel = new Label("", skin, "default");
+        sequenceLabel = new Label("", skin, "task");
         sequenceLabel.setWrap(true);
         sequenceLabel.setAlignment(Align.topLeft);
         sequenceLabel.setFontScale(1.15f);
@@ -53,12 +61,12 @@ public class TaskPanel extends Table {
         scrollPane.setScrollingDisabled(true, false);
         add(scrollPane).width(360).height(200).padBottom(20).row();
 
-        statusLabel = new Label("", skin, "default");
+        statusLabel = new Label("", skin, "task");
         statusLabel.setAlignment(Align.center);
         statusLabel.getStyle().font.getData().markupEnabled = true;
         add(statusLabel).width(360).padBottom(20).row();
 
-        TextButton closeBtn = new TextButton("CLOSE", skin);
+        TextButton closeBtn = new TextButton("CLOSE", skin, "task");
         closeBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

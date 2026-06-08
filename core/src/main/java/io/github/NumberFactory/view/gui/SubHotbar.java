@@ -1,10 +1,17 @@
 package io.github.NumberFactory.view.gui;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 
 import io.github.NumberFactory.controller.ComponentPaletteSelection;
 import io.github.NumberFactory.controller.HotbarController;
@@ -17,7 +24,7 @@ import java.util.function.IntConsumer;
 
 public class SubHotbar extends Table {
 
-    private static final int SLOT_SIZE = 48;
+    private static final int SLOT_SIZE = 60;
 
     private final HotbarController hotbar;
     private final Inventory inventory;
@@ -111,6 +118,11 @@ public class SubHotbar extends Table {
                 stack.add(new Image(new TextureRegionDrawable(label)));
             }
 
+            Image hoverOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
+            hoverOverlay.setColor(1f, 1f, 1f, 0.45f);
+            hoverOverlay.setVisible(false);
+            stack.add(hoverOverlay);
+
             selectedOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
             selectedOverlay.setVisible(false);
             stack.add(selectedOverlay);
@@ -122,6 +134,7 @@ public class SubHotbar extends Table {
             stack.add(corner);
 
             add(stack).grow();
+            installHover(this, hoverOverlay);
         }
 
         void setSelected(boolean selected) {
@@ -131,5 +144,22 @@ public class SubHotbar extends Table {
         void refreshCount(Inventory inventory) {
             countLabel.setText(Integer.toString(inventory.usedOf(entry.type())));
         }
+    }
+
+    private static void installHover(final Table slot, final Image hoverOverlay) {
+        slot.setTransform(true);
+        slot.addListener(new ClickListener() {
+            @Override public void enter(InputEvent event, float x, float y, int pointer, Actor from) {
+                if (pointer != -1) return;
+                hoverOverlay.setVisible(true);
+                slot.setOrigin(Align.center);
+                slot.addAction(Actions.scaleTo(1.08f, 1.08f, 0.07f));
+            }
+            @Override public void exit(InputEvent event, float x, float y, int pointer, Actor to) {
+                if (pointer != -1) return;
+                hoverOverlay.setVisible(false);
+                slot.addAction(Actions.scaleTo(1f, 1f, 0.07f));
+            }
+        });
     }
 }

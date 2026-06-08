@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import io.github.NumberFactory.controller.EditController;
 import io.github.NumberFactory.controller.GameController;
 import io.github.NumberFactory.controller.HotbarController;
 import io.github.NumberFactory.model.Level;
@@ -18,7 +17,6 @@ import io.github.NumberFactory.view.render.UiSkin;
 public class LevelHud {
 
     private static final float PANEL_MARGIN = 8f;
-    private static final float PANEL_GAP = 8f;
 
     private final Stage stage;
     private final Table root;
@@ -26,80 +24,64 @@ public class LevelHud {
     private final TopBar topBar;
     private final Hotbar hotbarView;
     private final SubHotbar subHotbarView;
-    private final Sidebar sidebar;
     private final ComponentGuidePanel guidePanel;
     private final TextButton guideHandle;
     private final TextButton logHandle;
     private final Table activeSidePanel;
 
 
-    public LevelHud(GameController game, EditController edit, HotbarController hotbar, Level level, TextureRegistry textures, Runnable onSave,
+    public LevelHud(GameController game, HotbarController hotbar, Level level, TextureRegistry textures, Runnable onSave,
                     Runnable onReturnToMenu) {
         skin = UiSkin.build();
         stage = new Stage(new ScreenViewport());
 
         guidePanel = new ComponentGuidePanel(textures, skin);
-        topBar = new TopBar(game, skin, onSave, onReturnToMenu);
+        guidePanel.setVisible(false);
+        guidePanel.pack();
+
+        guideHandle = new TextButton("GUIDE", skin);
+        guideHandle.addListener(new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) { guidePanel.toggle(); }
+        });
+
+        if (game.getCampaignGoal() != null) {
+            TaskPanel taskPanel = new TaskPanel(game.getCampaignGoal(), skin);
+            taskPanel.setVisible(false);
+            taskPanel.pack();
+            activeSidePanel = taskPanel;
+            logHandle = new TextButton("TASK", skin);
+            logHandle.addListener(new ChangeListener() {
+                @Override public void changed(ChangeEvent event, Actor actor) { taskPanel.toggle(); }
+            });
+        }
+        else {
+            Sidebar logPanel = new Sidebar(game, skin);
+            logPanel.setVisible(false);
+            logPanel.pack();
+            activeSidePanel = logPanel;
+            logHandle = new TextButton("LOGS", skin);
+            logHandle.addListener(new ChangeListener() {
+                @Override public void changed(ChangeEvent event, Actor actor) { logPanel.toggle(); }
+            });
+        }
+
+        topBar = new TopBar(game, skin, onSave, onReturnToMenu, logHandle, guideHandle);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
         subHotbarView = new SubHotbar(hotbar, level.getInventory(), textures, skin);
-        sidebar = new Sidebar(game, skin);
 
         root = new Table();
         root.setFillParent(true);
         root.top();
 
         root.add(topBar).growX().colspan(2).row();
-//        root.add(sidebar).top().left().padTop(8).padLeft(8);
         root.add().expand().row();
 
         root.add(subHotbarView).colspan(2).padBottom(4).row();
         root.add(hotbarView).colspan(2).padBottom(8).row();
         stage.addActor(root);
 
-        guidePanel.setVisible(false);
-        guidePanel.pack();
         stage.addActor(guidePanel);
-
-        guideHandle = new TextButton("GUIDE", skin);
-        guideHandle.setSize(90, 40);
-        guideHandle.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) { guidePanel.toggle(); }
-        });
-        stage.addActor(guideHandle);
-
-        // TU TRYB KAMPANII
-        if (game.getCampaignGoal() != null) {
-            TaskPanel taskPanel = new TaskPanel(game.getCampaignGoal(), skin);
-            taskPanel.setVisible(false);
-            taskPanel.pack();
-            stage.addActor(taskPanel);
-
-            activeSidePanel = taskPanel;
-            logHandle = new TextButton("TASK", skin);
-            logHandle.addListener(new ChangeListener() {
-                @Override public void changed(ChangeEvent event, Actor actor) {
-                    taskPanel.toggle();
-                }
-            });
-        }
-        else {
-            // TU TRYB SANDBOX
-            Sidebar sidebar = new Sidebar(game, skin);
-            sidebar.setVisible(false);
-            sidebar.pack();
-            stage.addActor(sidebar);
-
-            activeSidePanel = sidebar;
-            logHandle = new TextButton("LOGS", skin);
-            logHandle.addListener(new ChangeListener() {
-                @Override public void changed(ChangeEvent event, Actor actor) {
-                    sidebar.toggle();
-                }
-            });
-        }
-
-        logHandle.setSize(90, 40);
-        stage.addActor(logHandle);
+        stage.addActor(activeSidePanel);
     }
 
     public Stage getStage() {
@@ -120,15 +102,10 @@ public class LevelHud {
     }
 
     private void positionLogUi() {
-        float handleX = 0;
-        float handleY = (stage.getHeight() - logHandle.getHeight()) / 2f;
-        logHandle.setPosition(handleX, handleY);
-
         if (!activeSidePanel.isVisible()) {
             return;
         }
-
-        float x = logHandle.getWidth() + PANEL_MARGIN;
+        float x = PANEL_MARGIN;
         float y = (stage.getHeight() - activeSidePanel.getHeight()) / 2f;
         activeSidePanel.setPosition(x, y);
     }
@@ -153,13 +130,9 @@ public class LevelHud {
     }
 
     private void positionGuideUi() {
-        float handleX = stage.getWidth() - guideHandle.getWidth();
-        float handleY = (stage.getHeight() - guideHandle.getHeight()) / 2f;
-        guideHandle.setPosition(handleX, handleY);
-
         if (!guidePanel.isVisible()) return;
         guidePanel.layoutFor(stage.getWidth(), stage.getHeight());
-        float x = stage.getWidth() - guidePanel.getWidth() - guideHandle.getWidth() - PANEL_MARGIN;
+        float x = stage.getWidth() - guidePanel.getWidth() - PANEL_MARGIN;
         float y = (stage.getHeight() - guidePanel.getHeight()) / 2f;
         guidePanel.setPosition(x, y);
     }

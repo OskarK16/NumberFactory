@@ -1,10 +1,14 @@
 package io.github.NumberFactory.view.gui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 import io.github.NumberFactory.controller.GameController;
 import io.github.NumberFactory.model.SimulationState;
@@ -19,7 +23,8 @@ public class TopBar extends Table {
     private final TextButton saveBtn;
     private final TextButton menuBtn;
 
-    public TopBar(GameController game, Skin skin, Runnable onSave, Runnable onReturnToMenu) {
+    public TopBar(GameController game, Skin skin, Runnable onSave, Runnable onReturnToMenu,
+                  TextButton logButton, TextButton guideButton) {
         this.game = game;
 
         startBtn = new TextButton("START", skin);
@@ -28,6 +33,23 @@ public class TopBar extends Table {
         restartBtn = new TextButton("RESTART", skin);
         saveBtn   = new TextButton("SAVE", skin);
         menuBtn = new TextButton("MENU", skin);
+
+
+        for (final TextButton btn : new TextButton[]{logButton, startBtn, pauseBtn, resetBtn, restartBtn, saveBtn, menuBtn, guideButton}) {
+            btn.getLabelCell().padLeft(14).padRight(14);
+            btn.setTransform(true);
+            btn.addListener(new ClickListener() {
+                @Override public void enter(InputEvent e, float x, float y, int pointer, Actor from) {
+                    if (pointer == -1 && !btn.isDisabled()) {
+                        btn.setOrigin(Align.center);
+                        btn.addAction(Actions.scaleTo(1.06f, 1.06f, 0.08f));
+                    }
+                }
+                @Override public void exit(InputEvent e, float x, float y, int pointer, Actor to) {
+                    if (pointer == -1) btn.addAction(Actions.scaleTo(1f, 1f, 0.08f));
+                }
+            });
+        }
 
         startBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
@@ -74,13 +96,15 @@ public class TopBar extends Table {
         });
 
         setBackground(skin.getDrawable("panel"));
-        pad(6);
-        add(startBtn).width(110).height(36).padRight(8);
-        add(pauseBtn).width(110).height(36).padRight(8);
-        add(resetBtn).width(110).height(36).padRight(8);
-        add(restartBtn).width(110).height(36).padRight(32);
-        add(saveBtn).width(110).height(36).padRight(8);
-        add(menuBtn).width(110).height(36);
+        pad(10);
+        add(logButton).minWidth(128).height(48).padRight(12);
+        add(startBtn).minWidth(128).height(48).padRight(10);
+        add(pauseBtn).minWidth(128).height(48).padRight(10);
+        add(resetBtn).minWidth(128).height(48).padRight(10);
+        add(restartBtn).minWidth(128).height(48).padRight(36);
+        add(saveBtn).minWidth(128).height(48).padRight(10);
+        add(menuBtn).minWidth(128).height(48).padRight(12);
+        add(guideButton).minWidth(128).height(48);
     }
 
     public void update() {
