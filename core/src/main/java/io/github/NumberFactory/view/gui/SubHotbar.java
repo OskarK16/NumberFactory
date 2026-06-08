@@ -2,15 +2,13 @@ package io.github.NumberFactory.view.gui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.NumberFactory.controller.ComponentPaletteSelection;
 import io.github.NumberFactory.controller.HotbarController;
+import io.github.NumberFactory.model.Inventory;
 import io.github.NumberFactory.view.render.TextureRegistry;
 
 import java.util.ArrayList;
@@ -22,13 +20,15 @@ public class SubHotbar extends Table {
     private static final int SLOT_SIZE = 48;
 
     private final HotbarController hotbar;
+    private final Inventory inventory;
     private final List<Slot> arithmeticSlots = new ArrayList<>();
     private final List<Slot> logicSlots = new ArrayList<>();
     private final Table arithmeticRow;
     private final Table logicRow;
 
-    public SubHotbar(HotbarController hotbar, TextureRegistry textures, Skin skin) {
+    public SubHotbar(HotbarController hotbar, Inventory inventory, TextureRegistry textures, Skin skin) {
         this.hotbar = hotbar;
+        this.inventory = inventory;
 
         setBackground(skin.getDrawable("panel"));
         pad(6);
@@ -36,9 +36,9 @@ public class SubHotbar extends Table {
         center();
 
         arithmeticRow = buildRow(hotbar.getArithmetic(), textures, arithmeticSlots,
-            hotbar::selectFromArithmetic);
+            hotbar::selectFromArithmetic, skin);
         logicRow = buildRow(hotbar.getLogic(), textures, logicSlots,
-            hotbar::selectFromLogic);
+            hotbar::selectFromLogic, skin);
 
         Stack contentStack = new Stack();
         contentStack.add(arithmeticRow);
@@ -47,7 +47,7 @@ public class SubHotbar extends Table {
         add(contentStack).center();
     }
 
-    private static Table buildRow(ComponentPaletteSelection palette, TextureRegistry textures, List<Slot> slotsOut, IntConsumer onClick) {
+    private static Table buildRow(ComponentPaletteSelection palette, TextureRegistry textures, List<Slot> slotsOut, IntConsumer onClick, Skin skin) {
         Table row = new Table();
 
         row.center();
@@ -55,7 +55,7 @@ public class SubHotbar extends Table {
         for (int i = 0; i < palette.getEntries().size(); i++) {
             final int index = i;
             ComponentPaletteSelection.Entry entry = palette.getEntries().get(i);
-            Slot slot = new Slot(entry, textures);
+            Slot slot = new Slot(entry, textures, skin);
             slot.addListener(new ClickListener() {
                 @Override public void clicked(InputEvent event, float x, float y) {
                     onClick.accept(index);
@@ -78,6 +78,7 @@ public class SubHotbar extends Table {
 
         for (int i = 0; i < arithmeticSlots.size(); i++) {
             arithmeticSlots.get(i).setSelected(arithActive && i == arithIdx);
+            arithmeticSlots.get(i).refreshCount(inventory);
         }
 
         boolean logicActive = hotbar.getActivePalette() == hotbar.getLogic();
@@ -85,14 +86,18 @@ public class SubHotbar extends Table {
 
         for (int i = 0; i < logicSlots.size(); i++) {
             logicSlots.get(i).setSelected(logicActive && i == logicIdx);
+            logicSlots.get(i).refreshCount(inventory);
         }
 
     }
 
     static class Slot extends Table {
+        private final ComponentPaletteSelection.Entry entry;
         private final Image selectedOverlay;
+        private final Label countLabel;
 
-        Slot(ComponentPaletteSelection.Entry entry, TextureRegistry textures) {
+        Slot(ComponentPaletteSelection.Entry entry, TextureRegistry textures, Skin skin) {
+            this.entry = entry;
             Stack stack = new Stack();
             Texture block = textures.getBlock(entry.type());
 
@@ -109,11 +114,22 @@ public class SubHotbar extends Table {
             selectedOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
             selectedOverlay.setVisible(false);
             stack.add(selectedOverlay);
+
+            countLabel = new Label("", skin);
+            Table corner = new Table();
+            corner.bottom().right();
+            corner.add(countLabel).pad(2);
+            stack.add(corner);
+
             add(stack).grow();
         }
 
         void setSelected(boolean selected) {
             selectedOverlay.setVisible(selected);
+        }
+
+        void refreshCount(Inventory inventory) {
+            countLabel.setText(Integer.toString(inventory.usedOf(entry.type())));
         }
     }
 }

@@ -41,7 +41,7 @@ public class LevelHud {
         guidePanel = new ComponentGuidePanel(textures, skin);
         topBar = new TopBar(game, skin, onSave, onReturnToMenu);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
-        subHotbarView = new SubHotbar(hotbar, textures, skin);
+        subHotbarView = new SubHotbar(hotbar, level.getInventory(), textures, skin);
         sidebar = new Sidebar(game, skin);
 
         root = new Table();
