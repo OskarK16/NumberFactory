@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "Collatz",
+    "description": "Produce the Collatz sequence for the given starting number.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [6, 3, 10, 5, 16, 8, 4, 2, 1]
+}

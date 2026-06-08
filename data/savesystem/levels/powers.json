@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "Powers of Two",
+    "description": "Deliver the powers of two, from 1 up to 64.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [1, 2, 4, 8, 16, 32, 64]
+}

@@ -38,6 +38,7 @@ public final class MenuTheme implements Disposable {
     public final Color accent;
     public final Color green;
     public final Color purple;
+    public final Color blue;
     public final Color text;
 
     private final Color panelBorder;
@@ -63,6 +64,7 @@ public final class MenuTheme implements Disposable {
         textDim = color(c, "textDim");
         green = color(c, "green");
         purple = color(c, "purple");
+        blue = color(c, "blue");
 
         uiFont = font(18);
         skin.add("default-font", uiFont, BitmapFont.class);

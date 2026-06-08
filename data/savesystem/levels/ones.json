@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "All Ones",
+    "description": "Warm-up: deliver a steady stream of ones.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [1, 1, 1, 1, 1, 1]
+}

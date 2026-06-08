@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "Catalan",
+    "description": "Generate the Catalan numbers.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [1, 1, 2, 5, 14, 42]
+}

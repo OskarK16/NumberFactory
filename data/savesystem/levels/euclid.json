@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "name": "Euclid",
+    "description": "Reproduce the steps of Euclid's GCD algorithm.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [],
+  "goal": [610, 144, 34, 8, 2, 0]
+}
