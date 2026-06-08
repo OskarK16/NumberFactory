@@ -57,7 +57,7 @@ public class MainMenuScreen extends MenuScreen {
 
         campaign.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) {
-                app.setScreen(new LevelScreen(app, new LevelController(false, 1, "fibonacci", "player1", null)));
+                app.setScreen(new LevelSelectScreen(app));
             }
         });
 
