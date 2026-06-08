@@ -69,6 +69,16 @@ public class LevelSelectScreen implements Screen {
         card.setBackground(skin.getDrawable("panel"));
         card.pad(36, 48, 36, 48);
 
+        /*
+        TODO BEGIN
+        poniższy kod powinien ładować poziomy na podstawie zawartości w folderze save/savesystem/levels
+        powinno się wyjąć z nich tytuł i może opis oraz trzeba wtedy zerkąć na savy które ewentualnie istnieją
+        i sprawdzić czy completed: true
+        wtedy pole text mogłoby wyświetlić np:
+        1. fibonacci - not started
+        2. catalan - completed
+         */
+
         card.add(createLevelButton("1. FIBONACCI", 1, "fibonacci")).width(300).height(62).padBottom(18).row();
         card.add(createLevelButton("2. CATALAN", 2, "catalan")).width(300).height(62).padBottom(18).row();
 
@@ -79,6 +89,7 @@ public class LevelSelectScreen implements Screen {
                     game.setScreen(new MainMenuScreen(game));
                 }
             });
+        // TODO END
         card.add(backBtn).width(300).height(62);
 
         root.add(card);

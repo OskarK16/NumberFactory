@@ -1,5 +1,6 @@
 package io.github.NumberFactory.save;
 
+import io.github.NumberFactory.controller.LevelController;
 import io.github.NumberFactory.model.*;
 import io.github.NumberFactory.model.board.Board;
 import io.github.NumberFactory.model.board.Cell;
@@ -12,8 +13,8 @@ public class LevelSaveMapper {
 
     private final LevelDefinitionMapper componentMapper = new LevelDefinitionMapper();
 
-    public LevelSaveData toSaveData(Level level, String levelId) {
-        Board board = level.getMachine().getBoard();
+    public LevelSaveData toSaveData(LevelController level, String levelId) {
+        Board board = level.getLevel().getMachine().getBoard();
         List<CellData> placements = new ArrayList<>();
 
         for (int x = 0; x < board.width; x++) {
@@ -30,6 +31,7 @@ public class LevelSaveMapper {
 
         LevelSaveData save = new LevelSaveData();
         save.levelName = levelId;
+        save.completed = level.getGoal() != null && level.getGoal().isComplete();
         save.placements = placements;
         return save;
     }

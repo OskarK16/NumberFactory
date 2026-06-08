@@ -77,7 +77,7 @@ public class LevelController {
     }
 
     public void saveLevel() {
-        saveManager.saveData(saveMapper.toSaveData(level, levelName), saveName);
+        saveManager.saveData(saveMapper.toSaveData(this, levelName), saveName);
     }
 
     public void saveLevelDefinition() {
