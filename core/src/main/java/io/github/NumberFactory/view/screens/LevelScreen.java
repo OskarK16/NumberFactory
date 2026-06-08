@@ -67,7 +67,7 @@ public class LevelScreen implements Screen {
         input = new InputHandler(game, edit, hotbar, mapper);
         cameraController = new CameraController(gameCamera);
 
-        hud = new LevelHud(game, edit, hotbar, levelController.getLevel(), textures, levelController::saveLevel,
+        hud = new LevelHud(game, hotbar, levelController.getLevel(), textures, levelController::saveLevel,
             () -> {app.setScreen(new MainMenuScreen(app));
         });
         hover = new BoardHoverTracker(hud.getStage(), mapper, game, edit, hotbar);

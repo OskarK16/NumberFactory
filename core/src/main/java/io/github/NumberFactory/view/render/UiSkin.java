@@ -1,10 +1,13 @@
 package io.github.NumberFactory.view.render;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -25,11 +28,14 @@ public final class UiSkin {
     private static final Color TEXT = new Color(0.901f, 0.913f, 0.941f, 1f);
     private static final Color TEXT_DIM = new Color(0.450f, 0.470f, 0.520f, 1f);
 
+    private static final String FONT_PATH = "fonts/title.ttf";
+    private static final int FONT_SIZE = 18;
+
     private static int texCounter = 0;
 
     public static Skin build() {
         Skin skin = new Skin();
-        BitmapFont font = new BitmapFont();
+        BitmapFont font = buildFont(FONT_SIZE);
         skin.add("default-font", font, BitmapFont.class);
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -72,6 +78,21 @@ public final class UiSkin {
         skin.add("default", buttonStyle);
 
         return skin;
+    }
+
+    private static BitmapFont buildFont(int size) {
+        FileHandle file = Gdx.files.internal(FONT_PATH);
+        if (!file.exists()) return new BitmapFont();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
+        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        param.size = size;
+        param.color = Color.WHITE;
+        param.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "·";
+        param.minFilter = Texture.TextureFilter.Nearest;
+        param.magFilter = Texture.TextureFilter.Nearest;
+        BitmapFont font = generator.generateFont(param);
+        generator.dispose();
+        return font;
     }
 
     private static NinePatch borderPatch(Skin skin, Color fill, Color border) {

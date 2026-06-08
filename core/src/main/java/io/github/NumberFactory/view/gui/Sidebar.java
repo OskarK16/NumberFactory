@@ -38,7 +38,7 @@ public class Sidebar extends Table {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-        add(scrollPane).width(360).height(400).padBottom(20).row();
+        add(scrollPane).width(460).height(400).padBottom(20).row();
 
         TextButton closeBtn = new TextButton("CLOSE", skin);
         closeBtn.addListener(new ChangeListener() {

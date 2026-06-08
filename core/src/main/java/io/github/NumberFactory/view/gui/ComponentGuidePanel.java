@@ -1,6 +1,7 @@
 package io.github.NumberFactory.view.gui;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -43,17 +44,25 @@ public class ComponentGuidePanel extends Table {
     public ComponentGuidePanel(TextureRegistry textures, Skin skin) {
         this.skin = skin;
         this.textures = textures;
+
+        BitmapFont guideFont = new BitmapFont();
+        skin.add("guide-font", guideFont, BitmapFont.class);
+        skin.add("guide", new Label.LabelStyle(guideFont, skin.get("default", Label.LabelStyle.class).fontColor));
+        TextButton.TextButtonStyle guideButton = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
+        guideButton.font = guideFont;
+        skin.add("guide", guideButton);
+
         setBackground(skin.getDrawable("panel"));
         pad(12);
 
-        add(new Label("COMPONENT GUIDE", skin)).left().padBottom(10).row();
+        add(new Label("COMPONENT GUIDE", skin, "guide")).left().padBottom(10).row();
 
         scroll = new ScrollPane(body);
         scroll.setScrollingDisabled(true, false);
         scroll.setFadeScrollBars(false);
         add(scroll).left().row();
 
-        TextButton close = new TextButton("CLOSE", skin);
+        TextButton close = new TextButton("CLOSE", skin, "guide");
         close.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) { setVisible(false); }
         });
@@ -103,7 +112,7 @@ public class ComponentGuidePanel extends Table {
         addHeader(cat.name());
 
         final Stack preview = new Stack();
-        final Label desc = new Label("Select a component to see what it does.", skin);
+        final Label desc = new Label("Select a component to see what it does.", skin, "guide");
         desc.setWrap(true);
         desc.setAlignment(Align.topLeft);
 
@@ -111,7 +120,7 @@ public class ComponentGuidePanel extends Table {
             final Table item = new Table();
             item.setBackground(skin.getDrawable("up"));
             item.add(iconFor(e.type())).size(ICON).padRight(8);
-            item.add(new Label(e.name(), skin)).left().expandX().fillX();
+            item.add(new Label(e.name(), skin, "guide")).left().expandX().fillX();
             item.addListener(new ClickListener() {
                 @Override public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                     select(item, e, preview, desc);
@@ -147,29 +156,29 @@ public class ComponentGuidePanel extends Table {
 
         Table legend = new Table();
         legend.add(portSwatch(PortType.INPUT_A)).size(ICON).padRight(6);
-        legend.add(new Label("Input A - blue, priority", skin)).left().padRight(16);
+        legend.add(new Label("Input A - blue, priority", skin, "guide")).left().padRight(16);
         legend.add(portSwatch(PortType.INPUT_B)).size(ICON).padRight(6);
-        legend.add(new Label("Input B - red", skin)).left().row();
+        legend.add(new Label("Input B - red", skin, "guide")).left().row();
         legend.add(portSwatch(PortType.OUTPUT_A)).size(ICON).padRight(6).padTop(6);
-        legend.add(new Label("Output A - blue, priority", skin)).left().padRight(16).padTop(6);
+        legend.add(new Label("Output A - blue, priority", skin, "guide")).left().padRight(16).padTop(6);
         legend.add(portSwatch(PortType.OUTPUT_B)).size(ICON).padRight(6).padTop(6);
-        legend.add(new Label("Output B - red", skin)).left().padTop(6);
+        legend.add(new Label("Output B - red", skin, "guide")).left().padTop(6);
         body.add(legend).left().padTop(4).row();
     }
 
     private void addHeader(String title) {
-        TextButton back = new TextButton("< BACK", skin);
+        TextButton back = new TextButton("< BACK", skin, "guide");
         back.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) { showCategories(); }
         });
         Table header = new Table();
         header.add(back).width(110).height(28).left().padRight(12);
-        header.add(new Label(title, skin)).left();
+        header.add(new Label(title, skin, "guide")).left();
         body.add(header).left().padBottom(10).row();
     }
 
     private void addNavButton(String text, Runnable onClick) {
-        TextButton btn = new TextButton(text, skin);
+        TextButton btn = new TextButton(text, skin, "guide");
         btn.getLabel().setAlignment(Align.left);
         btn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) { onClick.run(); }
@@ -178,7 +187,7 @@ public class ComponentGuidePanel extends Table {
     }
 
     private void addParagraph(String text) {
-        Label label = new Label(text, skin);
+        Label label = new Label(text, skin, "guide");
         label.setWrap(true);
         label.setAlignment(Align.topLeft);
         body.add(label).width(contentWidth).left().padBottom(14).row();
