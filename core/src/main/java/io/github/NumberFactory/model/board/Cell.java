@@ -1,6 +1,7 @@
 package io.github.NumberFactory.model.board;
 
 import io.github.NumberFactory.model.components.Component;
+import io.github.NumberFactory.utils.CellStates;
 import io.github.NumberFactory.utils.ComponentType;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
@@ -13,6 +14,7 @@ public class Cell {
     private Component component;
     private boolean inEdit   = false;
     private boolean valid    = false;
+    private boolean invalid  = false;
     private boolean readOnly = false;
     private Set<ComponentType> componentFilter = EnumSet.noneOf(ComponentType.class);
     private boolean blacklist = true;
@@ -59,6 +61,7 @@ public class Cell {
 
     void setValid(boolean valid) {
         this.valid = valid;
+        this.invalid = !valid;
     }
 
     boolean tryCommitEdit() {
@@ -96,5 +99,12 @@ public class Cell {
         if (target == component.getPort(dir)) return false;
         component.setPort(dir, target);
         return true;
+    }
+
+    public CellStates getState() {
+        if (inEdit) return CellStates.EDIT;
+        if (valid) return CellStates.VALID;
+        if (invalid) return CellStates.INVALID;
+        return CellStates.NULL;
     }
 }

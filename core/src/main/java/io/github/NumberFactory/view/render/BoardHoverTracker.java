@@ -62,9 +62,9 @@ public class BoardHoverTracker {
         Cell cell = game.getBoard().getCell(hoverCellX, hoverCellY);
         if (cell == null || !cell.isEmpty()) return null;
 
-        Class<? extends Component> type = hotbar.getActivePalette().getSelectedType();
-        if (type == null) return null;
+        Component component = hotbar.getActivePalette().createSelected();
+        if (component == null) return null;
 
-        return new BoardRenderer.Ghost(hoverCellX, hoverCellY, type);
+        return new BoardRenderer.Ghost(hoverCellX, hoverCellY, component);
     }
 }

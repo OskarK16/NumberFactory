@@ -1,8 +1,6 @@
 package io.github.NumberFactory.utils;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public enum PortType {
     CLOSED,
@@ -23,7 +21,7 @@ public enum PortType {
         return false;
     }
 
-    public static boolean check(List<PortType> ports, Map<PortType, Integer> expected) {
+    public static boolean check(Collection<PortType> ports, Map<PortType, Integer> expected) {
         Map<PortType, Integer> counts = new EnumMap<>(PortType.class);
         for (PortType port : ports) {
             counts.put(port, counts.getOrDefault(port, 0) + 1);

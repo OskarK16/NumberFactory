@@ -7,8 +7,7 @@ buildscript {
     maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
   }
   dependencies {
-
-
+    classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"  // TexturePacker, used by the packTextures task
   }
 }
 
@@ -67,3 +66,17 @@ subprojects {
 }
 
 eclipse.project.name = 'NumberFactory' + '-parent'
+
+// Packs assets_raw/*.png -> assets/textures/atlas.{atlas,png}; run after changing textures: ./gradlew packTextures
+tasks.register('packTextures') {
+  group = 'build'
+  inputs.dir("${rootDir}/assets_raw")
+  outputs.files("${rootDir}/assets/textures/atlas.atlas", "${rootDir}/assets/textures/atlas.png")
+  doLast {
+    com.badlogic.gdx.tools.texturepacker.TexturePacker.process(
+      "${rootDir}/assets_raw",
+      "${rootDir}/assets/textures",
+      "atlas"
+    )
+  }
+}
