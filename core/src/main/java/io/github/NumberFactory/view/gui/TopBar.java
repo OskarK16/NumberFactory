@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 
 import io.github.NumberFactory.controller.GameController;
 import io.github.NumberFactory.model.SimulationState;
+import io.github.NumberFactory.view.render.UiSkin;
 
 public class TopBar extends Table {
 
@@ -34,6 +35,12 @@ public class TopBar extends Table {
         saveBtn   = new TextButton("SAVE", skin);
         menuBtn = new TextButton("MENU", skin);
 
+        startBtn.setStyle(UiSkin.accentButton(skin, UiSkin.GREEN));
+        pauseBtn.setStyle(UiSkin.accentButton(skin, UiSkin.YELLOW));
+        resetBtn.setStyle(UiSkin.accentButton(skin, UiSkin.RED));
+        restartBtn.setStyle(UiSkin.accentButton(skin, UiSkin.BLUE));
+        saveBtn.setStyle(UiSkin.accentButton(skin, UiSkin.GREEN));
+        menuBtn.setStyle(UiSkin.accentButton(skin, UiSkin.RED));
 
         for (final TextButton btn : new TextButton[]{logButton, startBtn, pauseBtn, resetBtn, restartBtn, saveBtn, menuBtn, guideButton}) {
             btn.getLabelCell().padLeft(14).padRight(14);

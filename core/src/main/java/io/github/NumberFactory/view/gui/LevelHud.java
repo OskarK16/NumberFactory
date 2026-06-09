@@ -40,6 +40,7 @@ public class LevelHud {
         guidePanel.pack();
 
         guideHandle = new TextButton("GUIDE", skin);
+        guideHandle.setStyle(UiSkin.accentButton(skin, UiSkin.PURPLE));
         guideHandle.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent event, Actor actor) { guidePanel.toggle(); }
         });
@@ -65,6 +66,8 @@ public class LevelHud {
             });
         }
 
+        logHandle.setStyle(UiSkin.accentButton(skin, UiSkin.BLUE));
+
         topBar = new TopBar(game, skin, onSave, onReturnToMenu, logHandle, guideHandle);
         hotbarView = new Hotbar(hotbar, level.getInventory(), textures, skin);
         subHotbarView = new SubHotbar(hotbar, level.getInventory(), textures, skin);
@@ -86,6 +89,11 @@ public class LevelHud {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void closePanels() {
+        guidePanel.setVisible(false);
+        activeSidePanel.setVisible(false);
     }
 
     public void update() {

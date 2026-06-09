@@ -1,5 +1,6 @@
 package io.github.NumberFactory.view.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -44,28 +45,18 @@ public class MainMenuScreen extends MenuScreen {
         TextButton sandbox = theme.menuButton("SANDBOX", theme.green, false);
         TextButton campaign = theme.menuButton("CAMPAIGN", theme.accent, false);
         TextButton instructions = theme.menuButton("INSTRUCTIONS", theme.purple, false);
+        TextButton quit = theme.menuButton("QUIT", theme.red, false);
 
         card.add(sandbox).width(300).height(62).padBottom(18).row();
         card.add(campaign).width(300).height(62).padBottom(18).row();
-        card.add(instructions).width(300).height(62).row();
+        card.add(instructions).width(300).height(62).padBottom(18).row();
+        card.add(quit).width(300).height(62).row();
 
-        sandbox.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) {
-                app.setScreen(new SandboxSaveScreen(app, player));
-            }
-        });
+        sandbox.addListener     (run(() -> app.setScreen(new SandboxSaveScreen(app, player))));
+        campaign.addListener    (run(() -> app.setScreen(new LevelSelectScreen(app))));
+        instructions.addListener(run(() -> app.setScreen(new InstructionsScreen(app))));
+        quit.addListener        (run(() -> Gdx.app.exit()));
 
-        campaign.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) {
-                app.setScreen(new LevelSelectScreen(app));
-            }
-        });
-
-        instructions.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent event, Actor actor) {
-                app.setScreen(new InstructionsScreen(app));
-            }
-        });
 
         Table root = new Table();
         root.setFillParent(true);
@@ -77,5 +68,13 @@ public class MainMenuScreen extends MenuScreen {
         stage.addActor(root);
 
         addFooter();
+    }
+
+    private static ChangeListener run(Runnable action) {
+        return new ChangeListener() {
+            @Override public void changed(ChangeEvent event, Actor actor) {
+                action.run();
+            }
+        };
     }
 }

@@ -27,9 +27,15 @@
       "component": {
         "type": "GENERATOR",
         "ports": ["CLOSED", "OUTPUT_A", "CLOSED", "CLOSED"],
-        "portReadOnly": [false, false, false, false],
+        "portReadOnly": [true, true, true, true],
         "value": 144
       }
+    }
+  ],
+  "inventory": [
+    {
+      "type": "OUTPUT",
+      "limit": 1
     }
   ],
   "goal": [610, 144, 34, 8, 2, 0]

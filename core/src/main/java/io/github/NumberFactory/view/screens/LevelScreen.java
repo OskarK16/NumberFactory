@@ -12,8 +12,10 @@ import io.github.NumberFactory.Main;
 import io.github.NumberFactory.controller.*;
 import io.github.NumberFactory.input.GameAction;
 import io.github.NumberFactory.input.KeyMapper;
+import io.github.NumberFactory.model.SequenceGoal;
 import io.github.NumberFactory.utils.Constants;
 import io.github.NumberFactory.view.gui.LevelHud;
+import io.github.NumberFactory.view.gui.WinOverlay;
 import io.github.NumberFactory.view.render.BoardHoverTracker;
 import io.github.NumberFactory.view.render.BoardRenderer;
 import io.github.NumberFactory.view.render.CameraController;
@@ -28,12 +30,14 @@ public class LevelScreen implements Screen {
     private final LevelController levelController;
     private final boolean resume;
     private float autoSaveTimer = 0f;
+    private boolean won = false;
 
     private GameController game;
     private EditController edit;
     private HotbarController hotbar;
     private InputHandler input;
     private ScreenToCellMapper mapper;
+    private InputMultiplexer inputMultiplexer;
 
     private OrthographicCamera gameCamera;
     private TextureRegistry textures;
@@ -42,6 +46,7 @@ public class LevelScreen implements Screen {
 
     private LevelHud hud;
     private BoardHoverTracker hover;
+    private WinOverlay winOverlay;
 
     public LevelScreen(Main app, LevelController levelController) {
         this(app, levelController, true);
@@ -82,8 +87,8 @@ public class LevelScreen implements Screen {
         });
         hover = new BoardHoverTracker(hud.getStage(), mapper, game, edit, hotbar);
 
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(new InputAdapter() {
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(new InputAdapter() {
             @Override public boolean mouseMoved(int sx, int sy) {
                 hover.updateHover(sx, sy); return false;
             }
@@ -91,10 +96,10 @@ public class LevelScreen implements Screen {
                 hover.updateHover(sx, sy); return false;
             }
         });
-        multiplexer.addProcessor(hud.getStage());
-        multiplexer.addProcessor(input);
-        multiplexer.addProcessor(cameraController);
-        multiplexer.addProcessor(new InputAdapter() {
+        inputMultiplexer.addProcessor(hud.getStage());
+        inputMultiplexer.addProcessor(input);
+        inputMultiplexer.addProcessor(cameraController);
+        inputMultiplexer.addProcessor(new InputAdapter() {
             @Override public boolean keyDown(int keycode) {
                 GameAction action = KeyMapper.getAction(keycode);
 
@@ -105,12 +110,21 @@ public class LevelScreen implements Screen {
                 return false;
             }
         });
-        Gdx.input.setInputProcessor(multiplexer);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void render(float dt) {
         game.update(dt);
+
+        SequenceGoal goal = game.getCampaignGoal();
+        if (goal != null) {
+            if (!won && goal.isComplete()) {
+                won = true;
+                showWinOverlay(goal);
+            }
+            else if (won && winOverlay == null && !goal.isComplete()) won = false;
+        }
 
         autoSaveTimer += dt;
         if (autoSaveTimer >= AUTOSAVE_INTERVAL) {
@@ -124,6 +138,29 @@ public class LevelScreen implements Screen {
         hud.update();
         hud.act(dt);
         hud.draw();
+
+        if (winOverlay != null) {
+            winOverlay.act(dt);
+            winOverlay.draw();
+        }
+    }
+
+    private void showWinOverlay(SequenceGoal goal) {
+        hud.closePanels();
+        winOverlay = new WinOverlay(goal,
+            () -> Gdx.app.postRunnable(this::dismissWinOverlay),
+            () -> app.setScreen(new LevelScreen(app, levelController, false)),
+            () -> app.setScreen(new LevelSelectScreen(app)),
+            () -> app.setScreen(new MainMenuScreen(app)));
+        Gdx.input.setInputProcessor(winOverlay.getStage());
+    }
+
+    private void dismissWinOverlay() {
+        if (winOverlay != null) {
+            winOverlay.dispose();
+            winOverlay = null;
+        }
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -134,6 +171,9 @@ public class LevelScreen implements Screen {
         gameCamera.viewportHeight = height;
         gameCamera.update();
         hud.resize(width, height);
+        if (winOverlay != null) {
+            winOverlay.resize(width, height);
+        }
     }
 
     @Override public void pause()  {
@@ -154,6 +194,9 @@ public class LevelScreen implements Screen {
         }
         if (hud != null) {
             hud.dispose();
+        }
+        if (winOverlay != null) {
+            winOverlay.dispose();
         }
     }
 }

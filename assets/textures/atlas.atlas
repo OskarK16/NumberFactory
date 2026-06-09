@@ -109,100 +109,114 @@ label_add
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_div
+label_arith
   rotate: false
   xy: 70, 104
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_eq
+label_div
   rotate: false
   xy: 104, 138
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_ge
+label_eq
   rotate: false
   xy: 260, 294
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_gt
+label_ge
   rotate: false
   xy: 294, 328
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_le
+label_gt
   rotate: false
   xy: 328, 362
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_lt
+label_le
   rotate: false
   xy: 362, 396
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_mod
+label_logic
   rotate: false
   xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_mul
+label_lt
   rotate: false
   xy: 36, 36
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_neq
+label_mod
   rotate: false
   xy: 70, 70
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-label_sub
+label_mul
   rotate: false
   xy: 104, 104
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-port_INPUT
+label_neq
   rotate: false
   xy: 138, 138
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-port_INPUT_t
+label_sub
   rotate: false
   xy: 260, 260
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-port_OUTPUT
+port_INPUT
   rotate: false
   xy: 294, 294
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-port_OUTPUT_t
+port_INPUT_t
   rotate: false
   xy: 328, 328
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_OUTPUT
+  rotate: false
+  xy: 362, 362
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_OUTPUT_t
+  rotate: false
+  xy: 396, 396
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Hotbar extends Table {
 
-    private static final int SLOT_SIZE = 60;
+    private static final int SLOT_SIZE = 100;
 
     private final HotbarController hotbar;
     private final Inventory inventory;
@@ -53,7 +53,7 @@ public class Hotbar extends Table {
         }
 
         arithmeticSlot = new CategorySlot(textures.getTemplateArithmetic(),
-            textures.getLabelAb(),
+            textures.getLabelArithmetic(),
             textures);
         arithmeticSlot.addListener(new ClickListener() {
             @Override public void clicked(InputEvent event, float x, float y) {
@@ -64,7 +64,7 @@ public class Hotbar extends Table {
         add(arithmeticSlot).size(SLOT_SIZE).padLeft(12).padRight(4);
 
         logicSlot = new CategorySlot(textures.getTemplateLogic(),
-            textures.getLabelAb(),
+            textures.getLabelLogic(),
             textures);
         logicSlot.addListener(new ClickListener() {
             @Override public void clicked(InputEvent event, float x, float y) {

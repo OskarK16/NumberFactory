@@ -25,6 +25,12 @@ public abstract class Component {
         Arrays.fill(this.ports, PortType.CLOSED);
     }
 
+    public boolean onlyReadOnlyPorts() {
+        boolean result = true;
+        for (boolean isReadOnly : portReadOnly) result = isReadOnly && result;
+        return result;
+    }
+
     public boolean setPort(Directions direction, PortType port) {
         if (isPortReadOnly(direction)) return false;
         Debug.msg(getClass().getSimpleName() + ": setting port " + direction + " -> " + port);
