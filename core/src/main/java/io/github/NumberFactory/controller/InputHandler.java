@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
+import io.github.NumberFactory.input.GameAction;
+import io.github.NumberFactory.input.KeyMapper;
 import io.github.NumberFactory.model.SimulationState;
 import io.github.NumberFactory.model.board.Board;
 import io.github.NumberFactory.model.board.Cell;
@@ -96,60 +98,64 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.TAB) {
-            return handleTab();
-        }
-        if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
-            int num = keycode - Input.Keys.NUM_0;
-            if (num == 0) return false;
+        GameAction action = KeyMapper.getAction(keycode);
 
-            int index = num - 1;
+        return switch (action) {
+            case CYCLE_HOTBAR_CATEGORY -> handleTab();
+            case EDIT_COMMIT -> edit.commit();
+            case TOGGLE_SIMULATION -> handleSpace();
+            case CANCEL_OR_CLOSE -> {
+                if (edit.hasActiveEdit()) {
+                    yield edit.cancel();
+                }
+                else if (hotbar.isSubOpen()) {
+                    hotbar.closeSub();
+                    hotbar.selectFromUtility(0);
+                    yield true;
+                }
+                yield false;
+            }
+            case HOTBAR_SLOT_1 -> handleHotbarSlot(1);
+            case HOTBAR_SLOT_2 -> handleHotbarSlot(2);
+            case HOTBAR_SLOT_3 -> handleHotbarSlot(3);
+            case HOTBAR_SLOT_4 -> handleHotbarSlot(4);
+            case HOTBAR_SLOT_5 -> handleHotbarSlot(5);
+            case HOTBAR_SLOT_6 -> handleHotbarSlot(6);
+            case HOTBAR_SLOT_7 -> handleHotbarSlot(7);
+            case HOTBAR_SLOT_8 -> handleHotbarSlot(8);
+            case HOTBAR_SLOT_9 -> handleHotbarSlot(9);
+            case ACTION_UNKNOWN -> false;
+        };
+    }
 
-            HotbarController.SubCategory openSub = hotbar.getOpenSub();
-            int utilitySize = hotbar.getUtility().getEntries().size();
+    private boolean handleHotbarSlot(int num) {
+        int index = num - 1;
 
-            if (openSub == null) {
-                if (index < utilitySize) {
-                    return hotbar.selectFromUtility(index);
-                }
-                else if (index == utilitySize) {
-                    hotbar.openSub(HotbarController.SubCategory.ARITHMETIC);
-                    return true;
-                }
-                else if (index == utilitySize + 1) {
-                    hotbar.openSub(HotbarController.SubCategory.LOGIC);
-                    return true;
-                }
-            }
-            else if (openSub == HotbarController.SubCategory.ARITHMETIC) {
-                if (index < hotbar.getArithmetic().getEntries().size()) {
-                    return hotbar.selectFromArithmetic(index);
-                }
-            }
-            else if (openSub == HotbarController.SubCategory.LOGIC) {
-                if (index < hotbar.getLogic().getEntries().size()) {
-                    return hotbar.selectFromLogic(index);
-                }
-            }
-            return false;
-        }
+        HotbarController.SubCategory openSub = hotbar.getOpenSub();
+        int utilitySize = hotbar.getUtility().getEntries().size();
 
-        if (keycode == Input.Keys.ENTER) {
-            return edit.commit();
-        }
-        if (keycode == Input.Keys.ESCAPE) {
-            if (edit.hasActiveEdit()) {
-                return edit.cancel();
+        if (openSub == null) {
+            if (index < utilitySize) {
+                return hotbar.selectFromUtility(index);
             }
-            else if (hotbar.isSubOpen()) {
-                hotbar.closeSub();
-                hotbar.selectFromUtility(0);
+            else if (index == utilitySize) {
+                hotbar.openSub(HotbarController.SubCategory.ARITHMETIC);
                 return true;
             }
-            return false;
+            else if (index == utilitySize + 1) {
+                hotbar.openSub(HotbarController.SubCategory.LOGIC);
+                return true;
+            }
         }
-        if (keycode == Input.Keys.SPACE) {
-            return handleSpace();
+        else if (openSub == HotbarController.SubCategory.ARITHMETIC) {
+            if (index < hotbar.getArithmetic().getEntries().size()) {
+                return hotbar.selectFromArithmetic(index);
+            }
+        }
+        else if (openSub == HotbarController.SubCategory.LOGIC) {
+            if (index < hotbar.getLogic().getEntries().size()) {
+                return hotbar.selectFromLogic(index);
+            }
         }
         return false;
     }
