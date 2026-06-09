@@ -8,6 +8,18 @@
     "boardWidth": 50,
     "boardHeight": 50
   },
-  "boardLayout": [],
+  "boardLayout": [
+    {
+      "x": 23,
+      "y": 25,
+      "readOnly": true,
+      "component": {
+        "type": "GENERATOR",
+        "ports": ["CLOSED", "OUTPUT_A", "CLOSED", "CLOSED"],
+        "portReadOnly": [false, false, false, false],
+        "value": 7
+      }
+    }
+  ],
   "goal": [7, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1]
 }
