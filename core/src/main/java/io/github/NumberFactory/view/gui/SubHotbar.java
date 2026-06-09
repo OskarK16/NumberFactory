@@ -24,7 +24,7 @@ import java.util.function.IntConsumer;
 
 public class SubHotbar extends Table {
 
-    private static final int SLOT_SIZE = 60;
+    private static final int SLOT_SIZE = 100;
 
     private final HotbarController hotbar;
     private final Inventory inventory;

@@ -81,6 +81,7 @@ public class InputHandler implements InputProcessor {
     }
 
     private boolean handleRemove(int screenX, int screenY) {
+        edit.commit();
         int[] cell = mapper.toCell(screenX, screenY);
         if (cell == null) {
             return false;

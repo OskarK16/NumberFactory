@@ -72,7 +72,7 @@ public class Cell {
     }
 
     void enterEdit() {
-        if (component == null) return;
+        if (component == null || component.onlyReadOnlyPorts()) return;
         this.inEdit = true;
     }
 

@@ -29,7 +29,8 @@ public class TextureRegistry implements Disposable {
     private TextureRegion floorTile;
     private TextureRegion templateArithmetic;
     private TextureRegion templateLogic;
-    private TextureRegion labelAb;
+    private TextureRegion labelArithmetic;
+    private TextureRegion labelLogic;
 
     private TextureRegion blockState;
     private TextureRegion itemFrame;
@@ -46,7 +47,8 @@ public class TextureRegistry implements Disposable {
         floorTile = atlas.findRegion("floor_tile");
         templateArithmetic = atlas.findRegion("block_template_arythmetic");
         templateLogic = atlas.findRegion("block_template_logic");
-        labelAb = atlas.findRegion("label_ab");
+        labelArithmetic = atlas.findRegion("label_arith");
+        labelLogic = atlas.findRegion("label_logic");
 
         blockState = atlas.findRegion("block_state");
         itemFrame = atlas.findRegion("item_frame");
@@ -107,7 +109,8 @@ public class TextureRegistry implements Disposable {
     public TextureRegion getFloorTile() { return floorTile != null ? floorTile : blockEmpty; }
     public TextureRegion getTemplateArithmetic() { return templateArithmetic; }
     public TextureRegion getTemplateLogic() { return templateLogic; }
-    public TextureRegion getLabelAb() { return labelAb; }
+    public TextureRegion getLabelArithmetic() { return labelArithmetic; }
+    public TextureRegion getLabelLogic() { return labelLogic; }
 
     public TextureRegion getState() { return blockState; }
     public TextureRegion getItemFrame() { return itemFrame; }

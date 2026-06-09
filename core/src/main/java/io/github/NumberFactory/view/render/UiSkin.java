@@ -19,14 +19,22 @@ public final class UiSkin {
     private UiSkin() {
     }
 
-    private static final Color PANEL_FILL = new Color(0.105f, 0.117f, 0.145f, 0.92f);
-    private static final Color PANEL_BORDER = new Color(0.223f, 0.247f, 0.305f, 1f);
-    private static final Color ACCENT = new Color(0.949f, 0.725f, 0.220f, 1f);
-    private static final Color BTN_UP = new Color(0.160f, 0.180f, 0.225f, 1f);
-    private static final Color BTN_OVER = new Color(0.223f, 0.247f, 0.305f, 1f);
-    private static final Color BTN_DOWN = new Color(0.120f, 0.135f, 0.170f, 1f);
-    private static final Color TEXT = new Color(0.901f, 0.913f, 0.941f, 1f);
-    private static final Color TEXT_DIM = new Color(0.450f, 0.470f, 0.520f, 1f);
+    private static final Palette PALETTE = new Palette();
+
+    public static final Color GREEN  = PALETTE.green;
+    public static final Color RED    = PALETTE.red;
+    public static final Color BLUE   = PALETTE.blue;
+    public static final Color YELLOW = PALETTE.yellow;
+    public static final Color PURPLE = PALETTE.purple;
+
+    private static final Color PANEL_FILL   = PALETTE.surface;
+    private static final Color PANEL_BORDER = PALETTE.panelBorder;
+    private static final Color ACCENT       = PALETTE.accent;
+    private static final Color BTN_UP       = PALETTE.btnUp;
+    private static final Color BTN_OVER     = PALETTE.panelBorder;
+    private static final Color BTN_DOWN     = PALETTE.btnDown;
+    private static final Color TEXT         = PALETTE.text;
+    private static final Color TEXT_DIM     = PALETTE.textDim;
 
     private static final String FONT_PATH = "fonts/title.ttf";
     private static final int FONT_SIZE = 18;
@@ -78,6 +86,15 @@ public final class UiSkin {
         skin.add("default", buttonStyle);
 
         return skin;
+    }
+
+    public static TextButton.TextButtonStyle accentButton(Skin skin, Color accent) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(skin.get(TextButton.TextButtonStyle.class));
+        style.over = new NinePatchDrawable(borderPatch(skin, BTN_OVER, accent));
+        style.down = new NinePatchDrawable(borderPatch(skin, BTN_DOWN, accent));
+        style.overFontColor = accent;
+        style.downFontColor = accent;
+        return style;
     }
 
     private static BitmapFont buildFont(int size) {

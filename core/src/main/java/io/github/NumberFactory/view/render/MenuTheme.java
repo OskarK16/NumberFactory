@@ -25,13 +25,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import io.github.NumberFactory.view.gui.ChromaticTitle;
 
 public final class MenuTheme implements Disposable {
 
-    private static final String THEME_PATH = "ui/theme.json";
     private static final String FONT_PATH  = "fonts/title.ttf";
 
     public final Color bgBottom;
@@ -54,29 +51,27 @@ public final class MenuTheme implements Disposable {
     private int texCounter = 0;
 
     public MenuTheme() {
-        JsonValue c = loadColors();
-        Color background = color(c, "background");
-        surface = color(c, "surface");
-        Color gridLine = color(c, "gridLine");
-        bgBottom = color(c, "bgBottom");
-        panelBorder = color(c, "panelBorder");
-        btnUp = color(c, "btnUp");
-        btnDown = color(c, "btnDown");
-        accent = color(c, "accent");
-        text = color(c, "text");
-        textDim = color(c, "textDim");
-        green = color(c, "green");
-        purple = color(c, "purple");
-        blue = color(c, "blue");
-        red = color(c, "red");
-        yellow = color(c, "yellow");
+        Palette palette = new Palette();
+        surface     = palette.surface;
+        bgBottom    = palette.bgBottom;
+        panelBorder = palette.panelBorder;
+        btnUp       = palette.btnUp;
+        btnDown     = palette.btnDown;
+        accent      = palette.accent;
+        text        = palette.text;
+        textDim     = palette.textDim;
+        green       = palette.green;
+        purple      = palette.purple;
+        blue        = palette.blue;
+        red         = palette.red;
+        yellow      = palette.yellow;
 
         uiFont = font(18);
         skin.add("default-font", uiFont, BitmapFont.class);
         skin.add("default", new Label.LabelStyle(uiFont, text));
         skin.add("dim", new Label.LabelStyle(uiFont, textDim));
-        skin.add("gradient", new TextureRegionDrawable(register(Pixmaps.gradient(background, bgBottom, 256))), Drawable.class);
-        skin.add("grid", new TiledDrawable(new TextureRegion(register(Pixmaps.grid(gridLine, 44)))), TiledDrawable.class);
+        skin.add("gradient", new TextureRegionDrawable(register(Pixmaps.gradient(palette.background, bgBottom, 256))), Drawable.class);
+        skin.add("grid", new TiledDrawable(new TextureRegion(register(Pixmaps.grid(palette.gridLine, 44)))), TiledDrawable.class);
         skin.add("panel", new NinePatchDrawable(borderPatch(surface, panelBorder)), Drawable.class);
         skin.add("key", new NinePatchDrawable(borderPatch(btnUp, panelBorder)), Drawable.class);
     }
@@ -91,6 +86,12 @@ public final class MenuTheme implements Disposable {
 
     public Image grid() {
         Image image = new Image(skin.get("grid", TiledDrawable.class));
+        image.setFillParent(true);
+        return image;
+    }
+
+    public Image dim() {
+        Image image = new Image(new TextureRegionDrawable(new TextureRegion(solidTexture(new Color(0f, 0f, 0f, 0.55f)))));
         image.setFillParent(true);
         return image;
     }
@@ -182,21 +183,6 @@ public final class MenuTheme implements Disposable {
     @Override
     public void dispose() {
         skin.dispose();
-    }
-
-    private JsonValue loadColors() {
-        FileHandle file = Gdx.files.internal(THEME_PATH);
-        if (file.exists()) {
-            return new JsonReader().parse(file);
-        }
-        Gdx.app.error("MenuTheme", "Missing asset " + THEME_PATH + ", falling back to grey palette");
-        return new JsonValue(JsonValue.ValueType.object);
-    }
-
-    private static Color color(JsonValue colors, String key) {
-        String hex = colors.getString(key, null);
-        if (hex == null || hex.isEmpty()) return new Color(Color.GRAY);
-        return Color.valueOf(hex);
     }
 
     private BitmapFont font(int size) {
