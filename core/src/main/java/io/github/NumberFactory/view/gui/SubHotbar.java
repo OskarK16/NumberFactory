@@ -1,6 +1,6 @@
 package io.github.NumberFactory.view.gui;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -106,24 +106,24 @@ public class SubHotbar extends Table {
         Slot(ComponentPaletteSelection.Entry entry, TextureRegistry textures, Skin skin) {
             this.entry = entry;
             Stack stack = new Stack();
-            Texture block = textures.getBlock(entry.type());
+            TextureRegion block = textures.getBlock(entry.type());
 
             if (block != null) {
                 stack.add(new Image(new TextureRegionDrawable(block)));
             }
 
-            Texture label = textures.getLabel(entry.type());
+            TextureRegion label = textures.getLabel(entry.type());
 
             if (label != null) {
                 stack.add(new Image(new TextureRegionDrawable(label)));
             }
 
-            Image hoverOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
+            Image hoverOverlay = new Image(new TextureRegionDrawable(textures.getState()));
             hoverOverlay.setColor(1f, 1f, 1f, 0.45f);
             hoverOverlay.setVisible(false);
             stack.add(hoverOverlay);
 
-            selectedOverlay = new Image(new TextureRegionDrawable(textures.getStateSelected()));
+            selectedOverlay = new Image(new TextureRegionDrawable(textures.getState()));
             selectedOverlay.setVisible(false);
             stack.add(selectedOverlay);
 

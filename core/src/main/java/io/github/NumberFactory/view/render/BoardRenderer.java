@@ -1,13 +1,7 @@
 package io.github.NumberFactory.view.render;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
 import io.github.NumberFactory.model.Item;
@@ -24,41 +18,21 @@ import java.util.List;
 public class BoardRenderer implements Disposable {
 
     private static final int CELL = Constants.TILE_SIZE;
-    private static final float ITEM_RADIUS = 7f;
     private static final float ITEM_OFFSET_X = 8f;
     private static final float GHOST_ALPHA = 0.4f;
 
-    public record Ghost(int cellX, int cellY, Class<? extends Component> type) {
+    public record Ghost(int cellX, int cellY, Component component) {
 
     }
 
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
-    private final ShapeRenderer shapes;
-    private final TextureRegistry textures;
-    private final Texture floorTile;
-    private final BitmapFont font;
-    private final GlyphLayout layout = new GlyphLayout();
+    private final TextureRenderer textures;
 
-    public BoardRenderer(OrthographicCamera camera, TextureRegistry textures) {
+    public BoardRenderer(OrthographicCamera camera, TextureRegistry registry) {
         this.camera = camera;
-        this.textures = textures;
         this.batch = new SpriteBatch();
-        this.shapes = new ShapeRenderer();
-        this.font = new BitmapFont();
-        this.font.setColor(Color.BLACK);
-        this.floorTile = makeFloorTile();
-    }
-
-    private static Texture makeFloorTile() {
-        Pixmap pm = new Pixmap(CELL, CELL, Pixmap.Format.RGBA8888);
-        pm.setColor(0.149f, 0.165f, 0.200f, 1f);
-        pm.fill();
-        pm.setColor(0.094f, 0.106f, 0.130f, 1f);
-        pm.drawRectangle(0, 0, CELL, CELL);
-        Texture tex = new Texture(pm);
-        pm.dispose();
-        return tex;
+        this.textures = new TextureRenderer(this.batch, registry);
     }
 
     public void render(Board board) {
@@ -67,129 +41,39 @@ public class BoardRenderer implements Disposable {
 
     public void render(Board board, float tickProgress, Ghost ghost) {
         batch.setProjectionMatrix(camera.combined);
-        shapes.setProjectionMatrix(camera.combined);
 
         drawCells(board, ghost);
-        drawItemDisks(board, tickProgress);
-        drawItemValues(board, tickProgress);
+        drawItems(board, tickProgress);
     }
 
     private void drawCells(Board board, Ghost ghost) {
         batch.begin();
-        for (int x = 0; x < board.width; x++) {
-            for (int y = 0; y < board.height; y++) {
-                Cell cell = board.getCell(x, y);
+        for (int x = 0; x < board.width; x++)
+            for (int y = 0; y < board.height; y++)
+                textures.renderCell(board.getCell(x, y), worldX(x), worldY(y, board));
 
-                if (cell == null) {
-                    continue;
-                }
-
-                float bx = worldX(x);
-                float by = worldY(y, board);
-
-                if (cell.isEmpty()) {
-                    batch.draw(floorTile, bx, by, CELL, CELL);
-                    if (ghost != null && ghost.type() != null && ghost.cellX() == x && ghost.cellY() == y) {
-                        drawGhost(ghost.type(), bx, by);
-                    }
-                    continue;
-                }
-
-                Component c = cell.getComponent();
-                Texture block = textures.getBlock(c);
-                if (block != null) {
-                    batch.draw(block, bx, by, CELL, CELL);
-                }
-
-                Texture label = textures.getLabel(c);
-                if (label != null) {
-                    batch.draw(label, bx, by, CELL, CELL);
-                }
-
-                for (Directions dir : Directions.values()) {
-                    PortType port = c.getPort(dir);
-                    Texture portTex = textures.getPort(port, dir);
-                    if (portTex != null) {
-                        batch.draw(portTex, bx, by, CELL, CELL);
-                    }
-                }
-
-                Texture state = stateOverlayFor(cell);
-                if (state != null) {
-                    batch.draw(state, bx, by, CELL, CELL);
-                }
+        if (ghost != null && ghost.component() != null) {
+            Cell gcell = board.getCell(ghost.cellX(), ghost.cellY());
+            if (gcell != null && gcell.isEmpty()) {
+                textures.renderComponent(ghost.component(), worldX(ghost.cellX()), worldY(ghost.cellY(), board), GHOST_ALPHA);
             }
         }
         batch.end();
     }
 
-    private void drawGhost(Class<? extends Component> type, float bx, float by) {
-        Texture block = textures.getBlock(type);
-        Texture label = textures.getLabel(type);
-        batch.setColor(1f, 1f, 1f, GHOST_ALPHA);
-
-        if (block != null) {
-            batch.draw(block, bx, by, CELL, CELL);
-        }
-        if (label != null) {
-            batch.draw(label, bx, by, CELL, CELL);
-        }
-        batch.setColor(Color.WHITE);
-    }
-
-    private void drawItemDisks(Board board, float tickProgress) {
-        shapes.begin(ShapeRenderer.ShapeType.Filled);
-
-        for (int x = 0; x < board.width; x++) {
-            for (int y = 0; y < board.height; y++) {
-
-                Cell cell = board.getCell(x, y);
-
-                if (cell == null || cell.isEmpty()) {
-                    continue;
-                }
-
-                List<Item> items = cell.getComponent().getHeldItems();
-
-                if (items.isEmpty()) {
-                    continue;
-                }
-                float[][] positions = itemPositions(cell.getComponent(), items.size(), x, y, board, tickProgress);
-                for (float[] p : positions) {
-                    shapes.setColor(Color.BLACK);
-                    shapes.circle(p[0], p[1], ITEM_RADIUS + 1.5f);
-                    shapes.setColor(Color.WHITE);
-                    shapes.circle(p[0], p[1], ITEM_RADIUS);
-                }
-            }
-        }
-        shapes.end();
-    }
-
-    private void drawItemValues(Board board, float tickProgress) {
+    private void drawItems(Board board, float tickProgress) {
         batch.begin();
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
 
                 Cell cell = board.getCell(x, y);
-
-                if (cell == null || cell.isEmpty()) {
-                    continue;
-                }
-
+                if (cell == null || cell.isEmpty()) continue;
                 List<Item> items = cell.getComponent().getHeldItems();
-                if (items.isEmpty()) {
-                    continue;
-                }
-
+                if (items.isEmpty()) continue;
+                
                 float[][] positions = itemPositions(cell.getComponent(), items.size(), x, y, board, tickProgress);
-                for (int i = 0; i < positions.length; i++) {
-                    String text = String.valueOf(items.get(i).getValue());
-                    layout.setText(font, text);
-                    float ix = positions[i][0];
-                    float iy = positions[i][1];
-                    font.draw(batch, layout, ix - layout.width * 0.5f, iy + layout.height * 0.5f);
-                }
+                for (int i = 0; i < positions.length; i++)
+                    textures.drawItem(positions[i][0], positions[i][1], items.get(i).getValue());
             }
         }
         batch.end();
@@ -312,16 +196,6 @@ public class BoardRenderer implements Disposable {
         return centerX + (index - (total - 1) * 0.5f) * ITEM_OFFSET_X;
     }
 
-    private Texture stateOverlayFor(Cell cell) {
-        if (cell.isInEdit()) {
-            return textures.getStateEdit();
-        }
-        if (!cell.isValid()) {
-            return textures.getStateInvalid();
-        }
-        return textures.getStateValid();
-    }
-
     private static float worldX(int x) {
         return x * CELL;
     }
@@ -333,8 +207,6 @@ public class BoardRenderer implements Disposable {
     @Override
     public void dispose() {
         batch.dispose();
-        shapes.dispose();
-        font.dispose();
-        floorTile.dispose();
+        textures.dispose();
     }
 }

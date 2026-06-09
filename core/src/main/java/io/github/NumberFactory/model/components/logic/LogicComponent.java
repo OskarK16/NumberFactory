@@ -96,7 +96,7 @@ public abstract class LogicComponent extends Component {
 
     @Override
     public boolean checkValidity() {
-        return PortType.check(getPorts(), Map.of(
+        return PortType.check(getPorts().values(), Map.of(
             PortType.INPUT_A, 1,
             PortType.INPUT_B, 1,
             PortType.OUTPUT_A, 1,

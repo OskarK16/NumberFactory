@@ -1,196 +1,119 @@
 package io.github.NumberFactory.view.render;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 
 import io.github.NumberFactory.model.components.Component;
-import io.github.NumberFactory.model.components.arithmetic.AddComponent;
-import io.github.NumberFactory.model.components.arithmetic.DivideComponent;
-import io.github.NumberFactory.model.components.arithmetic.ModuloComponent;
-import io.github.NumberFactory.model.components.arithmetic.MultiplyComponent;
-import io.github.NumberFactory.model.components.arithmetic.SubtractComponent;
-import io.github.NumberFactory.model.components.logic.EqualsComponent;
-import io.github.NumberFactory.model.components.logic.GreaterOrEqualComponent;
-import io.github.NumberFactory.model.components.logic.GreaterThanComponent;
-import io.github.NumberFactory.model.components.logic.LessOrEqualComponent;
-import io.github.NumberFactory.model.components.logic.LessThanComponent;
-import io.github.NumberFactory.model.components.logic.NotEqualsComponent;
-import io.github.NumberFactory.model.components.utility.CopyComponent;
-import io.github.NumberFactory.model.components.utility.DestroyerComponent;
-import io.github.NumberFactory.model.components.utility.GeneratorComponent;
-import io.github.NumberFactory.model.components.utility.NeutralComponent;
-import io.github.NumberFactory.model.components.utility.OutputComponent;
-import io.github.NumberFactory.model.components.utility.TransportComponent;
-import io.github.NumberFactory.utils.Directions;
-import io.github.NumberFactory.utils.PortType;
+import io.github.NumberFactory.model.components.arithmetic.*;
+import io.github.NumberFactory.model.components.logic.*;
+import io.github.NumberFactory.model.components.utility.*;
 
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+// After changing textures see build.gradle lines 10 and 70
 public class TextureRegistry implements Disposable {
 
-    private static final String DIR = "textures/32/";
+    private final TextureAtlas atlas;
 
-    private final Map<Class<? extends Component>, Texture> blocksByComponent = new HashMap<>();
-    private final Map<Class<? extends Component>, Texture> labelsByComponent = new HashMap<>();
-    private final Map<PortType, Map<Directions, Texture>> portTextures = new EnumMap<>(PortType.class);
+    private final Map<Class<? extends Component>, TextureRegion> blocksByComponent = new HashMap<>();
+    private final Map<Class<? extends Component>, TextureRegion> labelsByComponent = new HashMap<>();
 
-    private Texture blockEmpty;
-    private Texture templateArithmetic;
-    private Texture templateLogic;
-    private Texture labelAbArithmetic;
-    private Texture labelAbLogic;
+    private TextureRegion portInput;
+    private TextureRegion portOutput;
+    private TextureRegion portTransportInput;
+    private TextureRegion portTransportOutput;
 
-    private Texture stateEdit;
-    private Texture stateValid;
-    private Texture stateInvalid;
-    private Texture stateSelected;
+    private TextureRegion blockEmpty;
+    private TextureRegion floorTile;
+    private TextureRegion templateArithmetic;
+    private TextureRegion templateLogic;
+    private TextureRegion labelAb;
+
+    private TextureRegion blockState;
+    private TextureRegion itemFrame;
 
     public TextureRegistry() {
+        atlas = new TextureAtlas("textures/atlas.atlas");
         loadCommon();
         loadComponentBlocks();
         loadComponentLabels();
-        loadPorts();
     }
 
     private void loadCommon() {
-        blockEmpty = load("block.png");
-        templateArithmetic = load("block_template_arythmetic.png");
-        templateLogic = load("block_template_logic.png");
-        labelAbArithmetic = load("labels/label_ab_arythmetic.png");
-        labelAbLogic = load("labels/label_ab_logic.png");
+        blockEmpty = atlas.findRegion("block");
+        floorTile = atlas.findRegion("floor_tile");
+        templateArithmetic = atlas.findRegion("block_template_arythmetic");
+        templateLogic = atlas.findRegion("block_template_logic");
+        labelAb = atlas.findRegion("label_ab");
 
-        stateEdit = load("block_states/block_edit_state.png");
-        stateValid = load("block_states/block_valid_state.png");
-        stateInvalid = load("block_states/block_invalid_state.png");
-        stateSelected = load("block_states/block_selected_state.png");
+        blockState = atlas.findRegion("block_state");
+        itemFrame = atlas.findRegion("item_frame");
+
+        portInput = atlas.findRegion("port_INPUT");
+        portOutput = atlas.findRegion("port_OUTPUT");
+        portTransportInput = atlas.findRegion("port_INPUT_t");
+        portTransportOutput = atlas.findRegion("port_OUTPUT_t");
     }
 
     private void loadComponentBlocks() {
-        blocksByComponent.put(TransportComponent.class, load("block_transport.png"));
-        blocksByComponent.put(GeneratorComponent.class, load("block_generator.png"));
-        blocksByComponent.put(OutputComponent.class, load("block_output.png"));
-        blocksByComponent.put(DestroyerComponent.class, load("block_destroyer.png"));
-        blocksByComponent.put(CopyComponent.class, load("block_copy.png"));
-        blocksByComponent.put(NeutralComponent.class, load("block_template_neutral.png"));
+        blocksByComponent.put(TransportComponent.class, atlas.findRegion("block_transport"));
+        blocksByComponent.put(GeneratorComponent.class, atlas.findRegion("block_generator"));
+        blocksByComponent.put(OutputComponent.class, atlas.findRegion("block_output"));
+        blocksByComponent.put(DestroyerComponent.class, atlas.findRegion("block_destroyer"));
+        blocksByComponent.put(CopyComponent.class, atlas.findRegion("block_copy"));
+        blocksByComponent.put(NeutralComponent.class, atlas.findRegion("block_neutral"));
 
-        blocksByComponent.put(AddComponent.class, templateArithmetic);
-        blocksByComponent.put(SubtractComponent.class, templateArithmetic);
-        blocksByComponent.put(MultiplyComponent.class, templateArithmetic);
-        blocksByComponent.put(ModuloComponent.class, templateArithmetic);
-        blocksByComponent.put(DivideComponent.class, load("block_div.png"));
-
-        blocksByComponent.put(EqualsComponent.class, templateLogic);
-        blocksByComponent.put(NotEqualsComponent.class, templateLogic);
-        blocksByComponent.put(GreaterThanComponent.class, templateLogic);
-        blocksByComponent.put(GreaterOrEqualComponent.class, templateLogic);
-        blocksByComponent.put(LessThanComponent.class, templateLogic);
-        blocksByComponent.put(LessOrEqualComponent.class, templateLogic);
+        blocksByComponent.put(ArithmeticComponent.class, templateArithmetic);
+        blocksByComponent.put(LogicComponent.class, templateLogic);
     }
 
     private void loadComponentLabels() {
-        labelsByComponent.put(AddComponent.class, load("labels/label_add.png"));
-        labelsByComponent.put(SubtractComponent.class, load("labels/label_sub.png"));
-        labelsByComponent.put(MultiplyComponent.class, load("labels/label_mul.png"));
-        labelsByComponent.put(ModuloComponent.class, load("labels/label_mod.png"));
+        labelsByComponent.put(AddComponent.class, atlas.findRegion("label_add"));
+        labelsByComponent.put(SubtractComponent.class, atlas.findRegion("label_sub"));
+        labelsByComponent.put(MultiplyComponent.class, atlas.findRegion("label_mul"));
+        labelsByComponent.put(DivideComponent.class, atlas.findRegion("label_div"));
+        labelsByComponent.put(ModuloComponent.class, atlas.findRegion("label_mod"));
 
-        labelsByComponent.put(EqualsComponent.class, load("labels/label_eq.png"));
-        labelsByComponent.put(NotEqualsComponent.class, load("labels/label_neq.png"));
-        labelsByComponent.put(GreaterThanComponent.class, load("labels/label_gt.png"));
-        labelsByComponent.put(GreaterOrEqualComponent.class, load("labels/label_ge.png"));
-        labelsByComponent.put(LessThanComponent.class, load("labels/label_lt.png"));
-        labelsByComponent.put(LessOrEqualComponent.class, load("labels/label_le.png"));
+        labelsByComponent.put(EqualsComponent.class, atlas.findRegion("label_eq"));
+        labelsByComponent.put(NotEqualsComponent.class, atlas.findRegion("label_neq"));
+        labelsByComponent.put(GreaterThanComponent.class, atlas.findRegion("label_gt"));
+        labelsByComponent.put(GreaterOrEqualComponent.class, atlas.findRegion("label_ge"));
+        labelsByComponent.put(LessThanComponent.class, atlas.findRegion("label_lt"));
+        labelsByComponent.put(LessOrEqualComponent.class, atlas.findRegion("label_le"));
     }
 
-    private void loadPorts() {
-        for (PortType type : List.of(PortType.INPUT_A, PortType.INPUT_B, PortType.OUTPUT_A, PortType.OUTPUT_B)) {
-            Map<Directions, Texture> byDir = new EnumMap<>(Directions.class);
-
-            for (Directions dir : Directions.values()) {
-                byDir.put(dir, load("ports/port_" + type.name() + "_" + letter(dir) + ".png"));
-            }
-            portTextures.put(type, byDir);
+    public TextureRegion getBlock(Class<? extends Component> type) {
+        for (Class<?> c = type; Component.class.isAssignableFrom(c); c = c.getSuperclass()) {
+            TextureRegion region = blocksByComponent.get(c);
+            if (region != null) return region;
         }
+        return null;
     }
-
-    private Texture load(String path) {
-        return new Texture(Gdx.files.internal(DIR + path));
-    }
-
-    private static String letter(Directions dir) {
-        return switch (dir) {
-            case NORTH -> "N";
-            case EAST -> "E";
-            case SOUTH -> "S";
-            case WEST -> "W";
-        };
-    }
-
-    public Texture getBlock(Class<? extends Component> type) { return blocksByComponent.get(type); }
-    public Texture getBlock(Component c)                     { return c == null ? null : blocksByComponent.get(c.getClass()); }
-    public Texture getLabel(Class<? extends Component> type) { return labelsByComponent.get(type); }
-    public Texture getLabel(Component c)                     { return c == null ? null : labelsByComponent.get(c.getClass()); }
-
-    public Texture getPort(PortType type, Directions dir) {
-        if (type == null || type == PortType.CLOSED) {
-            return null;
+    public TextureRegion getBlock(Component c)                     { return c == null ? null : getBlock(c.getClass()); }
+    public TextureRegion getLabel(Class<? extends Component> type) { return labelsByComponent.get(type); }
+    public TextureRegion getLabel(Component c)                     { return c == null ? null : labelsByComponent.get(c.getClass()); }
+    public TextureRegion getPort(boolean INPUT, boolean TRANSPORT) {
+        if (TRANSPORT) {
+            TextureRegion t = INPUT ? portTransportInput : portTransportOutput;
+            if (t != null) return t;
         }
-        Map<Directions, Texture> byDir = portTextures.get(type);
-        return byDir == null ? null : byDir.get(dir);
+        return INPUT ? portInput : portOutput;
     }
+    public TextureRegion getPort(boolean INPUT) { return getPort(INPUT, false); }
 
-    public Texture getEmptyBlock() {
-        return blockEmpty;
-    }
-    public Texture getTemplateArithmetic() {
-        return templateArithmetic;
-    }
-    public Texture getTemplateLogic() { return templateLogic;
-    }
-    public Texture getLabelAbArithmetic() {
-        return labelAbArithmetic;
-    }
-    public Texture getLabelAbLogic() {
-        return labelAbLogic;
-    }
+    public TextureRegion getEmptyBlock() { return blockEmpty; }
+    public TextureRegion getFloorTile() { return floorTile != null ? floorTile : blockEmpty; }
+    public TextureRegion getTemplateArithmetic() { return templateArithmetic; }
+    public TextureRegion getTemplateLogic() { return templateLogic; }
+    public TextureRegion getLabelAb() { return labelAb; }
 
-    public Texture getStateEdit() {
-        return stateEdit;
-    }
-    public Texture getStateValid() {
-        return stateValid;
-    }
-    public Texture getStateInvalid() {
-        return stateInvalid;
-    }
-    public Texture getStateSelected() {
-        return stateSelected;
-    }
+    public TextureRegion getState() { return blockState; }
+    public TextureRegion getItemFrame() { return itemFrame; }
 
     @Override
     public void dispose() {
-        java.util.Set<Texture> unique = new java.util.HashSet<>();
-        unique.addAll(blocksByComponent.values());
-        unique.addAll(labelsByComponent.values());
-
-        for (Map<Directions, Texture> m : portTextures.values()) {
-            unique.addAll(m.values());
-        }
-
-        unique.add(blockEmpty);
-        unique.add(templateArithmetic);
-        unique.add(templateLogic);
-        unique.add(labelAbArithmetic);
-        unique.add(labelAbLogic);
-        unique.add(stateEdit);
-        unique.add(stateValid);
-        unique.add(stateInvalid);
-        unique.add(stateSelected);
-        for (Texture t : unique) {
-            if (t != null) t.dispose();
-        }
+        atlas.dispose();
     }
 }

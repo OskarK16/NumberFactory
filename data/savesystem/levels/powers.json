@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "name": "Powers of Two",
+    "description": "Deliver the powers of two, from 1 up to 64.",
+    "author": "Dominik, Józef, Oskar",
+    "mode": "CAMPAIGN",
+    "difficulty": 0,
+    "boardWidth": 50,
+    "boardHeight": 50
+  },
+  "boardLayout": [
+    {
+      "x": 23,
+      "y": 25,
+      "readOnly": true,
+      "component": {
+        "type": "GENERATOR",
+        "ports": ["CLOSED", "OUTPUT_A", "CLOSED", "CLOSED"],
+        "portReadOnly": [false, false, false, false],
+        "value": 1
+      }
+    }
+  ],
+  "goal": [1, 2, 4, 8, 16, 32, 64]
+}

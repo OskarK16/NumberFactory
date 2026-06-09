@@ -6,10 +6,7 @@ import io.github.NumberFactory.utils.Debug;
 import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class Component {
     public final int inputSize;
@@ -47,11 +44,9 @@ public abstract class Component {
         return ports[direction.ordinal()];
     }
 
-    public ArrayList<PortType> getPorts() {
-        ArrayList<PortType> ports = new ArrayList<>();
-        for (Directions d : Directions.values()) {
-            ports.add(getPort(d));
-        }
+    public Map<Directions, PortType> getPorts() {
+        Map<Directions, PortType> ports = new HashMap<>();
+        for (Directions d : Directions.values()) ports.put(d, getPort(d));
         return ports;
     }
 

@@ -1,0 +1,209 @@
+
+atlas.png
+size: 512, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+block
+  rotate: false
+  xy: 2, 138
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_copy
+  rotate: false
+  xy: 2, 172
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+block_destroyer
+  rotate: false
+  xy: 260, 396
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_div
+  rotate: false
+  xy: 2, 104
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_generator
+  rotate: false
+  xy: 36, 138
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_neutral
+  rotate: false
+  xy: 260, 362
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_output
+  rotate: false
+  xy: 294, 396
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_state
+  rotate: false
+  xy: 2, 70
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_template_arythmetic
+  rotate: false
+  xy: 36, 104
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_template_logic
+  rotate: false
+  xy: 70, 138
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+block_transport
+  rotate: false
+  xy: 260, 328
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+floor_tile
+  rotate: false
+  xy: 294, 362
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+item_frame
+  rotate: false
+  xy: 328, 396
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_ab
+  rotate: false
+  xy: 2, 36
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_add
+  rotate: false
+  xy: 36, 70
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_div
+  rotate: false
+  xy: 70, 104
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_eq
+  rotate: false
+  xy: 104, 138
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_ge
+  rotate: false
+  xy: 260, 294
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_gt
+  rotate: false
+  xy: 294, 328
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_le
+  rotate: false
+  xy: 328, 362
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_lt
+  rotate: false
+  xy: 362, 396
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_mod
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_mul
+  rotate: false
+  xy: 36, 36
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_neq
+  rotate: false
+  xy: 70, 70
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+label_sub
+  rotate: false
+  xy: 104, 104
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_INPUT
+  rotate: false
+  xy: 138, 138
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_INPUT_t
+  rotate: false
+  xy: 260, 260
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_OUTPUT
+  rotate: false
+  xy: 294, 294
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+port_OUTPUT_t
+  rotate: false
+  xy: 328, 328
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

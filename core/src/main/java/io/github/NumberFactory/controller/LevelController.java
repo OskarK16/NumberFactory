@@ -20,7 +20,6 @@ public class LevelController {
     private String description = "";
     private String author = "";
 
-    private final SaveManager saveManager = new SaveManager();
     private final LevelDefinitionMapper defMapper  = new LevelDefinitionMapper();
     private final LevelSaveMapper saveMapper = new LevelSaveMapper();
 
@@ -46,7 +45,7 @@ public class LevelController {
 
     public void loadSave() {
         loadFreshLevel();
-        saveMapper.applyTo(level, saveManager.loadData(saveName));
+        saveMapper.applyTo(level, SaveManager.loadData(saveName));
     }
 
     public SequenceGoal getGoal() {
@@ -60,13 +59,13 @@ public class LevelController {
             return;
         }
 
-        if (!saveManager.hasDefinition(levelName)) {
+        if (!SaveManager.hasDefinition(levelName)) {
             this.level = Level.sandbox();
             this.goal = null;
             return;
         }
 
-        LevelDefinitionData data = saveManager.loadDefinition(levelName);
+        LevelDefinitionData data = SaveManager.loadDefinition(levelName);
         this.description = data.metadata.description != null ? data.metadata.description : "";
         this.author = data.metadata.author != null ? data.metadata.author : "";
         this.level = defMapper.fromDefinition(data);
@@ -77,14 +76,14 @@ public class LevelController {
     }
 
     public void saveLevel() {
-        saveManager.saveData(saveMapper.toSaveData(this, levelName), saveName);
+        SaveManager.saveData(saveMapper.toSaveData(this, levelName), saveName);
     }
 
     public void saveLevelDefinition() {
         LevelDefinitionData data = defMapper.toDefinition(level, levelName);
         data.metadata.description = description;
         data.metadata.author = author;
-        saveManager.saveDefinition(data, levelName);
+        SaveManager.saveDefinition(data, levelName);
     }
 
     public boolean isSandbox() { return isSandbox; }
