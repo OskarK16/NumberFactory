@@ -8,6 +8,29 @@
     "boardWidth": 50,
     "boardHeight": 50
   },
-  "boardLayout": [],
+  "boardLayout": [
+    {
+      "x": 23,
+      "y": 24,
+      "readOnly": true,
+      "component": {
+        "type": "GENERATOR",
+        "ports": ["CLOSED", "OUTPUT_A", "CLOSED", "CLOSED"],
+        "portReadOnly": [false, false, false, false],
+        "value": 610
+      }
+    },
+    {
+      "x": 23,
+      "y": 26,
+      "readOnly": true,
+      "component": {
+        "type": "GENERATOR",
+        "ports": ["CLOSED", "OUTPUT_A", "CLOSED", "CLOSED"],
+        "portReadOnly": [false, false, false, false],
+        "value": 144
+      }
+    }
+  ],
   "goal": [610, 144, 34, 8, 2, 0]
 }

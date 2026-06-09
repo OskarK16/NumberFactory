@@ -11,6 +11,7 @@ public class ComponentPaletteSelection {
 
     public record Entry(Class<? extends Component> type, Supplier<? extends Component> factory) {}
 
+    private Component selectedComponent = null;
     private final List<Entry> entries = new ArrayList<>();
     private int selectedIndex = -1;
 
@@ -31,6 +32,10 @@ public class ComponentPaletteSelection {
 
     public int size() {
         return entries.size();
+    }
+
+    public Component getSelectedComponent() {
+        return selectedComponent;
     }
 
     public Entry getSelected() {
@@ -64,6 +69,7 @@ public class ComponentPaletteSelection {
             return false;
         }
         selectedIndex = index;
+        selectedComponent = createSelected();
         return true;
     }
 

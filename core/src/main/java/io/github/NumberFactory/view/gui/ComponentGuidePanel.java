@@ -1,6 +1,6 @@
 package io.github.NumberFactory.view.gui;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 
 import io.github.NumberFactory.model.components.Component;
-import io.github.NumberFactory.utils.Directions;
 import io.github.NumberFactory.utils.PortType;
 import io.github.NumberFactory.view.gui.ComponentInfo.Category;
 import io.github.NumberFactory.view.gui.ComponentInfo.Entry;
@@ -195,15 +194,16 @@ public class ComponentGuidePanel extends Table {
 
     private Stack iconFor(Class<? extends Component> type) {
         Stack stack = new Stack();
-        Texture block = textures.getBlock(type);
-        stack.add(new Image(new TextureRegionDrawable(block)));
-        Texture label = textures.getLabel(type);
+        TextureRegion block = textures.getBlock(type);
+        if (block != null) stack.add(new Image(new TextureRegionDrawable(block)));
+        TextureRegion label = textures.getLabel(type);
         if (label != null) stack.add(new Image(new TextureRegionDrawable(label)));
         return stack;
     }
 
     private Image portSwatch(PortType type) {
-        Texture tex = textures.getPort(type, Directions.NORTH);
+        if (type == null || type.isClosed()) return new Image();
+        TextureRegion tex = textures.getPort(type.isInput(), false);
         return tex == null ? new Image() : new Image(new TextureRegionDrawable(tex));
     }
 

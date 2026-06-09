@@ -71,7 +71,7 @@ public class CopyComponent extends Component {
 
     @Override
     public boolean checkValidity() {
-        return PortType.check(getPorts(), Map.of(
+        return PortType.check(getPorts().values(), Map.of(
             PortType.INPUT_A, 1,
             PortType.OUTPUT_A, 1,
             PortType.OUTPUT_B, 1,

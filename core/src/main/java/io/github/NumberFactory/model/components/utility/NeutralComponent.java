@@ -13,7 +13,7 @@ public class NeutralComponent extends Component {
 
     @Override
     public boolean checkValidity() {
-        return PortType.check(getPorts(), Map.of(PortType.CLOSED, 4));
+        return PortType.check(getPorts().values(), Map.of(PortType.CLOSED, 4));
     }
 
     @Override
