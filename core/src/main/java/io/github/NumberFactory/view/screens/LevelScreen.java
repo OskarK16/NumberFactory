@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.NumberFactory.Main;
 import io.github.NumberFactory.controller.*;
+import io.github.NumberFactory.input.GameAction;
+import io.github.NumberFactory.input.KeyMapper;
 import io.github.NumberFactory.utils.Constants;
 import io.github.NumberFactory.view.gui.LevelHud;
 import io.github.NumberFactory.view.render.BoardHoverTracker;
@@ -94,7 +96,9 @@ public class LevelScreen implements Screen {
         multiplexer.addProcessor(cameraController);
         multiplexer.addProcessor(new InputAdapter() {
             @Override public boolean keyDown(int keycode) {
-                if (keycode == Input.Keys.ESCAPE) {
+                GameAction action = KeyMapper.getAction(keycode);
+
+                if (action == GameAction.CANCEL_OR_CLOSE) {
                     app.setScreen(new MainMenuScreen(app));
                     return true;
                 }

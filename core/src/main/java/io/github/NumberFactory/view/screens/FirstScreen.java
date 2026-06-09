@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.NumberFactory.Main;
+import io.github.NumberFactory.input.GameAction;
+import io.github.NumberFactory.input.KeyMapper;
 import io.github.NumberFactory.model.board.Board;
 
 public class FirstScreen implements Screen {
@@ -43,7 +45,9 @@ public class FirstScreen implements Screen {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                if (keycode == Input.Keys.ESCAPE) {
+                GameAction action = KeyMapper.getAction(keycode);
+
+                if (action == GameAction.CANCEL_OR_CLOSE) {
                     game.setScreen(new MainMenuScreen(game));
                     return true;
                 }
