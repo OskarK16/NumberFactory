@@ -138,7 +138,7 @@ public class LevelSelectScreen extends MenuScreen {
             statusColor = theme.blue;
             buttonText = "PLAY AGAIN";
             buttonColor = theme.blue;
-            resume = false;
+            resume = true;
         }
 
         Table card = new Table();
