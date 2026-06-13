@@ -116,29 +116,24 @@ public class LevelSelectScreen extends MenuScreen {
 
         String statusText;
         Color statusColor;
-        String buttonText;
+        String buttonText = "CONTINUE";
         Color buttonColor;
-        final boolean resume;
+        final boolean resume = started;
         if (!started) {
             statusText = "not started";
             statusColor = theme.green;
             buttonText = "START";
             buttonColor = theme.green;
-            resume = false;
         }
         else if (!completed) {
             statusText = "not finished";
             statusColor = theme.accent;
-            buttonText = "CONTINUE";
             buttonColor = theme.accent;
-            resume = true;
         }
         else {
             statusText = "completed";
             statusColor = theme.blue;
-            buttonText = "PLAY AGAIN";
             buttonColor = theme.blue;
-            resume = true;
         }
 
         Table card = new Table();
