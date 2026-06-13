@@ -76,18 +76,6 @@ public final class SaveManager {
         return listSavesMatching("sbox_" + alias + "_" + saveName);
     }
 
-    public static List<String> listLevelSaves() {
-        return listSavesMatching("camp_");
-    }
-
-    public static List<String> listLevelSaves(String alias) {
-        return listSavesMatching("camp_" + alias + "_");
-    }
-
-    public static List<String> ListLevelSaves(String alias, String levelName) {
-        return listSavesMatching("camp_" + alias + "_" + levelName);
-    }
-
     public static void saveAlias(String alias) {
         List<String> existing = listAliases();
         if (existing.contains(alias)) return;

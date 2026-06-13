@@ -2,7 +2,6 @@ package io.github.NumberFactory.controller;
 
 import io.github.NumberFactory.model.board.Board;
 import io.github.NumberFactory.utils.Directions;
-import io.github.NumberFactory.utils.PortType;
 
 public class EditController {
 
@@ -22,13 +21,6 @@ public class EditController {
 
     public int getEditingY() {
         return board.getEditingY();
-    }
-
-    public boolean setPort(Directions dir, PortType port) {
-        if (!board.hasEditingCell()) {
-            return false;
-        }
-        return board.setPort(board.getEditingX(), board.getEditingY(), dir, port);
     }
 
     public boolean cyclePort(Directions dir) {

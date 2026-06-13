@@ -2,7 +2,6 @@ package io.github.NumberFactory.model.board;
 
 import io.github.NumberFactory.model.components.Component;
 import io.github.NumberFactory.utils.Directions;
-import io.github.NumberFactory.utils.PortType;
 
 public class Board {
     public final int width;
@@ -93,21 +92,6 @@ public class Board {
 
     public boolean clearCell(int x, int y) {
         return placeIntoCell(x, y, null);
-    }
-
-    public boolean setPort(int x, int y, Directions dir, PortType port) {
-        if (!inBounds(x, y)) {
-            return false;
-        }
-        if (editingX != x || editingY != y) {
-            return false;
-        }
-
-        Cell cell = cells[x][y];
-        if (cell.isEmpty()) return false;
-        if (!cell.getComponent().setPort(dir, port)) return false;
-        recalculateValid(x, y);
-        return true;
     }
 
     public boolean cyclePort(int x, int y, Directions dir) {

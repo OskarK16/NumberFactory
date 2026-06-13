@@ -27,11 +27,6 @@ public final class Inventory {
         return new Inventory(false, new HashMap<>(limits), new HashMap<>());
     }
 
-    public static Inventory ofWithUsed(Map<Class<? extends Component>, Integer> limits,
-                                       Map<Class<? extends Component>, Integer> used) {
-        return new Inventory(false, new HashMap<>(limits), new HashMap<>(used));
-    }
-
     public boolean isUnlimited() { return unlimited; }
 
     public int limitOf(Class<? extends Component> type) {
@@ -48,11 +43,6 @@ public final class Inventory {
         int limit = limits.getOrDefault(type, 0);
         int u = used.getOrDefault(type, 0);
         return Math.max(0, limit - u);
-    }
-
-    public boolean has(Class<? extends Component> type) {
-        if (unlimited) return true;
-        return countOf(type) > 0;
     }
 
     public boolean take(Class<? extends Component> type) {
