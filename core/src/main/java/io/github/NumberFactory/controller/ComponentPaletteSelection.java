@@ -45,23 +45,8 @@ public class ComponentPaletteSelection {
         return entries.get(selectedIndex);
     }
 
-    public Class<? extends Component> getSelectedType() {
-        Entry e = getSelected();
-        return e == null ? null : e.type();
-    }
-
     public int getSelectedIndex() {
         return selectedIndex;
-    }
-
-    public boolean selectByType(Class<? extends Component> type) {
-        for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).type().equals(type)) {
-                selectedIndex = i;
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean selectByIndex(int index) {
@@ -73,19 +58,6 @@ public class ComponentPaletteSelection {
         return true;
     }
 
-    public void selectNext() {
-        if (entries.isEmpty()) {
-            return;
-        }
-        selectedIndex = (selectedIndex + 1) % entries.size();
-    }
-
-    public void selectPrev() {
-        if (entries.isEmpty()) {
-            return;
-        }
-        selectedIndex = (selectedIndex - 1 + entries.size()) % entries.size();
-    }
 
     public Component createSelected() {
         Entry e = getSelected();

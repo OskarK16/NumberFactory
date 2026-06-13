@@ -75,14 +75,6 @@ public class GameController {
         return p;
     }
 
-    public Level getLevel() {
-        return level;
-    }
-
-    public Machine getMachine() {
-        return level.getMachine();
-    }
-
     public Board getBoard() {
         return level.getMachine().getBoard();
     }
@@ -91,20 +83,12 @@ public class GameController {
         return level.getMachine().getState();
     }
 
-    public Inventory getInventory() {
-        return level.getInventory();
-    }
-
     public Goal getGoal() {
         return level.getGoal();
     }
 
     public SequenceGoal getCampaignGoal() {
         return campaignGoal;
-    }
-
-    public List<Integer> getAggregated() {
-        return level.getMachine().getAggregated();
     }
 
     public boolean placeComponent(int x, int y, Component c) {

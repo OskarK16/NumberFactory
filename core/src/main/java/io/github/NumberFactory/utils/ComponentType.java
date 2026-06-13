@@ -38,7 +38,6 @@ public enum ComponentType {
 
     public Component create(int value) { return factory.apply(value); }
 
-    public Component create() { return factory.apply(0); }
 
     public static ComponentType of(Component c) {
         return of(c.getClass());

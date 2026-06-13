@@ -7,8 +7,6 @@ import io.github.NumberFactory.save.SaveManager;
 import io.github.NumberFactory.model.SequenceGoal;
 import io.github.NumberFactory.save.data.LevelDefinitionData;
 
-import java.util.List;
-
 public class LevelController {
     private final boolean isSandbox;
     private final int levelNumber;
@@ -16,7 +14,6 @@ public class LevelController {
     private final String playerAlias;
     private String saveName;
     private String saveSlot;
-
     private String description = "";
     private String author = "";
 
@@ -74,31 +71,7 @@ public class LevelController {
             this.goal = new SequenceGoal(levelName.toUpperCase(), this.description, data.goal);
         }
     }
-
     public void saveLevel() {
         SaveManager.saveData(saveMapper.toSaveData(this, levelName), saveName);
-    }
-
-    public void saveLevelDefinition() {
-        LevelDefinitionData data = defMapper.toDefinition(level, levelName);
-        data.metadata.description = description;
-        data.metadata.author = author;
-        SaveManager.saveDefinition(data, levelName);
-    }
-
-    public boolean isSandbox() { return isSandbox; }
-    public int getLevelNumber() { return levelNumber; }
-    public String getLevelName() { return levelName; }
-    public String getDescription() { return description; }
-    public String getAuthor() { return author; }
-    public String getSaveSlot() { return saveSlot; }
-
-    public void setDescription(String description) { this.description = description; }
-    public void setAuthor(String author) { this.author = author; }
-
-    public void setSaveSlot(String newSlot) {
-        if (!isSandbox) return;
-        this.saveSlot = newSlot;
-        this.saveName = "sbox_" + playerAlias + "_" + newSlot;
     }
 }

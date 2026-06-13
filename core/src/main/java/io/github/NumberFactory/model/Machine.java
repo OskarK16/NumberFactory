@@ -209,9 +209,7 @@ public class Machine {
                 }
             }
         }
-        if (fresh.isEmpty()) {
-            return;
-        }
+        if (fresh.isEmpty()) return;
 
         Collections.sort(fresh);
         aggregated.addAll(fresh);

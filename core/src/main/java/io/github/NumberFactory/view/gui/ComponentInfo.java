@@ -28,8 +28,6 @@ public final class ComponentInfo {
 
     public record Category(String name, String description, List<Entry> entries) {}
 
-    private ComponentInfo() {}
-
     public static List<Category> categories() {
         return List.of(
             new Category("Utility",
